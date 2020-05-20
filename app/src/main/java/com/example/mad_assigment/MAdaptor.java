@@ -23,7 +23,7 @@ public class MAdaptor extends RecyclerView.Adapter<MHolder> {
     @Override
     public MHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, null);// if on click have issue use parent
 
         return new MHolder(view);
     }
