@@ -22,9 +22,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder>{
     @NonNull
     @Override
     public PatientCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.patientrow, parent , false);
-
         return new PatientCardHolder(view);
     }
 
