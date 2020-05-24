@@ -11,7 +11,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".User_home"></activity>
         <activity android:name=".MainActivity">
-            <intent-filter>
+        <activity android:name=".ViewPatient">
+           
+        </activity>
+        <activity android:name=".AddPatient" />
+
+        <activity android:name=".PatientList" >
+
+        </activity>
+        <activity android:name=".MainActivity">
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
