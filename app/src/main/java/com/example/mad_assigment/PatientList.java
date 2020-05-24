@@ -46,7 +46,7 @@ public class PatientList extends AppCompatActivity{
     private ArrayList<patientModel> fetchData(){
         ArrayList<patientModel> data = new ArrayList<>();
 
-        data.add(new patientModel( R.drawable.pill , "Gayman"));
+        data.add(new patientModel( R.drawable.pill , "Gayman" ));
         data.add(new patientModel( R.drawable.pill , "Gayman syrup"));
         data.add(new patientModel(R.drawable.pill , "runlingay"));
         data.add(new patientModel(R.drawable.pill , "random" ));
