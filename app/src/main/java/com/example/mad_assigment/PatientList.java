@@ -18,7 +18,7 @@ public class PatientList extends AppCompatActivity{
     EditText search;
     RecyclerView PRecycleView;
     PatientAdaptor PAdaptor;
-//    PatientrecyclerView
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
