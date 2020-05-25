@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "644403792200",
+    "firebase_url": "https://quickmad-e4016.firebaseio.com",
+    "project_id": "quickmad-e4016",
+    "storage_bucket": "quickmad-e4016.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644403792200:android:54ac120705eaacdd76cb7d",
+        "android_client_info": {
+          "package_name": "com.example.mad_assigment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu0dRFcbR19hWWfWGxCHs81FWjMZoTW94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644403792200:android:52bbe33432bb78c776cb7d",
+        "android_client_info": {
+          "package_name": "sg.edu.np.quickmad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu0dRFcbR19hWWfWGxCHs81FWjMZoTW94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

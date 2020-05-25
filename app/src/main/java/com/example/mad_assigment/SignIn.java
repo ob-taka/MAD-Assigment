@@ -58,6 +58,7 @@ public class SignIn extends AppCompatActivity {
                 if (TextUtils.isEmpty(pw)) {
                     mEmail.setError("Password is required!");
                 }
+
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Authenticate User
