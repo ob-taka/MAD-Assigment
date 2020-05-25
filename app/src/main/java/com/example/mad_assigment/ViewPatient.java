@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class ViewPatient extends AppCompatActivity{
 
     RecyclerView mRecycleView;
-    medicineAdaptor mAdaptor;
+    MedicineAdaptor mAdaptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,19 +21,19 @@ public class ViewPatient extends AppCompatActivity{
         mRecycleView = findViewById(R.id.mRV);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdaptor = new medicineAdaptor(this, fetchData());
+        mAdaptor = new MedicineAdaptor(this, fetchData());
         mRecycleView.setAdapter((mAdaptor));
 
     }
     // this function fetches data from firebase server
-    private ArrayList<medicineModel> fetchData(){
-        ArrayList<medicineModel> data = new ArrayList<>();
+    private ArrayList<MedicineModel> fetchData(){
+        ArrayList<MedicineModel> data = new ArrayList<>();
 
-        data.add(new medicineModel("Panadol" , R.drawable.pill));
-        data.add(new medicineModel("Cough syrup" , R.drawable.pill));
-        data.add(new medicineModel("Antibiotics" , R.drawable.pill));
-        data.add(new medicineModel("Cough syrup" , R.drawable.pill));
-        data.add(new medicineModel("Antibiotics" , R.drawable.pill));
+        data.add(new MedicineModel("Panadol" , R.drawable.pill));
+        data.add(new MedicineModel("Cough syrup" , R.drawable.pill));
+        data.add(new MedicineModel("Antibiotics" , R.drawable.pill));
+        data.add(new MedicineModel("Cough syrup" , R.drawable.pill));
+        data.add(new MedicineModel("Antibiotics" , R.drawable.pill));
 
         return data;
     }

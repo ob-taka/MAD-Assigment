@@ -10,33 +10,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class medicineAdaptor extends RecyclerView.Adapter<medicineCardHolder>{
+public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
     Context context;
-    private ArrayList<medicineModel> cardData;
+    private ArrayList<MedicineModel> cardData;
 
-    public medicineAdaptor(Context context, ArrayList<medicineModel> data) {
+    public MedicineAdaptor(Context context, ArrayList<MedicineModel> data) {
         this.context = context;
         this.cardData = data;
     }
 
     @NonNull
     @Override
-    public medicineCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public MedicineCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.medicinerow, parent , false);
-
-        return new medicineCardHolder(view);
+        return new MedicineCardHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull medicineCardHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MedicineCardHolder holder, int position) {
         holder.medicineName.setText(cardData.get(position).getTitle());
         holder.medicineIcon.setImageResource(cardData.get(position).getImg());
-
     }
 
     @Override
     public int getItemCount() {
         return cardData.size();
     }
+
 }

@@ -13,7 +13,9 @@
         <activity android:name=".ViewPatient">
            
         </activity>
-        <activity android:name=".AddPatient" />
+        <activity android:name=".AddPatient">
+
+        </activity>
 
         <activity android:name=".PatientList" >
 

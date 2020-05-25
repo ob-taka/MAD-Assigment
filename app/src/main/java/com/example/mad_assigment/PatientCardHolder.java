@@ -1,5 +1,7 @@
 package com.example.mad_assigment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,4 +20,5 @@ public class PatientCardHolder extends RecyclerView.ViewHolder{
         this.patientPic = itemView.findViewById(R.id.profile_image);
 
     }
+
 }

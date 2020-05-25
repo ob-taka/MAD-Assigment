@@ -7,11 +7,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class medicineCardHolder extends RecyclerView.ViewHolder{
+public class MedicineCardHolder extends RecyclerView.ViewHolder{
     TextView medicineName;
     ImageView medicineIcon;
 
-    public medicineCardHolder(@NonNull View itemView) {
+    public MedicineCardHolder(@NonNull View itemView) {
         super(itemView);
 
         this.medicineName = itemView.findViewById(R.id.mTitle);

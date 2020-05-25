@@ -1,10 +1,10 @@
 package com.example.mad_assigment;
 
-public class medicineModel{
+public class MedicineModel{
     private String medicineTitle;
     private int medicineImg;
 
-    public medicineModel(String title , int src){
+    public MedicineModel(String title , int src){
         medicineTitle = title;
         medicineImg = src;
     }
