@@ -6,15 +6,17 @@ public class PatientModel{
   private int patientProfilepic;
   private String patientName;
   private String patientEmail;
+  private boolean status;
 
   public PatientModel(){
 
   }
 
-  public PatientModel(int pic, String name , String email) {
+  public PatientModel(int pic, String name , String email , boolean status) {
     this.patientProfilepic = pic;
     this.patientName = name;
     this.patientEmail = email;
+    this.status = status;
   }
 
   public int getPatientProfilepic() {
@@ -35,6 +37,14 @@ public class PatientModel{
   }
   public void setPatientEmail(String patientEmail) {
     this.patientEmail = patientEmail;
+  }
+
+  public boolean isStatus() {
+    return status;
+  }
+
+  public void setStatus(boolean status) {
+    this.status = status;
   }
 
 }

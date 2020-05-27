@@ -29,12 +29,12 @@ public class Firebase_Adapater{
         this.database = FirebaseDatabase.getInstance();
     }
 
-    private void writeNewUser(String name, String email , int profile ) {
-        DatabaseReference UserRef = database.getReference("Users");
-        String key = UserRef.push().getKey();
-        PatientModel user = new PatientModel( profile, name, email);
-        UserRef.child(key).setValue(user);
-    }
+//    private void writeNewUser(String name, String email , int profile ) {
+//        DatabaseReference UserRef = database.getReference("Users");
+//        String key = UserRef.push().getKey();
+//        PatientModel user = new PatientModel( profile, name, email);
+//        UserRef.child(key).setValue(user);
+//    }
 
     private void writeNewMedicine( String title , String description, String time , int img) {
         DatabaseReference medRef = database.getReference("Medicine");
@@ -50,9 +50,10 @@ public class Firebase_Adapater{
 
     public void init_firebase(){
         String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
+
         for (String medicine:
              m) {
-            writeNewMedicine(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
+            writeNewMedicine(medicine, "Before Food", "10:00 AM", R.drawable.pill);
         }
 
         String[] n = {"Emma" , "Olivia" , "Isabella" ,  "Sophia" ,  "Sophia" ,  "Amelia" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
@@ -61,9 +62,6 @@ public class Firebase_Adapater{
         for (int i = 0; i < m.length; i++) {
             DatabaseReference medRef = database.getReference("Users");
             String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(1 , n[i] , e[i] );
-            medRef.child(key).setValue(people);
-            medRef.child(key).child("Status").setValue(false);
         }
     }
     // test

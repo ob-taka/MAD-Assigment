@@ -1,5 +1,7 @@
 package com.example.mad_assigment;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,12 +19,15 @@ import android.widget.SearchView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -36,7 +41,7 @@ public class PatientList extends AppCompatActivity{
     PatientAdaptor PAdaptor;
     ArrayList<PatientModel> patientLists;
     ArrayList<String> patientkeyList;
-    ArrayList<String> medicinekeyList;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -67,7 +72,7 @@ public class PatientList extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
-//                nextActivity.putExtra("plist" , );
+                nextActivity.putExtra("plist" , patientkeyList);
                 startActivity(nextActivity);
             }
         });
@@ -98,16 +103,14 @@ public class PatientList extends AppCompatActivity{
             medRef.child(key).setValue(med);
         }
 
-        String[] n = {"Emma" , "Olivia" , "Isabella" ,  "Sophia" ,  "Sophia" ,  "Amelia" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-        String[] e = {"Emma" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-        for (int i = 0; i < m.length; i++) {
+        String[] n = {"Emma" , "Olivia" , "Isabella" };
+        String[] e = {"Emma@" , "Olivia@" , "Isabella@" };
+        for (int i = 0; i < n.length; i++) {
             DatabaseReference medRef = database.getReference("Users");
             String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(1 , n[i] , e[i] );
+            PatientModel people = new PatientModel(1 , n[i] , e[i] , false);
             medRef.child(key).setValue(people);
-            medRef.child(key).child("Status").setValue(false);
         }
-
 
         DatabaseReference UserRef = database.getReference("Users");
         UserRef.addValueEventListener(new ValueEventListener() {
@@ -126,6 +129,38 @@ public class PatientList extends AppCompatActivity{
             }
         });
 
+        UserRef.orderByValue().addChildEventListener(new ChildEventListener(){
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String patientdata = dataSnapshot.child("").getValue().toString();
+                patientkeyList.add(patientdata);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
+
+
+
+
 
 }
