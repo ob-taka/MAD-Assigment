@@ -89,19 +89,17 @@ public class PatientList extends AppCompatActivity{
     public void fetchPData(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-
 //         init medicine branch of real time database
         String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-        for (String medicine:
-                m) {
+        for (String medicine: m) {
             DatabaseReference medRef = database.getReference("Medicine");
             String key = medRef.push().getKey();
             MedicineModel med = new MedicineModel(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
             medRef.child(key).setValue(med);
         }
+
         String[] n = {"Emma" , "Olivia" , "Isabella" ,  "Sophia" ,  "Sophia" ,  "Amelia" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
         String[] e = {"Emma" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-
         for (int i = 0; i < m.length; i++) {
             DatabaseReference medRef = database.getReference("Users");
             String key = medRef.push().getKey();
