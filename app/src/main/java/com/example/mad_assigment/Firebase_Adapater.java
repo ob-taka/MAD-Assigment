@@ -54,6 +54,17 @@ public class Firebase_Adapater{
              m) {
             writeNewMedicine(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
         }
+
+        String[] n = {"Emma" , "Olivia" , "Isabella" ,  "Sophia" ,  "Sophia" ,  "Amelia" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
+        String[] e = {"Emma" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
+
+        for (int i = 0; i < m.length; i++) {
+            DatabaseReference medRef = database.getReference("Users");
+            String key = medRef.push().getKey();
+            PatientModel people = new PatientModel(1 , n[i] , e[i] );
+            medRef.child(key).setValue(people);
+            medRef.child(key).child("Status").setValue(false);
+        }
     }
     // test
 //    public ArrayList<PatientModel> fetchPData(){
