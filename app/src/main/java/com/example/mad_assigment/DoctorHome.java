@@ -36,7 +36,6 @@ public class DoctorHome extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
 }

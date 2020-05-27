@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
-    Context context;
     private ArrayList<MedicineModel> cardData;
 
-    public MedicineAdaptor(Context context, ArrayList<MedicineModel> data) {
-        this.context = context;
+    public MedicineAdaptor(ArrayList<MedicineModel> data) {
         this.cardData = data;
     }
 
@@ -28,8 +26,8 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MedicineCardHolder holder, int position) {
-        holder.medicineName.setText(cardData.get(position).getTitle());
-        holder.medicineIcon.setImageResource(cardData.get(position).getImg());
+        holder.medicineName.setText(cardData.get(position).getMedicineTitle());
+        holder.medicineIcon.setImageResource(cardData.get(position).getMedicineImg());
     }
 
     @Override

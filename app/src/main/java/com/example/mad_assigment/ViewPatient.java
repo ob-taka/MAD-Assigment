@@ -21,7 +21,7 @@ public class ViewPatient extends AppCompatActivity{
         mRecycleView = findViewById(R.id.mRV);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdaptor = new MedicineAdaptor(this, fetchData());
+        mAdaptor = new MedicineAdaptor(fetchData());
         mRecycleView.setAdapter((mAdaptor));
 
     }

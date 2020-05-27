@@ -18,6 +18,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     private Context context;
     private ArrayList<PatientModel> patientData;
     private ArrayList<PatientModel> patientDataFull;
+
     public PatientAdaptor(Context context, ArrayList<PatientModel> data) {
         this.context = context;
         this.patientData = data;
@@ -27,7 +28,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     @NonNull
     @Override
     public PatientCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.patientrow,null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.patientrow, parent , false);
         return new PatientCardHolder(view);
     }
 
@@ -55,6 +56,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     private Filter exampleFilter = new Filter(){
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
+            // list that fits filter
             ArrayList<PatientModel> filterList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0 ){
@@ -62,7 +64,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
             }
             else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-
+                // loops to find names that have filtered name
                 for (PatientModel patient : patientDataFull){
                     if (patient.getPatientName().toLowerCase().contains(filterPattern)){
                         filterList.add(patient);

@@ -6,6 +6,17 @@ public class Modle {
     private String time;
     private int img;
 
+    public Modle(){
+
+    }
+
+    public Modle(String t , String d , String time , int i){
+        this.title = t;
+        this.description = d;
+        this.time = time;
+        this.img = i;
+    }
+
     public String getTime() {
         return time;
     }
@@ -37,4 +48,6 @@ public class Modle {
     public void setImg(int img) {
         this.img = img;
     }
+
+
 }
