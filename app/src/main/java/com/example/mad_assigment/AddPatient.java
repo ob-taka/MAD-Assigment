@@ -1,5 +1,6 @@
 package com.example.mad_assigment;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AddPatient extends AppCompatActivity{
 
@@ -33,23 +36,26 @@ public class AddPatient extends AppCompatActivity{
     Button create;
     RecyclerView mRecycleView;
     MedicineAdaptor mAdaptor;
-    ArrayList<MedicineModel> modelArrayList;
-    ArrayList<PatientModel> patientModelArrayList;
+    ArrayList<MedicineModel> modelArrayList = new ArrayList<>();
+    ArrayList<String> addedpatients;
+    ArrayList<String> patientsname;
+    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
 
-        Bundle data = getIntent().getExtras();
-        ArrayList<String> addedpatients = data.getStringArrayList("plist");
+        final Bundle data = getIntent().getExtras();
+        addedpatients = data.getStringArrayList("plist");
+        patientsname = data.getStringArrayList("nlist");
+        database = FirebaseDatabase.getInstance();
 
         // setup rv
         mRecycleView = findViewById(R.id.recyclerView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
         mAdaptor = new MedicineAdaptor(modelArrayList);
-        fetchData();
 
         mRecycleView.setAdapter((mAdaptor));
 
@@ -62,7 +68,7 @@ public class AddPatient extends AppCompatActivity{
             public void onClick(View v) {
                 //move to add medicine activity(to be linked later)
 
-                Toast.makeText(getApplicationContext(), "Patient Added!" , Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -70,39 +76,48 @@ public class AddPatient extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 // add patient info
+                Toast.makeText(getApplicationContext(), "Patient Added!" , Toast.LENGTH_LONG).show();
             }
         });
 
         //populate spinner data
         choose = findViewById(R.id.spinner);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, addedpatients);
+                this, android.R.layout.simple_spinner_item, patientsname);
         spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-        choose.setAdapter(spinnerArrayAdapter);
 
-    }
-
-
-
-    // this function fetches data from firebase server
-    private void fetchData(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference UserRef = database.getReference("Medicine");
-        UserRef.addValueEventListener(new ValueEventListener() {
+        // dropdown onclick
+        choose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<HashMap<String,MedicineModel>> genericTypeIndicator =new GenericTypeIndicator<HashMap<String,MedicineModel>>(){};
-                HashMap<String,MedicineModel> modelHashMap = dataSnapshot.getValue(genericTypeIndicator);
-                modelArrayList.addAll(modelHashMap.values());
-                mAdaptor.notifyDataSetChanged();
-                Log.d("Debug" , "Loaded list");
+            public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
+                DatabaseReference MRef = database.getReference("patientMedicineList");
+                MRef.addValueEventListener(new ValueEventListener(){
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot patientlist : dataSnapshot.getChildren()) {
+                            if(patientlist.getKey().equals(addedpatients.get(position))){
+                                GenericTypeIndicator<HashMap> medicineList = new GenericTypeIndicator<HashMap>() {};
+                                medicineList = (GenericTypeIndicator<HashMap>) patientlist.getValue();
+                                System.out.println(medicineList);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Failed to read value
-                Log.w("Firebase_bot", "Failed to read value.", databaseError.toException());
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
+        choose.setAdapter(spinnerArrayAdapter);
+
+
     }
+
 }

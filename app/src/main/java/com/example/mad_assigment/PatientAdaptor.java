@@ -2,6 +2,7 @@ package com.example.mad_assigment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> implements Filterable{
+public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> implements Filterable {
     private Context context;
     private ArrayList<PatientModel> patientData;
     private ArrayList<PatientModel> patientDataFull;
@@ -74,14 +75,14 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
 
             FilterResults results = new FilterResults();
             results.values = filterList;
-
+            Log.d("d" , "flitering");
             return results;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             patientData.clear();
-            patientData.addAll((ArrayList<PatientModel>) results.values);
+            patientData.addAll( (List<PatientModel>) results.values);
             notifyDataSetChanged();
         }
     };

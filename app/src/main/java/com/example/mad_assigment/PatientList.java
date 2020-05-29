@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.SearchView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -39,8 +40,9 @@ public class PatientList extends AppCompatActivity{
     SearchView search;
     RecyclerView PRecycleView;
     PatientAdaptor PAdaptor;
-    ArrayList<PatientModel> patientLists;
-    ArrayList<String> patientkeyList;
+    ArrayList<PatientModel> patientLists = new ArrayList<>();
+    ArrayList<String> patientkeyList = new ArrayList<>();
+    ArrayList<String> patientnameList = new ArrayList<>();
 
     @Override
     protected void onStart() {
@@ -52,17 +54,34 @@ public class PatientList extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_list);
 
-
-
-        patientLists = new ArrayList<>();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
+        DatabaseReference UserRef = database.getReference("Users");
+        UserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot patient : dataSnapshot.getChildren()) {
+                    PatientModel patientdata = patient.getValue(PatientModel.class);
+                    Log.d("d" , patientdata.getPatientEmail());
+                    patientLists.add(patientdata);
+                    if(!patientdata.isStatus()) {
+                        patientkeyList.add(patient.getKey());
+                        patientnameList.add(patientdata.getPatientName());
+                    }
+                    PAdaptor.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Failed to read value
+                Log.w("Firebase_bot", "Failed to read value.", databaseError.toException());
+            }
+        });
+
         PAdaptor = new PatientAdaptor(this, patientLists);
-
-        fetchPData();
-
         PRecycleView.setAdapter((PAdaptor));
 
         search = (SearchView) findViewById(R.id.searchpatient);
@@ -73,6 +92,7 @@ public class PatientList extends AppCompatActivity{
             public void onClick(View view) {
                 Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
                 nextActivity.putExtra("plist" , patientkeyList);
+                nextActivity.putExtra("nlist" , patientnameList);
                 startActivity(nextActivity);
             }
         });
@@ -86,81 +106,38 @@ public class PatientList extends AppCompatActivity{
             @Override
             public boolean onQueryTextChange(String newText) {
                 PAdaptor.getFilter().filter(newText);
+                Log.d("d" , "flitering");
+
                 return false;
             }
         });
     }
 
     public void fetchPData(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
 //         init medicine branch of real time database
-        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-        for (String medicine: m) {
-            DatabaseReference medRef = database.getReference("Medicine");
-            String key = medRef.push().getKey();
-            MedicineModel med = new MedicineModel(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
-            medRef.child(key).setValue(med);
-        }
-
-        String[] n = {"Emma" , "Olivia" , "Isabella" };
-        String[] e = {"Emma@" , "Olivia@" , "Isabella@" };
-        for (int i = 0; i < n.length; i++) {
-            DatabaseReference medRef = database.getReference("Users");
-            String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(1 , n[i] , e[i] , false);
-            medRef.child(key).setValue(people);
-        }
-
-        DatabaseReference UserRef = database.getReference("Users");
-        UserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot patient : dataSnapshot.getChildren()) {
-                    PatientModel patientdata = patient.getValue(PatientModel.class);
-                    patientLists.add(patientdata);
-                    PAdaptor.notifyDataSetChanged();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Failed to read value
-                Log.w("Firebase_bot", "Failed to read value.", databaseError.toException());
-            }
-        });
-
-        UserRef.orderByValue().addChildEventListener(new ChildEventListener(){
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String patientdata = dataSnapshot.child("").getValue().toString();
-                patientkeyList.add(patientdata);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
+//        for (String medicine: m) {
+//            DatabaseReference medRef = database.getReference("Medicine");
+//            String key = medRef.push().getKey();
+//            MedicineModel med = new MedicineModel(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
+//            medRef.child(key).setValue(med);
+//        }
+//
+//        String[] n = {"Emma" , "Olivia" , "Isabella" };
+//        String[] e = {"Emma@" , "Olivia@" , "Isabella@" };
+//        for (int i = 0; i < n.length; i++) {
+//            DatabaseReference medRef = database.getReference("Users");
+//            String key = medRef.push().getKey();
+//            PatientModel people = new PatientModel(1 , n[i] , e[i] , false);
+//            medRef.child(key).setValue(people);
+//            HashMap<String , Boolean> mlist = new HashMap<>();
+//            DatabaseReference userRef = database.getReference("patientMedicineList");
+//            for (int k = 0; k < m.length ; k++
+//            ) {
+//                mlist.put(m[k] , false);
+//            }
+//            userRef.child(key).setValue(mlist);
+//        }
 
     }
-
-
-
-
-
 }
