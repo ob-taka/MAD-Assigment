@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> implements Filterable{
+public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder>{
     private Context context;
-    private ArrayList<PatientModel> patientData;
-    private ArrayList<PatientModel> patientDataFull;
+    private ArrayList<String> patientData;
+    private ArrayList<String> patientDataFull;
 
-    public PatientAdaptor(Context context, ArrayList<PatientModel> data) {
+    public PatientAdaptor(Context context, ArrayList<String> data) {
         this.context = context;
         this.patientData = data;
         this.patientDataFull = new ArrayList<>(data); //making a copy of patient list , used for filtering search results
@@ -34,8 +34,8 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
 
     @Override
     public void onBindViewHolder(@NonNull PatientCardHolder holder, int position) {
-        holder.patientName.setText(patientData.get(position).getPatientName());
-        holder.patientPic.setImageResource(patientData.get(position).getPatientProfilepic());
+        holder.patientName.setText(patientData.get(position));
+        //holder.patientPic.setImageResource(patientData.get(position).getPatientProfilepic());
 
         holder.patientName.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -53,7 +53,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     }
 
     // used to filter search results
-    private Filter exampleFilter = new Filter(){
+    /*private Filter exampleFilter = new Filter(){
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             // list that fits filter
@@ -88,6 +88,6 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     @Override
     public Filter getFilter() {
         return exampleFilter;
-    }
+    }*/
 
 }
