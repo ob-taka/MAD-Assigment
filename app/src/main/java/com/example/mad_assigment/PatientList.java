@@ -1,7 +1,6 @@
 package com.example.mad_assigment;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.SearchView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,12 +37,13 @@ import java.util.List;
 
 public class PatientList extends AppCompatActivity{
 
-    SearchView search;
+    EditText search;
     RecyclerView PRecycleView;
     PatientAdaptor PAdaptor;
-    ArrayList<PatientModel> patientLists = new ArrayList<>();
-    ArrayList<String> patientkeyList = new ArrayList<>();
-    ArrayList<String> patientnameList = new ArrayList<>();
+    ArrayList<String> patientLists;
+    ArrayList<String> patientkeyList;
+    ArrayList<String> medicinekeyList;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onStart() {
@@ -54,38 +55,23 @@ public class PatientList extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_list);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+
+
+        patientLists = new ArrayList<>();
 
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
-        DatabaseReference UserRef = database.getReference("Users");
-        UserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot patient : dataSnapshot.getChildren()) {
-                    PatientModel patientdata = patient.getValue(PatientModel.class);
-                    Log.d("d" , patientdata.getPatientEmail());
-                    patientLists.add(patientdata);
-                    if(!patientdata.isStatus()) {
-                        patientkeyList.add(patient.getKey());
-                        patientnameList.add(patientdata.getPatientName());
-                    }
-                    PAdaptor.notifyDataSetChanged();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Failed to read value
-                Log.w("Firebase_bot", "Failed to read value.", databaseError.toException());
-            }
-        });
+        PAdaptor = new PatientAdaptor(this, patientLists);
+
 
         PAdaptor = new PatientAdaptor(this, patientLists);
         PRecycleView.setAdapter((PAdaptor));
 
-        search = (SearchView) findViewById(R.id.searchpatient);
-
+        search = (EditText) findViewById(R.id.searchpatient);
+        addData();
         final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,23 +83,31 @@ public class PatientList extends AppCompatActivity{
             }
         });
 
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+        search.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                PAdaptor.getFilter().filter(newText);
-                Log.d("d" , "flitering");
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                return false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    setPAdaptor(s.toString());
+                }
+
             }
         });
     }
 
-    public void fetchPData(){
+    /*public void fetchPData(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
 //         init medicine branch of real time database
 //        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
 //        for (String medicine: m) {
@@ -139,5 +133,55 @@ public class PatientList extends AppCompatActivity{
 //            userRef.child(key).setValue(mlist);
 //        }
 
+
+    }*/
+    private void addData(){
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                patientLists.clear();
+                PRecycleView.removeAllViews();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String patientName = snapshot.child("patientName").getValue().toString();
+                    patientLists.add(patientName);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
+
+    private void setPAdaptor(final String searchedString){
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                patientLists.clear();
+                PRecycleView.removeAllViews();
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    String patientName=snapshot.child("patientName").getValue().toString();
+                    if(patientName.toLowerCase().contains(searchedString.toLowerCase())){
+                        patientLists.add(patientName);
+                    }
+
+
+
+                }
+                PAdaptor=new PatientAdaptor(PatientList.this,patientLists);
+                PRecycleView.setAdapter(PAdaptor);
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 }

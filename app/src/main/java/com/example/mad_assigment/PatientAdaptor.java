@@ -8,53 +8,60 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> implements Filterable {
-    private Context context;
-    private ArrayList<PatientModel> patientData;
-    private ArrayList<PatientModel> patientDataFull;
+public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
+  private Context context;
+  private ArrayList<String> patientData;
+  private ArrayList<String> patientDataFull;
 
-    public PatientAdaptor(Context context, ArrayList<PatientModel> data) {
-        this.context = context;
-        this.patientData = data;
-        this.patientDataFull = new ArrayList<>(data); //making a copy of patient list , used for filtering search results
-    }
+  public PatientAdaptor(Context context, ArrayList<String> data) {
+    this.context = context;
+    this.patientData = data;
+    this.patientDataFull = new ArrayList<>(data); //making a copy of patient list , used for filtering search results
+  }
 
-    @NonNull
-    @Override
-    public PatientCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.patientrow, parent , false);
-        return new PatientCardHolder(view);
-    }
+  @NonNull
+  @Override
+  public PatientCardHolder onCreateViewHolder(
+    @NonNull ViewGroup parent,
+    int viewType
+  ) {
+    View view = LayoutInflater
+      .from(parent.getContext())
+      .inflate(R.layout.patientrow, parent, false);
+    return new PatientCardHolder(view);
+  }
 
-    @Override
-    public void onBindViewHolder(@NonNull PatientCardHolder holder, int position) {
-        holder.patientName.setText(patientData.get(position).getPatientName());
-        holder.patientPic.setImageResource(patientData.get(position).getPatientProfilepic());
+  @Override
+  public void onBindViewHolder(
+    @NonNull PatientCardHolder holder,
+    int position
+  ) {
+    holder.patientName.setText(patientData.get(position));
+    //holder.patientPic.setImageResource(patientData.get(position).getPatientProfilepic());
 
-        holder.patientName.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent nextActivity = new Intent(context  , ViewPatient.class );
-                context.startActivity(nextActivity);
-            }
-        });
+    holder.patientName.setOnClickListener(
+      new View.OnClickListener() {
 
-    }
+        @Override
+        public void onClick(View v) {
+          Intent nextActivity = new Intent(context, ViewPatient.class);
+          context.startActivity(nextActivity);
+        }
+      }
+    );
+  }
 
-    @Override
-    public int getItemCount() {
-        return patientData.size();
-    }
-
-    // used to filter search results
-    private Filter exampleFilter = new Filter(){
+  @Override
+  public int getItemCount() {
+    return patientData.size();
+  }
+  // used to filter search results
+  /*private Filter exampleFilter = new Filter(){
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             // list that fits filter
@@ -89,6 +96,6 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> impl
     @Override
     public Filter getFilter() {
         return exampleFilter;
-    }
+    }*/
 
 }
