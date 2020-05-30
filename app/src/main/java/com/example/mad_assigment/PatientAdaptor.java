@@ -16,12 +16,10 @@ import java.util.List;
 public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
   private Context context;
   private ArrayList<String> patientData;
-  private ArrayList<String> patientDataFull;
 
   public PatientAdaptor(Context context, ArrayList<String> data) {
     this.context = context;
     this.patientData = data;
-    this.patientDataFull = new ArrayList<>(data); //making a copy of patient list , used for filtering search results
   }
 
   @NonNull

@@ -2,11 +2,14 @@ package com.example.mad_assigment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -26,37 +29,41 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class AddPatient extends AppCompatActivity{
+public class AddPatient extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     Spinner choose;
     Button create;
     RecyclerView mRecycleView;
     MedicineAdaptor mAdaptor;
     ArrayList<MedicineModel> modelArrayList = new ArrayList<>();
-    ArrayList<String> addedpatients;
+    ArrayList<MedicineModel> medicineList = new ArrayList<>();
+    ArrayList<String> addedpatients = new ArrayList<>();
     ArrayList<String> patientsname;
-    FirebaseDatabase database;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        fetchMedicineData();
+
+
         final Bundle data = getIntent().getExtras();
         addedpatients = data.getStringArrayList("plist");
         patientsname = data.getStringArrayList("nlist");
-        database = FirebaseDatabase.getInstance();
 
         // setup rv
         mRecycleView = findViewById(R.id.recyclerView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-
         mAdaptor = new MedicineAdaptor(modelArrayList);
-
         mRecycleView.setAdapter((mAdaptor));
 
         //onclicklistener for FAP and button
@@ -67,7 +74,6 @@ public class AddPatient extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 //move to add medicine activity(to be linked later)
-
 
             }
         });
@@ -85,39 +91,68 @@ public class AddPatient extends AppCompatActivity{
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, patientsname);
         spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        choose.setOnItemSelectedListener(this);
+        choose.setAdapter(spinnerArrayAdapter);
 
-        // dropdown onclick
-        choose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+    }
+
+    // onItemSelected  listener to select patient medicine list
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+        databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemSelected(final AdapterView<?> parent, View view, final int position, long id) {
-                DatabaseReference MRef = database.getReference("patientMedicineList");
-                MRef.addValueEventListener(new ValueEventListener(){
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot patientlist : dataSnapshot.getChildren()) {
-                            if(patientlist.getKey().equals(addedpatients.get(position))){
-                                GenericTypeIndicator<HashMap> medicineList = new GenericTypeIndicator<HashMap>() {};
-                                medicineList = (GenericTypeIndicator<HashMap>) patientlist.getValue();
-                                System.out.println(medicineList);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //clear rv views and data 
+                modelArrayList.clear();
+                mRecycleView.removeAllViews();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.getKey().equals(addedpatients.get(position))){
+                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
+                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
+                        HashMap<String, Boolean> map = snapshot.getValue(to);
+                        int count = 0;
+                        for(boolean ml: map.values()) {
+                            if(ml) {
+                                modelArrayList.add(medicineList.get(count));
                             }
+                            count++;
                         }
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-        choose.setAdapter(spinnerArrayAdapter);
+    }
 
+    //get medicine
+    private void fetchMedicineData(){
+        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    medicineList.add(snapshot.getValue(MedicineModel.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
 
 }

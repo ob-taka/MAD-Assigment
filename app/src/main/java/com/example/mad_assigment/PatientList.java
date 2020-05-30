@@ -42,7 +42,6 @@ public class PatientList extends AppCompatActivity{
     PatientAdaptor PAdaptor;
     ArrayList<String> patientLists;
     ArrayList<String> patientkeyList;
-    ArrayList<String> medicinekeyList;
     DatabaseReference databaseReference;
 
     @Override
@@ -57,28 +56,25 @@ public class PatientList extends AppCompatActivity{
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
+        //initdata();
 
         patientLists = new ArrayList<>();
+        patientkeyList = new ArrayList<>();
 
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
-
-        PAdaptor = new PatientAdaptor(this, patientLists);
-
-
         PAdaptor = new PatientAdaptor(this, patientLists);
         PRecycleView.setAdapter((PAdaptor));
 
         search = (EditText) findViewById(R.id.searchpatient);
-        addData();
+        fetchPatientData();
         final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
                 nextActivity.putExtra("plist" , patientkeyList);
-                nextActivity.putExtra("nlist" , patientnameList);
+                nextActivity.putExtra("nlist" , patientLists);
                 startActivity(nextActivity);
             }
         });
@@ -103,18 +99,14 @@ public class PatientList extends AppCompatActivity{
             }
         });
     }
-
-    /*public void fetchPData(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-
-//         init medicine branch of real time database
+//    public void initdata(){
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-//        for (String medicine: m) {
+//        String[] mId = {"Medicine_id1","Medicine_id2","Medicine_id3","Medicine_id4","Medicine_id5","Medicine_id6","Medicine_id7","Medicine_id8","Medicine_id9","Medicine_id10"};
+//        for (int j = 0; j < m.length; j ++) {
 //            DatabaseReference medRef = database.getReference("Medicine");
-//            String key = medRef.push().getKey();
-//            MedicineModel med = new MedicineModel(medicine , "Before Food" , "10:00 AM" , R.drawable.pill);
-//            medRef.child(key).setValue(med);
+//            MedicineModel med = new MedicineModel(m[j] , "Before Food" , "10:00 AM" , R.drawable.pill);
+//            medRef.child(mId[j]).setValue(med);
 //        }
 //
 //        String[] n = {"Emma" , "Olivia" , "Isabella" };
@@ -126,22 +118,21 @@ public class PatientList extends AppCompatActivity{
 //            medRef.child(key).setValue(people);
 //            HashMap<String , Boolean> mlist = new HashMap<>();
 //            DatabaseReference userRef = database.getReference("patientMedicineList");
-//            for (int k = 0; k < m.length ; k++
+//            for (int k = 0; k < mId.length ; k++
 //            ) {
-//                mlist.put(m[k] , false);
+//                mlist.put(mId[k] , false);
 //            }
 //            userRef.child(key).setValue(mlist);
 //        }
-
-
-    }*/
-    private void addData(){
+//    }
+    private void fetchPatientData(){
         databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 patientLists.clear();
                 PRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    patientkeyList.add(snapshot.getKey());
                     String patientName = snapshot.child("patientName").getValue().toString();
                     patientLists.add(patientName);
                 }
@@ -160,17 +151,19 @@ public class PatientList extends AppCompatActivity{
         databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //[Starts] clears views and data
                 patientLists.clear();
                 PRecycleView.removeAllViews();
+                // [Ends]
+                //[Starts] loops through firebase data and find matching search term
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()){
                     String patientName=snapshot.child("patientName").getValue().toString();
                     if(patientName.toLowerCase().contains(searchedString.toLowerCase())){
                         patientLists.add(patientName);
                     }
-
-
-
                 }
+                // [Ends]
+                // Updates the patient adaptor with data
                 PAdaptor=new PatientAdaptor(PatientList.this,patientLists);
                 PRecycleView.setAdapter(PAdaptor);
             }
