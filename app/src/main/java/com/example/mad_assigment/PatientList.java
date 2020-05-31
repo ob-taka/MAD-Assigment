@@ -143,8 +143,6 @@ public class PatientList extends AppCompatActivity{
 
             }
         });
-
-
     }
 
     private void setPAdaptor(final String searchedString){
@@ -167,8 +165,6 @@ public class PatientList extends AppCompatActivity{
                 PAdaptor=new PatientAdaptor(PatientList.this,patientLists);
                 PRecycleView.setAdapter(PAdaptor);
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

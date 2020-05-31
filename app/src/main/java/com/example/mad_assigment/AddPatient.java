@@ -41,9 +41,9 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
     Button create;
     RecyclerView mRecycleView;
     MedicineAdaptor mAdaptor;
-    ArrayList<MedicineModel> modelArrayList = new ArrayList<>();
-    ArrayList<MedicineModel> medicineList = new ArrayList<>();
-    ArrayList<String> addedpatients = new ArrayList<>();
+    ArrayList<MedicineModel> modelArrayList;
+    ArrayList<MedicineModel> medicineList;
+    ArrayList<String> addedpatients;
     ArrayList<String> patientsname;
     DatabaseReference databaseReference;
 
@@ -51,6 +51,9 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
+
+        modelArrayList = new ArrayList<>();
+        medicineList = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         fetchMedicineData();
@@ -86,21 +89,21 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
             }
         });
 
-        //populate spinner data
+
         choose = findViewById(R.id.spinner);
+        //populate spinner with data
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, patientsname);
         spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-        choose.setOnItemSelectedListener(this);
         choose.setAdapter(spinnerArrayAdapter);
+        choose.setOnItemSelectedListener(this); //set onItemSelected listener
 
     }
 
-    // onItemSelected  listener to select patient medicine list
+    // onItemSelected listener to select patient medicine list
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
+        // when an patient name is selected , the corresponding patient's prespective list will be displayed in the receycler view .
         databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -130,7 +133,7 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
         });
     }
 
-    //get medicine
+    //fetch medicine list from firebase
     private void fetchMedicineData(){
         databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -139,7 +142,6 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
                     medicineList.add(snapshot.getValue(MedicineModel.class));
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
