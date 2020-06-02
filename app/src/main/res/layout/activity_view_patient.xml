@@ -22,8 +22,10 @@
             android:layout_height="127dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="129dp"
-            android:layout_marginTop="11dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="139dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="140dp"
             android:background="@drawable/profile"
             android:elevation="20dp"
             android:tint="#00BCD4"
@@ -33,18 +35,11 @@
             android:id="@+id/patientName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="136dp"
-            android:layout_marginTop="153dp"
-            android:shadowColor="#000000"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="2"
-            android:text="Patient Name"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_below="@+id/imageButton"
+            android:layout_alignStart="@+id/imageButton"
+            android:layout_marginStart="41dp"
+            android:layout_marginTop="24dp"
+            android:text="TextView" />
 
     </RelativeLayout>
 

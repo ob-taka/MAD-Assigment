@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.icu.lang.UCharacter;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +30,7 @@ public class ViewPatient extends AppCompatActivity{
     ArrayList<MedicineModel> patientMList;
     String patientName;
     TextView nameView;
-    String[] patientKey = new String[1];
+    String patientKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class ViewPatient extends AppCompatActivity{
         nameView = findViewById(R.id.patientName);
         nameView.setText(patientName);
 
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
         
         fetchMedicineData();
@@ -56,9 +59,6 @@ public class ViewPatient extends AppCompatActivity{
         mAdaptor = new MedicineAdaptor(medicineList);
         mRecycleView.setAdapter((mAdaptor));
 
-
-
-
     }
     // this function fetches data from firebase server
     private void fetchData(){
@@ -70,9 +70,7 @@ public class ViewPatient extends AppCompatActivity{
                     PatientModel patient = snapshot.getValue(PatientModel.class);
 
                     if(patient.getPatientName().equals(patientName)){
-                        patientKey[0] = snapshot.getKey();
-                        Toast.makeText(getApplicationContext().getApplicationContext() , patientKey[0] ,Toast.LENGTH_SHORT ).show();
-                        System.out.println(patientKey[0]);
+                        patientKey = snapshot.getKey();
                     }
                 }
             }
@@ -89,7 +87,7 @@ public class ViewPatient extends AppCompatActivity{
                 medicineList.clear();
                 mRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(patientKey[0])){
+                    if (snapshot.getKey().equals(patientKey)){
                         GenericTypeIndicator<HashMap<String, Boolean>> to = new
                                 GenericTypeIndicator<HashMap<String, Boolean>>() {};
                         HashMap<String, Boolean> map = snapshot.getValue(to);
@@ -97,7 +95,6 @@ public class ViewPatient extends AppCompatActivity{
                         for(boolean ml: map.values()) {
                             if(ml) {
                                 medicineList.add(patientMList.get(count));
-                                Toast.makeText(getApplicationContext().getApplicationContext() , patientMList.get(count).toString() ,Toast.LENGTH_SHORT ).show();
                             }
                             count++;
                         }

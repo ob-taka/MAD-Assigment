@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,18 +37,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PatientList extends AppCompatActivity{
-
+    // todo : create a firebase class , change ui (research material design)
     EditText search;
     RecyclerView PRecycleView;
     PatientAdaptor PAdaptor;
     ArrayList<String> patientLists;
     ArrayList<String> patientkeyList;
     DatabaseReference databaseReference;
+    ArrayList<String> clonePatientList;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +54,13 @@ public class PatientList extends AppCompatActivity{
         setContentView(R.layout.activity_patient_list);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        //initdata();
-
         patientLists = new ArrayList<>();
         patientkeyList = new ArrayList<>();
+        clonePatientList = new ArrayList<>();
 
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        PAdaptor = new PatientAdaptor(this, patientLists);
-        PRecycleView.setAdapter((PAdaptor));
 
-        search = (EditText) findViewById(R.id.searchpatient);
-        fetchPatientData();
         final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +72,9 @@ public class PatientList extends AppCompatActivity{
             }
         });
 
+        search = (EditText) findViewById(R.id.searchpatient);
         search.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -87,45 +82,32 @@ public class PatientList extends AppCompatActivity{
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (!s.toString().isEmpty()) {
+                    Search(s.toString());
+                }else{
+                    PAdaptor = new PatientAdaptor(PatientList.this, clonePatientList);
+                    PRecycleView.setAdapter((PAdaptor));
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty()) {
-                    setPAdaptor(s.toString());
-                }
 
             }
+
         });
     }
-//    public void initdata(){
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-//        String[] mId = {"Medicine_id1","Medicine_id2","Medicine_id3","Medicine_id4","Medicine_id5","Medicine_id6","Medicine_id7","Medicine_id8","Medicine_id9","Medicine_id10"};
-//        for (int j = 0; j < m.length; j ++) {
-//            DatabaseReference medRef = database.getReference("Medicine");
-//            MedicineModel med = new MedicineModel(m[j] , "Before Food" , "10:00 AM" , R.drawable.pill);
-//            medRef.child(mId[j]).setValue(med);
-//        }
-//
-//        String[] n = {"Emma" , "Olivia" , "Isabella" };
-//        String[] e = {"Emma@" , "Olivia@" , "Isabella@" };
-//        for (int i = 0; i < n.length; i++) {
-//            DatabaseReference medRef = database.getReference("Users");
-//            String key = medRef.push().getKey();
-//            PatientModel people = new PatientModel(1 , n[i] , e[i] , false);
-//            medRef.child(key).setValue(people);
-//            HashMap<String , Boolean> mlist = new HashMap<>();
-//            DatabaseReference userRef = database.getReference("patientMedicineList");
-//            for (int k = 0; k < mId.length ; k++
-//            ) {
-//                mlist.put(mId[k] , false);
-//            }
-//            userRef.child(key).setValue(mlist);
-//        }
-//    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fetchPatientData();
+        PAdaptor = new PatientAdaptor(this, patientLists);
+        PRecycleView.setAdapter((PAdaptor));
+    }
+
     private void fetchPatientData(){
+        // fetch patient from firebase
         databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -135,6 +117,7 @@ public class PatientList extends AppCompatActivity{
                     patientkeyList.add(snapshot.getKey());
                     String patientName = snapshot.child("patientName").getValue().toString();
                     patientLists.add(patientName);
+                    clonePatientList.add(patientName);
                 }
             }
 
@@ -145,32 +128,21 @@ public class PatientList extends AppCompatActivity{
         });
     }
 
-    private void setPAdaptor(final String searchedString){
-        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener(){
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //[Starts] clears views and data
-                patientLists.clear();
-                PRecycleView.removeAllViews();
-                // [Ends]
-                //[Starts] loops through firebase data and find matching search term
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
-                    String patientName=snapshot.child("patientName").getValue().toString();
-                    if(patientName.toLowerCase().contains(searchedString.toLowerCase())){
-                        patientLists.add(patientName);
-                    }
-                }
-                // [Ends]
-                // Updates the patient adaptor with data
-                PAdaptor=new PatientAdaptor(PatientList.this,patientLists);
-                PRecycleView.setAdapter(PAdaptor);
+    /**
+     *
+     * @param searchedString , text user types in edittext to search for patient name
+     */
+    private void Search(final String searchedString){
+        patientLists.clear();
+        PRecycleView.removeAllViews();
+        for (String patientName:
+            clonePatientList ) {
+            if(patientName.toLowerCase().contains(searchedString.toLowerCase())){
+                patientLists.add(patientName);
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        }
+        PAdaptor = new PatientAdaptor(this, patientLists);
+        PRecycleView.setAdapter((PAdaptor));
     }
-
 
 }

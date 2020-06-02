@@ -1,131 +1,106 @@
 package com.example.mad_assigment;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.BoringLayout;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-public class AddPatient extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class AddPatient extends AppCompatActivity{
 
-    Spinner choose;
+    EditText name;
+    EditText email;
     Button create;
+    Button addMedicine;
     RecyclerView mRecycleView;
     MedicineAdaptor mAdaptor;
-    ArrayList<MedicineModel> modelArrayList;
     ArrayList<MedicineModel> medicineList;
-    ArrayList<String> addedpatients;
-    ArrayList<String> patientsname;
     DatabaseReference databaseReference;
+    HashMap<String, PatientModel> patientList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
 
-        modelArrayList = new ArrayList<>();
+        // init list
         medicineList = new ArrayList<>();
+        patientList = new HashMap<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         fetchMedicineData();
 
-
-        final Bundle data = getIntent().getExtras();
-        addedpatients = data.getStringArrayList("plist");
-        patientsname = data.getStringArrayList("nlist");
-
         // setup rv
         mRecycleView = findViewById(R.id.recyclerView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdaptor = new MedicineAdaptor(modelArrayList);
+        mAdaptor = new MedicineAdaptor(medicineList);
         mRecycleView.setAdapter((mAdaptor));
 
         //onclicklistener for FAP and button
+
+        // button inside recyclerview button : redirects user to add medicine activity
+        addMedicine = findViewById(R.id.add_medicine);
+
+        addMedicine.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+//                Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
+//                startActivity(nextActivity);
+            }
+        });
+
+        // submit button to push patient medicine list to firebase
         create = (Button) findViewById(R.id.button3);
-        final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton2);
 
         create.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //move to add medicine activity(to be linked later)
+                // add patient to doctor list
+                name = findViewById(R.id.name_edit_text);
+                email = findViewById(R.id.email_edit_text);
 
+                //dialog box to show that patient has been added
+                buildDialog();
+
+                // reset edittext
+//                name.setText("");
+//                email.setText("");
             }
         });
 
-        addPatient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // add patient info
-                Toast.makeText(getApplicationContext(), "Patient Added!" , Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-        choose = findViewById(R.id.spinner);
-        //populate spinner with data
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, patientsname);
-        spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-        choose.setAdapter(spinnerArrayAdapter);
-        choose.setOnItemSelectedListener(this); //set onItemSelected listener
 
     }
 
-    // onItemSelected listener to select patient medicine list
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-        // when an patient name is selected , the corresponding patient's prespective list will be displayed in the receycler view .
-        databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
+    protected void onStart() {
+        super.onStart();
+
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //clear rv views and data 
-                modelArrayList.clear();
-                mRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(addedpatients.get(position))){
-                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
-                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
-                        HashMap<String, Boolean> map = snapshot.getValue(to);
-                        int count = 0;
-                        for(boolean ml: map.values()) {
-                            if(ml) {
-                                modelArrayList.add(medicineList.get(count));
-                            }
-                            count++;
-                        }
-                    }
+                    PatientDAL.patientList.put(snapshot.getKey() , snapshot.getValue(PatientModel.class));
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -147,14 +122,74 @@ public class AddPatient extends AppCompatActivity implements AdapterView.OnItemS
 
             }
         });
+
+
+            // fetch patient medicine list
+//        databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                //clear rv views and data
+//                modelArrayList.clear();
+//                mRecycleView.removeAllViews();
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    if (snapshot.getKey().equals(addedpatients.get())){
+//                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
+//                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
+//                        HashMap<String, Boolean> map = snapshot.getValue(to);
+//                        int count = 0;
+//                        for(boolean ml: map.values()) {
+//                            if(ml) {
+//                                modelArrayList.add(medicineList.get(count));
+//                            }
+//                            count++;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+
+    private void buildDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddPatient.this);
+        builder.setTitle(R.string.addpatient)
+                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        firebaseAddpatient();
+                    }
+                })
+                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        builder.create();
+        builder.show();
 
     }
 
+    private void firebaseAddpatient(){
+        // construct medicine list from addmedicine activity
+        HashMap<String, Boolean> patientMedicineList = new HashMap<>();
+        // populate list with medicine in medicineList
+
+        // find patient using name and email
+        for (String i : patientList.keySet()) {
+            PatientModel patient = patientList.get(i);
+            if(patient.getPatientEmail().equals(email.getText().toString().trim()) && !patient.isStatus()) {
+                databaseReference.child("patientMedicineList").child(i).setValue(patientMedicineList);
+            }
+        }
+
+        // refresh patient list
+
+    }
 
 
 }
