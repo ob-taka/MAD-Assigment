@@ -4,11 +4,11 @@ public class Patient_Details {
     private String name;
     private String email;
     private String phone;
-    private int img;
+    private String img;
 
     public Patient_Details(){}
 
-    public Patient_Details(String n,String e,String p,int i){
+    public Patient_Details(String n,String e,String p,String i){
         this.name = n;
         this.email = e;
         this.phone = p;
@@ -39,11 +39,11 @@ public class Patient_Details {
         this.phone = phone;
     }
 
-    public int getImg() {
+    public String getImg() {
         return img;
     }
 
-    public void setImg(int img) {
+    public void setImg(String img) {
         this.img = img;
     }
 }

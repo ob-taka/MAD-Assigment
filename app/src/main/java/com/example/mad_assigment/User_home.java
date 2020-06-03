@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,9 +29,13 @@ public class User_home extends AppCompatActivity {
         mAdaptor = new MAdaptor(this, getList());
         mRecycleV.setAdapter((mAdaptor));
 
-        /* //this part assigns previously passed uid and role from SignIn.java
+        /* this part assigns previously passed uid and role from SignIn.java
         String uid = getIntent().getStringExtra("Uid");
         String role = getIntent().getStringExtra("Role");
+
+        Intent intent = new Intent(User_home.this,Profile_Patient.class);
+        startActivity(intent);
+
          */
     }
 

@@ -31,8 +31,7 @@ public class SignIn extends AppCompatActivity {
     ProgressBar mProgressBar;
     FirebaseAuth mAuth;
     DatabaseReference ref;
-    String email;
-    String uid;
+    String email, uid, role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +69,6 @@ public class SignIn extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser(),email);
-                            mProgressBar.setVisibility(View.GONE);
-
                         }
                         else {
                             Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException(), Toast.LENGTH_SHORT).show();
@@ -94,18 +91,20 @@ public class SignIn extends AppCompatActivity {
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String Role = dataSnapshot.child(fEmail).getValue().toString();
-                    Log.d("#d",Role);
+                    role = dataSnapshot.child(fEmail).getValue().toString();
+                    Log.d("#d",role);
                     returnKey();
 
-                    if(Role.equals("Doctor")){
+                    if(role.equals("Doctor")){
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Doctor");
                         startActivity(intent);
                     }
-                    else if (Role.equals("Patient")){
+                    else if (role.equals("Patient")){
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
@@ -128,11 +127,10 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    if(ds.child("patientEmail").getValue().toString().equals(email) ||
-                            ds.child("doctorEmail").getValue().toString().equals(email)){
+                    if(ds.child("patientEmail").getValue().toString().equals(email)){
                         uid = ds.getKey();
-                        Toast.makeText(SignIn.this, uid,Toast.LENGTH_SHORT).show();
                     }
+                    //need to add statement to check for doctor uid
                 }
             }
 
