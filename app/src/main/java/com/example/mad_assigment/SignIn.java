@@ -2,7 +2,9 @@ package com.example.mad_assigment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +30,8 @@ public class SignIn extends AppCompatActivity {
     Button mLoginBtn;
     ProgressBar mProgressBar;
     FirebaseAuth mAuth;
+    DatabaseReference ref;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +48,11 @@ public class SignIn extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         //Event listener on Sign In button, validation along the way.
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String email = mEmail.getText().toString().trim();
+                email = mEmail.getText().toString().trim();
                 String pw = mPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
@@ -80,27 +83,33 @@ public class SignIn extends AppCompatActivity {
     }
     //add validation to keep user signed in.
 
-    private void onAuthSuccess(FirebaseUser user, String email) {
-        email = email.replace("@","_");
-        email = email.replace(".","_");
+    private void onAuthSuccess(FirebaseUser user, final String email) {
+        final String fEmail = email
+                .replace("@","_")
+                .replace(".","_");
+
         if (user != null) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User");
-            final String Email = ref.child(email).getKey();
-            final String finalEmail = email;
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Role");
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String Type = dataSnapshot.child(finalEmail).getValue().toString();
-                    Toast.makeText(SignIn.this,Type,Toast.LENGTH_SHORT).show();
-
-                    if(Integer.parseInt(Type) == 1){
+                    String Role = dataSnapshot.child(fEmail).getValue().toString();
+                    Log.d("#d",Role);
+                    String Uid = returnKey();
+                    Log.d("#d",Uid);
+                    if(Role.equals("Doctor")){
                         Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
+                        intent.putExtra("Uid",Uid)
+                                .putExtra("Role","Doctor");
                         startActivity(intent);
                     }
-                    else if (Integer.parseInt(Type) == 2){
+                    else if (Role.equals("Patient")){
                         Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
+                        intent.putExtra("Uid",Uid)
+                                .putExtra("Role","Patient");
+//                        Log.d("#d",Uid);
                         startActivity(intent);
                     }
                 }
@@ -112,4 +121,29 @@ public class SignIn extends AppCompatActivity {
             });
         }
     }
+    //Method to find email in Child "Users" of database and return the key
+    private String returnKey(){
+        final String[] uid = new String[1];
+        ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds:dataSnapshot.getChildren()){
+                    if(ds.child("patientEmail").getValue().toString().equals(email)){
+                        uid[0] = ds.getKey();
+                        Toast.makeText(SignIn.this, uid[0],Toast.LENGTH_SHORT).show();
+                        Log.d("TAG", uid[0]);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return uid[0];
+    }
+
 }
+
