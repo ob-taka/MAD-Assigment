@@ -9,6 +9,7 @@ public class MedicineModel{
     public MedicineModel(){
 
     }
+
     // constructor used in AddPatient and ViewPatient activity (visible to doctor only)
     public MedicineModel(String title , int src){
         medicineTitle = title;

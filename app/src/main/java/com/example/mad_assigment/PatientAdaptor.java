@@ -2,6 +2,7 @@ package com.example.mad_assigment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +13,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
   private Context context;
-  private ArrayList<String> patientData;
+  private ArrayList<PatientModel> patientData;
 
-  public PatientAdaptor(Context context, ArrayList<String> data) {
+  public PatientAdaptor(Context context, ArrayList<PatientModel> data) {
     this.context = context;
     this.patientData = data;
   }
@@ -41,8 +47,9 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
           @NonNull PatientCardHolder holder,
           final int position
   ) {
-    holder.patientName.setText(patientData.get(position));
-    //holder.patientPic.setImageResource(patientData.get(position).getPatientProfilepic());
+    holder.patientName.setText(patientData.get(position).getPatientName());
+    Glide.with(context).asBitmap().load(patientData.get(position).getPatientProfilepic()).placeholder(R.mipmap.ic_launcher_round).into(holder.patientPic);
+
 
     holder.patientName.setOnClickListener(
       new View.OnClickListener() {
@@ -50,7 +57,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
         @Override
         public void onClick(View v) {
           Intent nextActivity = new Intent(context, ViewPatient.class);
-          nextActivity.putExtra("patientname" , patientData.get(position));
+          nextActivity.putExtra("patientname" , patientData.get(position).getPatientName());
           context.startActivity(nextActivity);
         }
       }

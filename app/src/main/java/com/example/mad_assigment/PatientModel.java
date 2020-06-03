@@ -1,28 +1,33 @@
 package com.example.mad_assigment;
 
+import android.net.Uri;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 public class PatientModel{
-  private int patientProfilepic;
+  private String patientProfilepic;
   private String patientName;
   private String patientEmail;
   private boolean status;
+  private String role;
 
   public PatientModel(){
 
   }
 
-  public PatientModel(int pic, String name , String email , boolean status) {
+  public PatientModel(String pic, String name , String email , boolean status) {
     this.patientProfilepic = pic;
     this.patientName = name;
     this.patientEmail = email;
     this.status = status;
   }
 
-  public int getPatientProfilepic() {
+  public String getPatientProfilepic() {
     return patientProfilepic;
   }
-  public void setPatientProfilepic(int patientProfilepic) {
+
+  public void setPatientProfilepic(String patientProfilepic) {
     this.patientProfilepic = patientProfilepic;
   }
   public String getPatientName() {
@@ -45,6 +50,10 @@ public class PatientModel{
 
   public void setStatus(boolean status) {
     this.status = status;
+  }
+
+  public String getRole() {
+    return role;
   }
 
 }

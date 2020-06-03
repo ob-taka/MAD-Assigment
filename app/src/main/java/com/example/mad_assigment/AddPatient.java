@@ -3,19 +3,18 @@ package com.example.mad_assigment;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.mad_assigment.experiment.PatientDAL;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +38,8 @@ public class AddPatient extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
 
@@ -93,7 +94,7 @@ public class AddPatient extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-
+        // fetch user data
         databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -162,6 +163,9 @@ public class AddPatient extends AppCompatActivity{
                 .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         firebaseAddpatient();
+                        Intent nextActivity = new Intent(AddPatient.this  , PatientList.class );
+                        startActivity(nextActivity);
+
                     }
                 })
                 .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
@@ -184,6 +188,7 @@ public class AddPatient extends AppCompatActivity{
             PatientModel patient = patientList.get(i);
             if(patient.getPatientEmail().equals(email.getText().toString().trim()) && !patient.isStatus()) {
                 databaseReference.child("patientMedicineList").child(i).setValue(patientMedicineList);
+                databaseReference.child("Users").child(i).child("Status").setValue(true);
             }
         }
 

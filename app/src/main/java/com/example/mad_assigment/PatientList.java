@@ -41,10 +41,10 @@ public class PatientList extends AppCompatActivity{
     EditText search;
     RecyclerView PRecycleView;
     PatientAdaptor PAdaptor;
-    ArrayList<String> patientLists;
+    ArrayList<PatientModel> patientLists;
     ArrayList<String> patientkeyList;
     DatabaseReference databaseReference;
-    ArrayList<String> clonePatientList;
+    ArrayList<PatientModel> clonePatientList;
 
 
 
@@ -66,8 +66,6 @@ public class PatientList extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
-                nextActivity.putExtra("plist" , patientkeyList);
-                nextActivity.putExtra("nlist" , patientLists);
                 startActivity(nextActivity);
             }
         });
@@ -114,10 +112,14 @@ public class PatientList extends AppCompatActivity{
                 patientLists.clear();
                 PRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    patientkeyList.add(snapshot.getKey());
-                    String patientName = snapshot.child("patientName").getValue().toString();
-                    patientLists.add(patientName);
-                    clonePatientList.add(patientName);
+                    PatientModel patient = snapshot.getValue(PatientModel.class);
+                    if (patient.isStatus() && patient.getRole().equals("Patient")){
+//                        patientkeyList.add(snapshot.getKey());
+                        String patientName = snapshot.child("patientName").getValue().toString();
+                        patientLists.add(patient);
+                        clonePatientList.add(patient);
+                    }
+
                 }
             }
 
@@ -135,10 +137,10 @@ public class PatientList extends AppCompatActivity{
     private void Search(final String searchedString){
         patientLists.clear();
         PRecycleView.removeAllViews();
-        for (String patientName:
+        for (PatientModel patient:
             clonePatientList ) {
-            if(patientName.toLowerCase().contains(searchedString.toLowerCase())){
-                patientLists.add(patientName);
+            if(patient.getPatientName().toLowerCase().contains(searchedString.toLowerCase())){
+                patientLists.add(patient);
             }
         }
         PAdaptor = new PatientAdaptor(this, patientLists);

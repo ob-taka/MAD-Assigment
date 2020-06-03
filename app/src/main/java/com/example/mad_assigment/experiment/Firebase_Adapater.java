@@ -1,10 +1,13 @@
-package com.example.mad_assigment;
+package com.example.mad_assigment.experiment;
 
 import android.graphics.ColorSpace;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 
+import com.example.mad_assigment.MedicineModel;
+import com.example.mad_assigment.Modle;
+import com.example.mad_assigment.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
