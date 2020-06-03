@@ -28,6 +28,10 @@ public class User_home extends AppCompatActivity {
         mAdaptor = new MAdaptor(this, getList());
         mRecycleV.setAdapter((mAdaptor));
 
+        /* //this part assigns previously passed uid and role from SignIn.java
+        String uid = getIntent().getStringExtra("Uid");
+        String role = getIntent().getStringExtra("Role");
+         */
     }
 
     private ArrayList<Modle>getList(){
