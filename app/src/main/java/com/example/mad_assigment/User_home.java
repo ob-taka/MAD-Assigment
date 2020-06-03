@@ -33,41 +33,10 @@ public class User_home extends AppCompatActivity {
     private ArrayList<Modle>getList(){
 
         ArrayList<Modle> modles= new ArrayList<>();
-
-        Modle m = new Modle();
-        m.setTitle("Panadol");
-        m.setDescription("Before Food");
-        m.setTime("10:00 AM");
-        m.setImg(R.drawable.pill);
-        modles.add(m);
-
-        m = new Modle();
-        m.setTitle("Cough syrup");
-        m.setDescription("After Food");
-        m.setTime("10:00 AM");
-        m.setImg(R.drawable.pill);
-        modles.add(m);
-
-        m = new Modle();
-        m.setTitle("Antibiotics");
-        m.setDescription("After Food");
-        m.setTime("10:00 AM");
-        m.setImg(R.drawable.pill);
-        modles.add(m);
-
-        m = new Modle();
-        m.setTitle("Cough syrup");
-        m.setDescription("After Food");
-        m.setTime("09:00 PM");
-        m.setImg(R.drawable.pill);
-        modles.add(m);
-
-        m = new Modle();
-        m.setTitle("Antibiotics");
-        m.setDescription("After Food");
-        m.setTime("09:00 PM");
-        m.setImg(R.drawable.pill);
-        modles.add(m);
+        modles.add(new Modle("Panadol", "Before food", "10:00AM", "3 tabs", "Do not over dose", R.drawable.pill));
+        modles.add(new Modle("Cough syrup", "Before food", "10:00AM", "3 tabs", "Do not over dose", R.drawable.pill));
+        modles.add(new Modle("Antibiotics", "Before food", "10:00AM", "3 tabs", "Do not over dose", R.drawable.pill));
+        modles.add(new Modle("Charcoal", "Before food", "10:00AM", "3 tabs", "Do not over dose", R.drawable.pill));
 
         return modles;
     }
