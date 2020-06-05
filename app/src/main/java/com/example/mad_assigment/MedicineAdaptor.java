@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
-    private ArrayList<MedicineModel> cardData;
+    private ArrayList<MedicineModel> MedicineData;
 
     public MedicineAdaptor(ArrayList<MedicineModel> data) {
-        this.cardData = data;
+        this.MedicineData = data;
     }
 
     @NonNull
@@ -26,13 +26,13 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MedicineCardHolder holder, int position) {
-        holder.medicineName.setText(cardData.get(position).getMedicineTitle());
-        holder.medicineIcon.setImageResource(cardData.get(position).getMedicineImg());
+        holder.medicineName.setText(MedicineData.get(position).getMedicineTitle());
+        holder.medicineIcon.setImageResource(MedicineData.get(position).getMedicineImg());
     }
 
     @Override
     public int getItemCount() {
-        return cardData.size();
+        return MedicineData.size();
     }
 
 }

@@ -6,17 +6,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.icu.lang.UCharacter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +38,9 @@ public class ViewPatient extends AppCompatActivity{
     String patientName;
     TextView nameView;
     String patientKey;
+    String patientPic;
+    ImageView patientPicView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,31 +49,37 @@ public class ViewPatient extends AppCompatActivity{
 
         final Bundle data = getIntent().getExtras();
         patientName =  data.getString("patientname");
+        patientPic = data.getString("patientpic");
 
+        //init data and firebase conncetion
         medicineList = new ArrayList<>();
         patientMList = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         nameView = findViewById(R.id.patientName);
         nameView.setText(patientName);
-
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        
-        fetchMedicineData();
-        fetchData();
-        fetchMdata();
+        patientPicView = findViewById(R.id.profile_image);
 
         mRecycleView = findViewById(R.id.mRV);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fetchMedicineData();
+        fetchData();
+        fetchMdata();
+        fetchPatientPic();
         mAdaptor = new MedicineAdaptor(medicineList);
         mRecycleView.setAdapter((mAdaptor));
-
     }
-    // this function fetches data from firebase server
+
+    // this function fetches patient data from firebase server
     private void fetchData(){
 
-        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -80,6 +96,7 @@ public class ViewPatient extends AppCompatActivity{
             }
         });
     }
+    // this method fetches medicine data from firebase server
     private  void fetchMdata(){
         databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -123,4 +140,20 @@ public class ViewPatient extends AppCompatActivity{
             }
         });
     }
+
+    /**
+     * fetch image view from firebase Storage (file hosting service)
+     */
+    private void fetchPatientPic(){
+        // finds image and download image from firebase storage by image path and binds it to view holder
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
+        StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + patientPic);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(ViewPatient.this ).load(uri).into(patientPicView); // uses Gilde , a framework to load and download files in android
+            }
+        });
+    }
+
 }

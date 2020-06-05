@@ -3,6 +3,7 @@ package com.example.mad_assigment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,10 +28,13 @@ import java.util.List;
 public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
   private Context context;
   private ArrayList<PatientModel> patientData;
+  private  ArrayList<String> patientpic;
 
-  public PatientAdaptor(Context context, ArrayList<PatientModel> data) {
+  public PatientAdaptor(Context context, ArrayList<PatientModel> data , ArrayList<String> pic) {
     this.context = context;
     this.patientData = data;
+    this.patientpic = pic;
+
   }
 
   @NonNull
@@ -44,12 +51,20 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
 
   @Override
   public void onBindViewHolder(
-          @NonNull PatientCardHolder holder,
+          @NonNull final PatientCardHolder holder,
           final int position
   ) {
-    holder.patientName.setText(patientData.get(position).getPatientName());
-    Glide.with(context).asBitmap().load(patientData.get(position).getPatientProfilepic()).placeholder(R.mipmap.ic_launcher_round).into(holder.patientPic);
 
+    holder.patientName.setText(patientData.get(position).getPatientName());
+    // finds image and download image from firebase storage by image path and binds it to view holder
+    FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
+    StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + patientpic.get(position));
+    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+      @Override
+      public void onSuccess(Uri uri) {
+        Glide.with(context).load(uri).into(holder.patientPic); // uses Gilde , a framework to load and download files in android
+      }
+    });
 
     holder.patientName.setOnClickListener(
       new View.OnClickListener() {
@@ -58,6 +73,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
         public void onClick(View v) {
           Intent nextActivity = new Intent(context, ViewPatient.class);
           nextActivity.putExtra("patientname" , patientData.get(position).getPatientName());
+          nextActivity.putExtra("patientpic" , patientpic.get(position));
           context.startActivity(nextActivity);
         }
       }
