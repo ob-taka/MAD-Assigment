@@ -4,85 +4,99 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@drawable/login"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_signIn"
-        android:layout_width="127dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/myrect"
-        android:elevation="2dp"
-        android:text="Sign In"
-        app:layout_constraintEnd_toEndOf="@+id/editText_password"
-        app:layout_constraintStart_toStartOf="@+id/editText_password"
-        app:layout_constraintTop_toBottomOf="@+id/editText_password" />
-
-    <ProgressBar
-        android:id="@+id/progressBar_signIn"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/btn_signIn"
-        app:layout_constraintStart_toStartOf="@+id/btn_signIn"
-        app:layout_constraintTop_toBottomOf="@+id/btn_signIn" />
-
-    <EditText
-        android:id="@+id/editText_email"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="30dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/editText_password"
-        app:layout_constraintEnd_toEndOf="@+id/editText_password"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="@+id/editText_password" />
-
-    <EditText
-        android:id="@+id/editText_password"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.463" />
-
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView_Login"
         android:layout_width="180dp"
         android:layout_height="30dp"
-        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
         android:text="Login"
         android:textColor="#000"
         android:textSize="24sp"
         android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="@+id/editText_email"
-        app:layout_constraintStart_toStartOf="@+id/editText_email"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout2"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="350dp"
-        android:layout_height="320dp"
-        android:layout_marginBottom="44dp"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar_signIn"
-        app:layout_constraintEnd_toEndOf="@+id/editText_email"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="@+id/editText_email">
+        android:id="@+id/frameLayout2"
+        android:layout_width="415dp"
+        android:layout_height="420dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Login">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="132dp"
+            android:layout_height="136dp"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_round"
+            tools:ignore="VectorDrawableCompat" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="345dp"
+            android:layout_height="310dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/signin_box"
+
+
+            android:elevation="2dp">
+
+
+            <EditText
+                android:id="@+id/editText_email"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="95dp"
+                android:background="@drawable/emailpass_box"
+                android:ems="10"
+                android:hint="  Email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/editText_password"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="180dp"
+                android:background="@drawable/emailpass_box"
+                android:ems="10"
+                android:hint="  Password"
+                android:inputType="textPassword" />
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btn_signIn"
+            android:layout_width="127dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="360dp"
+            android:background="@drawable/myrect"
+            android:elevation="2dp"
+            android:text="Sign In" />
 
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar_signIn"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout2"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
