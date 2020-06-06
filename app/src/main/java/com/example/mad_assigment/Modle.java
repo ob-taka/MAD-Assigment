@@ -49,5 +49,4 @@ public class Modle {
         this.img = img;
     }
 
-
 }

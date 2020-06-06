@@ -41,9 +41,7 @@ public class AddMedicinePage extends AppCompatActivity {
     ImageButton plus,minus;
     Button breakfast,lunch,dinner,submit;
     Double doseNumber;
-
     Integer correctMed,breakfastValid,lunchValid,dinnerValid;
-
 
     DatabaseReference databaseReference;
     ArrayList<String> med_list;
@@ -313,31 +311,23 @@ public class AddMedicinePage extends AppCompatActivity {
         databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String med_name=snapshot.child("medicineTitle").getValue().toString();
                     Log.v("number",correctMed.toString());
                     if (med_name.equals(medName)) {
                         correctMed=1;
-
                     }
-
                 }
                 if (correctMed==0){
                     searchMed.setError("Invalid Medicine Name");
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
         String errorMsg = "";
-
-
-
 
         if (radioGroup.getCheckedRadioButtonId() == -1) {
             errorMsg+="Please select before or after food";
@@ -348,8 +338,6 @@ public class AddMedicinePage extends AppCompatActivity {
         if (doseNumber==0.0){
             errorMsg+="\n Please select the dosage";
         }
-
-
 
             Toast toast = Toast.makeText(getApplicationContext(),
                     errorMsg,
