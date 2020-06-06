@@ -7,21 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 public class User_home extends AppCompatActivity {
 
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private MAdaptor adaptor;
+    RecyclerView mRecycleV;
+    MAdaptor mAdaptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,43 +22,53 @@ public class User_home extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_user_home);
 
-        setUpRecyclerView();
+        mRecycleV = findViewById(R.id.mRV);
+        mRecycleV.setLayoutManager(new LinearLayoutManager(this));
+
+        mAdaptor = new MAdaptor(this, getList());
+        mRecycleV.setAdapter((mAdaptor));
+
     }
 
-    private void setUpRecyclerView(){
-        Query query = FirebaseDatabase.getInstance().getReference().child("user_medicien").orderByChild("priority");
-        FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
-                .setQuery(query, Modle.class)
-                .build();
+    private ArrayList<Modle>getList(){
 
-        adaptor = new MAdaptor(options);
-        RecyclerView recyclerView = findViewById(R.id.mRV);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adaptor);
+        ArrayList<Modle> modles= new ArrayList<>();
 
-        adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
-            @Override
-            public void onItemClick(DataSnapshot dataSnapshot, int position) {
-                String id = dataSnapshot.getKey();
-                Modle modle = adaptor.getItem(position);
-                modle.setExpanded(!modle.isExpanded());
-                adaptor.notifyItemChanged(position);
-                Toast.makeText(User_home.this, "ID: " + id, Toast.LENGTH_SHORT).show();
-            }
-        });
+        Modle m = new Modle();
+        m.setTitle("Panadol");
+        m.setDescription("Before Food");
+        m.setTime("10:00 AM");
+        m.setImg(R.drawable.pill);
+        modles.add(m);
+
+        m = new Modle();
+        m.setTitle("Cough syrup");
+        m.setDescription("After Food");
+        m.setTime("10:00 AM");
+        m.setImg(R.drawable.pill);
+        modles.add(m);
+
+        m = new Modle();
+        m.setTitle("Antibiotics");
+        m.setDescription("After Food");
+        m.setTime("10:00 AM");
+        m.setImg(R.drawable.pill);
+        modles.add(m);
+
+        m = new Modle();
+        m.setTitle("Cough syrup");
+        m.setDescription("After Food");
+        m.setTime("09:00 PM");
+        m.setImg(R.drawable.pill);
+        modles.add(m);
+
+        m = new Modle();
+        m.setTitle("Antibiotics");
+        m.setDescription("After Food");
+        m.setTime("09:00 PM");
+        m.setImg(R.drawable.pill);
+        modles.add(m);
+
+        return modles;
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adaptor.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adaptor.stopListening();
-    }
-
 }
