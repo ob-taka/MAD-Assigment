@@ -12,7 +12,6 @@
         android:layout_width="419dp"
         android:layout_height="152dp"
         android:background="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,11 +35,10 @@
         android:hint="Search Patient..."
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/patientName" />
-
+    <!--        android:layout_gravity="center"-->
     <androidx.cardview.widget.CardView
         android:layout_width="410dp"
         android:layout_height="513dp"
-        android:layout_gravity="center"
         app:cardBackgroundColor="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
