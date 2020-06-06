@@ -46,7 +46,6 @@ public class MedicineList extends AppCompatActivity{
         patientMedList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
         // setup recyclerview
         mRecycleView = findViewById(R.id.recyclerView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,6 +84,12 @@ public class MedicineList extends AppCompatActivity{
         super.onStart();
         fetchMedicineData();
         fetchpatientMedList();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
     }
 
     /**

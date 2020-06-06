@@ -1,13 +1,8 @@
 package com.example.mad_assigment;
 
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
 
+// implemented Serializable to pass object from activity to activity
 public class PatientModel implements Serializable{
   private String patientProfilepic;
   private String patientName;
@@ -20,8 +15,6 @@ public class PatientModel implements Serializable{
 
   }
 
-
-
   public PatientModel(String pic, String name , String email , boolean status , String role) {
     this.patientProfilepic = pic;
     this.patientName = name;
@@ -33,10 +26,10 @@ public class PatientModel implements Serializable{
   public String getPatientProfilepic() {
     return patientProfilepic;
   }
-
   public void setPatientProfilepic(String patientProfilepic) {
     this.patientProfilepic = patientProfilepic;
   }
+
   public String getPatientName() {
     return patientName;
   }
@@ -54,7 +47,6 @@ public class PatientModel implements Serializable{
   public boolean isStatus() {
     return status;
   }
-
   public void setStatus(boolean status) {
     this.status = status;
   }
@@ -66,7 +58,6 @@ public class PatientModel implements Serializable{
   public String getPatientPhoneNum() {
     return patientPhoneNum;
   }
-
   public void setPatientPhoneNum(String patientPhoneNum) {
     this.patientPhoneNum = patientPhoneNum;
   }

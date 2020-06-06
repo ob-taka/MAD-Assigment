@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -50,18 +51,24 @@ public class AddPatient extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 // add patient to doctor list
+                // checks if patient email match with the user input from edittext
                 if (checkPatient()){
-                    Intent nextActivity = new Intent(AddPatient.this  , MedicineList.class );
+                    final Intent nextActivity = new Intent(AddPatient.this  , MedicineList.class );
                     nextActivity.putExtra("pname",name.getText().toString().trim());
                     nextActivity.putExtra("pemail",email.getText().toString().trim());
                     nextActivity.putExtra("patientKey" , key);
 
                     success.check();
 
-                    clearText();
-
-                    startActivity(nextActivity);
-                    overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
+                    // delay moving to medicineList
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            clearText();
+                            startActivity(nextActivity);
+                            overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
+                        }
+                    }, 1000);
 
                 }else {
                     buildDialog();
@@ -74,6 +81,7 @@ public class AddPatient extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
+        clearText();
         success.uncheck();
     }
 

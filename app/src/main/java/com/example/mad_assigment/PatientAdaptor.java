@@ -58,6 +58,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
     holder.patientName.setText(patientData.get(position).getPatientName());
     // finds image and download image from firebase storage by image path and binds it to view holder
     FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
+    // get image path
     StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + patientpic.get(position));
     storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
       @Override
@@ -71,6 +72,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
 
         @Override
         public void onClick(View v) {
+          // move to view Patient activity
           Intent nextActivity = new Intent(context, ViewPatient.class);
           nextActivity.putExtra("patientname" , patientData.get(position).getPatientName());
           nextActivity.putExtra("patientpic" , patientpic.get(position));

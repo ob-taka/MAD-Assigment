@@ -65,6 +65,8 @@ public class PatientList extends AppCompatActivity{
 
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        PAdaptor = new PatientAdaptor(this, patientLists , patientpic);
+        PRecycleView.setAdapter((PAdaptor));
 
         //onclicklistener for FloatingActionButton and edit text
         final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton);
@@ -106,10 +108,11 @@ public class PatientList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
+        search.setText("");
+        clonePatientList.clear();
         //initdata();
         fetchPatientData();
-        PAdaptor = new PatientAdaptor(this, patientLists , patientpic);
-        PRecycleView.setAdapter((PAdaptor));
+
     }
 
     /**
@@ -154,6 +157,7 @@ public class PatientList extends AppCompatActivity{
      */
     private void Search(final String searchedString){
         patientLists.clear();
+        Toast.makeText(this, patientLists.size() + "" , Toast.LENGTH_SHORT).show();
         PRecycleView.removeAllViews();
         for (PatientModel patient:
             clonePatientList ) {
