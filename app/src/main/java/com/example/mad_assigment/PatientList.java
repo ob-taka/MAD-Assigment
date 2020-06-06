@@ -77,7 +77,6 @@ public class PatientList extends AppCompatActivity{
                 nextActivity.putExtra("keys" , unaddedPatients);
                 startActivity(nextActivity);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
-
             }
         });
 
@@ -113,6 +112,11 @@ public class PatientList extends AppCompatActivity{
         //initdata();
         fetchPatientData();
 
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 
     /**

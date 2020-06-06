@@ -58,7 +58,7 @@ public class AddPatient extends AppCompatActivity{
                     nextActivity.putExtra("pemail",email.getText().toString().trim());
                     nextActivity.putExtra("patientKey" , key);
 
-                    success.check();
+                    success.check();// check animation
 
                     // delay moving to medicineList
                     Handler handler = new Handler();
@@ -82,7 +82,7 @@ public class AddPatient extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
         clearText();
-        success.uncheck();
+        success.uncheck(); // uncheck animation
     }
 
     @Override
