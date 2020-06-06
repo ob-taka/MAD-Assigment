@@ -23,8 +23,8 @@
 
     <FrameLayout
         android:id="@+id/frameLayout2"
-        android:layout_width="410dp"
-        android:layout_height="465dp"
+        android:layout_width="415dp"
+        android:layout_height="420dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
