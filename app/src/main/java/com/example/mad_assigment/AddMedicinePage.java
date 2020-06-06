@@ -294,6 +294,7 @@ public class AddMedicinePage extends AppCompatActivity {
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     //String med_num=snapshot.getKey();
                     String med_name=snapshot.child("medicineTitle").getValue().toString();
+//                    String id_num=snapshot.child("ID").getValue().toString();
                     String id_num=snapshot.child("ID").getValue().toString();
                     if(med_name.toLowerCase().contains(searchedString.toLowerCase())){
                         med_list.add(med_name);
