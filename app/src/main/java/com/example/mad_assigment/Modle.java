@@ -51,7 +51,7 @@ public class Modle {
 
     /*public int getImg() {
         return img;
-<<<<<<< HEAD
+
     }*/
 
 }

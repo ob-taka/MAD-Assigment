@@ -18,6 +18,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".User_home" />
         <activity android:name=".DoctorHome" />
@@ -25,7 +26,8 @@
         <activity android:name=".AddPatient" />
         <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
 
-        <activity android:name=".PatientList">
+        <activity android:name=".PatientList"
+            android:windowSoftInputMode="adjustPan">
 
 
         </activity>
