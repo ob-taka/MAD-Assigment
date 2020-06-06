@@ -53,12 +53,5 @@ public class Modle {
         return img;
 <<<<<<< HEAD
     }*/
-=======
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
->>>>>>> af2e8cc88f89df55ac2d0fe2ca6898eb940534b5
 
 }
