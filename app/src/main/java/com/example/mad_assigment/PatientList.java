@@ -154,6 +154,7 @@ public class PatientList extends AppCompatActivity{
             }
         });
     }
+
     /**
      *
      * @param searchedString , text user types in edittext to search for patient name
