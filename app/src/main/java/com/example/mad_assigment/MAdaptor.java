@@ -18,7 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-public class git aMAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
+public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
 
     private OnItemClickListener listener;
     public MAdaptor(@NonNull FirebaseRecyclerOptions<Modle> optiions){
