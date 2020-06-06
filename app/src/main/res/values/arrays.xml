@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="medType">
+        <item>ml</item>
+        <item>tablets</item>
+    </string-array>
+</resources>
