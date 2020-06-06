@@ -31,9 +31,6 @@ public class User_home extends AppCompatActivity {
         setContentView(R.layout.activity_user_home);
 
         setUpRecyclerView();
-
-
-
     }
 
     private void setUpRecyclerView(){
