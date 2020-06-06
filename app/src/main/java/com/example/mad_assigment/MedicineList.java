@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MedicineList extends AppCompatActivity{
-    Button addMedicine;
+    FloatingActionButton addMedicine;
     Button submit;
     String patientKey;
     RecyclerView mRecycleView;
@@ -55,16 +56,16 @@ public class MedicineList extends AppCompatActivity{
         //onclicklistener for buttons
 
         // button inside recyclerview button : redirects user to add medicine activity
-//        addMedicine = findViewById(R.id.add_medicine);
-//
-//        addMedicine.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-////                Intent nextActivity = new Intent(PatientList.this  , AddPatient.class );
-////                startActivity(nextActivity);
-//                  overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
-//            }
-//        });
+        addMedicine = findViewById(R.id.addmed);
+
+        addMedicine.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent nextActivity = new Intent(MedicineList.this  , AddMedicinePage.class );
+                startActivity(nextActivity);
+                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
+            }
+        });
 
         submit = findViewById(R.id.submit);
 

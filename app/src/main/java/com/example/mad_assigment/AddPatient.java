@@ -29,6 +29,7 @@ public class AddPatient extends AppCompatActivity{
     String key;
     CheckView success;
     HashMap<String,PatientModel> patientList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +59,9 @@ public class AddPatient extends AppCompatActivity{
                     nextActivity.putExtra("pemail",email.getText().toString().trim());
                     nextActivity.putExtra("patientKey" , key);
 
-                    success.check();
+                    success.check();// check animation
 
-                    // delay moving to medicineList
+                    // delay moving to medicineList , wait for check animation to finish
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
@@ -82,13 +83,13 @@ public class AddPatient extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
         clearText();
-        success.uncheck();
+        success.uncheck(); // uncheck animation
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
+        overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); // page transition animation
     }
 
     /**
@@ -113,7 +114,7 @@ public class AddPatient extends AppCompatActivity{
      */
     private void buildDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(AddPatient.this);
-        builder.setTitle("Patient Email not found!")
+        builder.setTitle("Patient Email does not exist")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
