@@ -12,14 +12,17 @@ import java.util.ArrayList;
 
 public class User_home extends AppCompatActivity {
 
+<<<<<<< HEAD
+    private MAdaptor adaptor;
+=======
     RecyclerView mRecycleV;
     MAdaptor mAdaptor;
 
+>>>>>>> af21fcf20a791775bfa02a3eb36e7f19419ed9f2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_user_home);
 
         mRecycleV = findViewById(R.id.mRV);

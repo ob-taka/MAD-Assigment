@@ -16,7 +16,23 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+<<<<<<< HEAD
+        <activity android:name=".User_home" />
+        <activity android:name=".DoctorHome" />
+        <activity android:name=".ViewPatient" />
+        <activity android:name=".AddPatient" />
+        <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
+
+        <activity android:name=".PatientList"
+            android:windowSoftInputMode="adjustPan">
+
+
+        </activity>
+        <receiver android:name=".NotificationReceiver"/>
+=======
+>>>>>>> af21fcf20a791775bfa02a3eb36e7f19419ed9f2
     </application>
 
 </manifest>
