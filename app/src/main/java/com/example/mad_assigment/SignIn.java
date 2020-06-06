@@ -58,7 +58,6 @@ public class SignIn extends AppCompatActivity {
                 if (TextUtils.isEmpty(pw)) {
                     mEmail.setError("Password is required!");
                 }
-
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Authenticate User
@@ -96,11 +95,13 @@ public class SignIn extends AppCompatActivity {
 
                     if(Integer.parseInt(Type) == 1){
                         Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignIn.this,MainActivity.class);
+                        Intent intent = new Intent(SignIn.this,User_home.class);
                         startActivity(intent);
                     }
                     else if (Integer.parseInt(Type) == 2){
                         Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignIn.this,User_home.class);
+                        startActivity(intent);
                     }
                 }
 
