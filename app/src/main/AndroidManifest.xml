@@ -22,7 +22,9 @@
         <activity android:name=".ViewPatient" />
         <activity android:name=".AddPatient" />
         <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
+
         <activity android:name=".PatientList">
+
 
         </activity>
     </application>
