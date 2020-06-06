@@ -22,8 +22,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 
-import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -192,14 +191,8 @@ public class PatientList extends AppCompatActivity{
         for (int i = 0; i < n.length; i++) {
             DatabaseReference medRef = databaseReference.child("test");
             String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , true , "Patient");
+            PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , false , "Patient" , "");
             medRef.child(key).setValue(people);
-            HashMap<String , Boolean> mlist = new HashMap<>();
-            DatabaseReference userRef = databaseReference.child("patientMedicineList");
-            for (String s : mId) {
-                mlist.put(s, false);
-            }
-            userRef.child(key).setValue(mlist);
         }
     }
 }

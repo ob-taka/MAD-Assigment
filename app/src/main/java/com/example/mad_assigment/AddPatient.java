@@ -14,11 +14,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.UUID;
 import cdflynn.android.library.checkview.CheckView;
 
 public class AddPatient extends AppCompatActivity{
@@ -27,6 +34,7 @@ public class AddPatient extends AppCompatActivity{
     EditText email;
     Button create;
     String key;
+    String medkey;
     CheckView success;
     HashMap<String,PatientModel> patientList;
 
@@ -41,7 +49,7 @@ public class AddPatient extends AppCompatActivity{
 
         //init list and database
         Intent intent = getIntent();
-        patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys");
+        patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys"); //serialized hashmap
 
         // submit button to push patient medicine list to firebase
         create = (Button) findViewById(R.id.button7);
@@ -58,6 +66,9 @@ public class AddPatient extends AppCompatActivity{
                     nextActivity.putExtra("pname",name.getText().toString().trim());
                     nextActivity.putExtra("pemail",email.getText().toString().trim());
                     nextActivity.putExtra("patientKey" , key);
+                    updatePatient();
+                    nextActivity.putExtra("patientmlist" ,medkey);
+
 
                     success.check();// check animation
 
@@ -103,8 +114,10 @@ public class AddPatient extends AppCompatActivity{
             key = (String) patientEntry.getKey();
             PatientModel patient = (PatientModel) patientEntry.getValue();
             if(patient.getPatientEmail().equals(email.getText().toString().trim())){
+                medkey = patient.getMedid();
                 return true;
             }
+
         }
         return false;
     }
@@ -133,4 +146,18 @@ public class AddPatient extends AppCompatActivity{
         name.setText("");
         email.setText("");
     }
+
+
+
+    //update patient medlist value to unique id
+    private void updatePatient(){
+        if (medkey.equals("")){
+            medkey = UUID.randomUUID().toString().substring(0,10);// generate unique id using UUID 128 bits (java class)
+            FirebaseDatabase.getInstance().getReference().child("test").child(key).child("medid").setValue(medkey);
+        }
+
+    }
+
+
+
 }
