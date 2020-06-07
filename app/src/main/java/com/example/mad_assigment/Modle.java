@@ -7,7 +7,7 @@ public class Modle {
     private String dosage;
     private String detailDes;
     private String food;
-    private int img;
+    private String img;
     private boolean expanded; // set the state the constrain layout
 
     public Modle(){}//needed for firebase

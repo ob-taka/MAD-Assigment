@@ -410,18 +410,18 @@ public class AddMedicinePage extends AppCompatActivity {
         }
         if (breakfastValid==1){
             tempRef.child("Breakfast").setValue("True");
-            med = new Modle(medName,"Breakfast","",doseNumber.toString(),food);
+            med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"1").setValue(med);
 
 
         }if (dinnerValid==1){
-            med = new Modle(medName,"Lunch","",doseNumber.toString(),food);
+            med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"2").setValue(med);
 
 
 
         }if (dinnerValid==1){
-            med = new Modle(medName,"Dinner","",doseNumber.toString(),food);
+            med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"3").setValue(med);
 
 
