@@ -1,7 +1,7 @@
 <img src="images/logo.png">
 
-#Health Anytime
-###A Mobile Application developed to give patients and doctors  a smoother and better overall experience.
+# Health Anytime
+### A Mobile Application developed to give patients and doctors  a smoother and better overall experience.
 
 > Your clinic management app
 
