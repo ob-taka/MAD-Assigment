@@ -133,7 +133,7 @@ public class SignIn extends AppCompatActivity {
                 for(DataSnapshot ds:dataSnapshot.getChildren()){
                     if(ds.child("patientEmail").getValue().toString().toLowerCase().equals(email)){
                         uid = ds.getKey();
-                        pic = ds.child("patientProfilePic").getValue(String.class);
+                        pic = ds.child("patientProfilepic").getValue().toString();
                     }
                 }
             }

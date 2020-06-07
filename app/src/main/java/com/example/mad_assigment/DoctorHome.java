@@ -38,7 +38,7 @@ public class DoctorHome extends AppCompatActivity {
     Button addpatient;
     ImageView doctorpic;
     TextView greetings, docname;
-    String pic;
+    String pic, uid;
     HashMap<String,PatientModel> unaddedPatients;
     DatabaseReference databaseReference;
 
@@ -55,8 +55,11 @@ public class DoctorHome extends AppCompatActivity {
         unaddedPatients = new HashMap<>();
         setTimeOfDay();
 
-        String uid = getIntent().getStringExtra("Uid");
+        uid = getIntent().getStringExtra("Uid");
+        pic = getIntent().getStringExtra("pic");
+
         Log.d("#d",uid);
+        Log.d("#d",pic);
         databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -68,9 +71,6 @@ public class DoctorHome extends AppCompatActivity {
                 Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
-
-        Intent intent = getIntent();
-        pic = intent.getStringExtra("pic");
 
         viewpatient.setOnClickListener(new View.OnClickListener(){
             @Override
