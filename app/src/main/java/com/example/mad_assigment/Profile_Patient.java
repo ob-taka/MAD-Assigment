@@ -36,7 +36,7 @@ public class Profile_Patient extends AppCompatActivity {
         Email = findViewById(R.id.patient_Email);
         ProfPic = findViewById(R.id.patient_Pp);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        String uid = getIntent().getStringExtra("Uid");
+        String uid = getIntent().getStringExtra("UID");
         getDetails(uid);
 
 
