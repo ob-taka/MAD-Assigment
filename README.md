@@ -18,7 +18,7 @@
 
 **Login**
 
-[![Login Page](https://recordit.co/1sW0ATqOvD)]()
+[![Login Page](https://recordit.co/1sW0ATqOvD.gif)]()
 
 ---
 
@@ -26,21 +26,21 @@
 
 [![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)]()
 
-[![User Profile Page](http://recordit.co/teGFtP6Uqe)]()
+[![User Profile Page](http://recordit.co/teGFtP6Uqe.gif)]()
 
 ---
 
 **Doctor**
 
-[![Doctor Home Page](https://recordit.co/WmSEEBXzr3)]()
+[![Doctor Home Page](https://recordit.co/WmSEEBXzr3.gif)]()
 
-[![Patient List Page](https://recordit.co/qiCrzihnkk)]()
+[![Patient List Page](https://recordit.co/qiCrzihnkk.gif)]()
 
-[![Add Patient Page](https://recordit.co/apy590YN0I)]()
+[![Add Patient Page](https://recordit.co/apy590YN0I.gif)]()
 
-[![Medicine List Page](https://recordit.co/NVMEiAz42t)]()
+[![Medicine List Page](https://recordit.co/NVMEiAz42t.gif)]()
 
-[![Add Medicine Page](https://recordit.co/x4ep7DcFPK)]()
+[![Add Medicine Page](https://recordit.co/x4ep7DcFPK.gif)]()
 
 ---
 
