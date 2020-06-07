@@ -12,7 +12,7 @@
 
 **Site Map**
 
-[![](https://cdn.discordapp.com/attachments/703063187053871244/708275297484800070/2020-05-08_3.png)]
+![](https://cdn.discordapp.com/attachments/703063187053871244/708275297484800070/2020-05-08_3.png)
 
 ---
 
@@ -24,7 +24,7 @@
 
 **User**
 
-[![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)]()
+[![UserHome Page](https://recordit.co/AtRGxzyAOx.gif)]()
 
 [![User Profile Page](http://recordit.co/teGFtP6Uqe.gif)]()
 
