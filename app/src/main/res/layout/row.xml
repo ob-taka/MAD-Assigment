@@ -46,17 +46,19 @@
 
             <TextView
                 android:id="@+id/mTitle"
-                android:layout_width="288dp"
-                android:layout_height="61dp"
-                android:shadowColor="#000000"
+                android:layout_width="182dp"
+                android:layout_height="57dp"
                 android:gravity="center_vertical"
+                android:shadowColor="#000000"
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
                 android:text="Panadol"
                 android:textColor="#000"
-                android:textSize="20dp"
+                android:textSize="10sp"
                 android:textStyle="bold"
+                app:autoSizeMaxTextSize="15dp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@+id/mImageV"
                 app:layout_constraintTop_toTopOf="parent" />
 
