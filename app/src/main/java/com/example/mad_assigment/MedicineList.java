@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -28,11 +30,12 @@ public class MedicineList extends AppCompatActivity{
     Button submit;
     String patientKey;
     String medKey;
-    RecyclerView mRecycleView;
-    MedicineAdaptor mAdaptor;
+    MAdaptor adaptor;
     ArrayList<MedicineModel> medicineList;
     ArrayList<MedicineModel> patientMedList;
     DatabaseReference databaseReference;
+    DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +52,7 @@ public class MedicineList extends AppCompatActivity{
         patientMedList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // setup recyclerview
-        mRecycleView = findViewById(R.id.recyclerView);
-        mRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdaptor = new MedicineAdaptor(patientMedList);
-        mRecycleView.setAdapter((mAdaptor));
+        setUpRecyclerView();
 
         //onclicklistener for buttons
 
@@ -77,7 +76,7 @@ public class MedicineList extends AppCompatActivity{
             public void onClick(View v) {
                 // changing status of a patient from false to true
                 // to indicate the patient has been added to the doctor's list
-                databaseReference.child("Users").child(patientKey).child("status").setValue(true);
+                databaseReference.child("User").child(patientKey).child("status").setValue(true);
             }
         });
 
@@ -86,8 +85,7 @@ public class MedicineList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        fetchMedicineData();
-        fetchpatientMedList();
+
     }
 
     @Override
@@ -101,59 +99,82 @@ public class MedicineList extends AppCompatActivity{
      * Used as a copy of a list of medicine in firebase
      * Called to fill up list and to reduce the number of requests to firebase
      */
-    private void fetchMedicineData(){
-        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    medicineList.add(snapshot.getValue(MedicineModel.class));
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
+//    private void fetchMedicineData(){
+//        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    medicineList.add(snapshot.getValue(MedicineModel.class));
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
+//
+//    /**
+//     * Used to update the recyclerview and patient medicineList
+//     * Contacts firebase for updates
+//     * Using reference of medicine list from firebase
+//     * medicine is added into patient medicine list and showed in recyclerview
+//     */
+//    private void fetchpatientMedList(){
+//        // fetch patient medicine list
+//        databaseReference.child("medicine_list").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                //clear rv views and data
+//                patientMedList.clear();
+//                mRecycleView.removeAllViews();
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    if (snapshot.getKey().equals(medKey)){
+//                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
+//                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
+//                        HashMap<String, Boolean> map = snapshot.getValue(to);
+//                        int count = 0;
+//                        for(boolean ml: map.values()) {
+//                            if(ml) {
+//                                patientMedList.add(medicineList.get(count));
+//                            }
+//                            count++;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     /**
-     * Used to update the recyclerview and patient medicineList
-     * Contacts firebase for updates
-     * Using reference of medicine list from firebase
-     * medicine is added into patient medicine list and showed in recyclerview
+     * setup recyclerview
      */
-    private void fetchpatientMedList(){
-        // fetch patient medicine list
-        databaseReference.child("med_list").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //clear rv views and data
-                patientMedList.clear();
-                mRecycleView.removeAllViews();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(medKey)){
-                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
-                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
-                        HashMap<String, Boolean> map = snapshot.getValue(to);
-                        int count = 0;
-                        for(boolean ml: map.values()) {
-                            if(ml) {
-                                patientMedList.add(medicineList.get(count));
-                            }
-                            count++;
-                        }
-                    }
-                }
-            }
+    private void setUpRecyclerView(){
+        Query query = medReference.child(medKey).orderByChild("priority");
+        FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
+                .setQuery(query, Modle.class)
+                .build();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+        adaptor = new MAdaptor(options);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
+        recyclerView.setAdapter(adaptor);
 
+        adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
+            @Override
+            public void onItemClick(DataSnapshot dataSnapshot, int position) {
+                Modle modle = adaptor.getItem(position);
+                modle.setExpanded(!modle.isExpanded());
+                adaptor.notifyItemChanged(position);
             }
         });
     }
-
 
     /**
      * creates and display alert dialog to Add patient activity , as confirmation

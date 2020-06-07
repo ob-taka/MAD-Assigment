@@ -125,7 +125,7 @@ public class PatientList extends AppCompatActivity{
      */
     private void fetchPatientData(){
         // fetch patient from firebase
-        databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 patientLists.clear();
@@ -133,8 +133,6 @@ public class PatientList extends AppCompatActivity{
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     PatientModel patient = snapshot.getValue(PatientModel.class);
                     if (patient.isStatus() && patient.getRole().equals("Patient")){
-//                        patientkeyList.add(snapshot.getKey());
-                        String patientName = snapshot.child("patientName").getValue().toString();
                         patientpic.add(patient.getPatientProfilepic());
                         patientLists.add(patient);
                         clonePatientList.add(patient);
@@ -159,7 +157,6 @@ public class PatientList extends AppCompatActivity{
      */
     private void Search(final String searchedString){
         patientLists.clear();
-        Toast.makeText(this, patientLists.size() + "" , Toast.LENGTH_SHORT).show();
         PRecycleView.removeAllViews();
         for (PatientModel patient:
             clonePatientList ) {
@@ -174,21 +171,19 @@ public class PatientList extends AppCompatActivity{
 
     // input dummy data
     public void initdata(){
-       // FirebaseDatabase database = FirebaseDatabase.getInstance();
         //add med to firebase
-//        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-        String[] mId = {"Medicine_id1","Medicine_id2","Medicine_id3","Medicine_id4","Medicine_id5","Medicine_id6","Medicine_id7","Medicine_id8","Medicine_id9","Medicine_id10"};
+        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
 //        for (int j = 0; j < m.length; j ++) {
-//            DatabaseReference medRef = database.getReference("Medicine");
-//            MedicineModel med = new MedicineModel(m[j] , "Before Food" , "10:00 AM" , R.drawable.pill);
-//            medRef.child(mId[j]).setValue(med);
+//            DatabaseReference medRef = databaseReference.getReference("Medicine");
+//            Modle med = new Modle(m[j], "Before Food" , "10:00 AM" , );
+//            medRef.child(m[j]).setValue(med);
 //        }
         // add med list to firebase
 
-        String[] n = {"Emma" , "Olivia" , "Isabella" };
-        String[] e = {"Emma@gmail.com" , "Olivia@gmail.com" , "Isabella@gmail.com" };
+        String[] n = {"Emma" , "Olivia" , "Isabella" , "Tyler" };
+        String[] e = {"Emma@gmail.com" , "Olivia@gmail.com" , "Isabella@gmail.com" , "Tyler@gmail.com"};
         for (int i = 0; i < n.length; i++) {
-            DatabaseReference medRef = databaseReference.child("test");
+            DatabaseReference medRef = databaseReference.child("User");
             String key = medRef.push().getKey();
             PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , false , "Patient" , "");
             medRef.child(key).setValue(people);

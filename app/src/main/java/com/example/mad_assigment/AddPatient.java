@@ -157,7 +157,8 @@ public class AddPatient extends AppCompatActivity{
         if (medkey.equals("")){
             // generate a 10 chars long unique id , using UUID( build-in java class) , a 128 bits value String 
             medkey = UUID.randomUUID().toString().substring(0,10);
-            FirebaseDatabase.getInstance().getReference().child("test").child(key).child("medid").setValue(medkey);
+            FirebaseDatabase.getInstance().getReference().child("User").child(key).child("medid").setValue(medkey);
+            FirebaseDatabase.getInstance().getReference().child("med_list").child(medkey).setValue("");
         }
 
     }

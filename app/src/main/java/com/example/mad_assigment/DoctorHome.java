@@ -72,7 +72,7 @@ public class DoctorHome extends AppCompatActivity {
      * into unaddedPatients to be passed to add patient activity
      */
     private void fetchPatientData(){
-        databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
