@@ -53,7 +53,7 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
         // finds image and download image from firebase storage by image path and binds it to view holder
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
         // get image path
-        StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + medicinepic.get(position));
+        StorageReference storageRef = storage.getReference().child(medicinepic.get(position));
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
             @Override
             public void onSuccess(Uri uri) {
