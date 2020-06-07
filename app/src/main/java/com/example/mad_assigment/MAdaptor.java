@@ -61,7 +61,7 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
             this.mDes = itemView.findViewById(R.id.mDes);
             this.mimgV = itemView.findViewById(R.id.mImageV);
             this.mTime = itemView.findViewById(R.id.mTime);
-            mTitle.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
