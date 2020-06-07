@@ -122,7 +122,7 @@ public class SignIn extends AppCompatActivity {
     }
     //Method to find email in Child "Users" of database and return the key
     private void returnKey(){
-        ref = FirebaseDatabase.getInstance().getReference().child("Users");
+        ref = FirebaseDatabase.getInstance().getReference().child("User");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
