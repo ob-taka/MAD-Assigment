@@ -6,6 +6,7 @@ public class Modle {
     private String time;
     private String dosage;
     private String detailDes;
+    private String food;
     // private int img;
     private boolean expanded; // set the state the constrain layout
 

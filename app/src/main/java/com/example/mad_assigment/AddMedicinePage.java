@@ -282,6 +282,8 @@ public class AddMedicinePage extends AppCompatActivity {
                 checkValid();
                 if (errors==0){
                     sendData();
+                    Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
+                    startActivity(nextActivity);
                 }
             }
         });
@@ -395,35 +397,39 @@ public class AddMedicinePage extends AppCompatActivity {
     public void sendData(){
         //Adding data to firebase
         DatabaseReference tempRef=databaseReference.child("med_list");
-        tempRef.child(medKey).setValue("");
-
-        if (breakfastValid==1){
-            tempRef.child("Breakfast").setValue("True");
-
-        }if (dinnerValid==1){
-            tempRef.child("Lunch").setValue("True");
-
-        }if (dinnerValid==1){
-            tempRef.child("Dinner").setValue("True");
-
-        }
+        Modle med = new Modle();
+        String food = "";
         if(before.isChecked())
         {
-            tempRef.child("Food").setValue("Before");
-
+            food="Before Food";
         }
         else if (after.isChecked())
         {
-            tempRef.child("Food").setValue("After");
+            food="After Food";
 
         }
-        tempRef.child("MedicineName").setValue(medName);
-        tempRef.child("Dosage").setValue(doseNumber);
-        tempRef.child("MedType").setValue(medType);
-        tempRef.child("Breakfast").setValue("False");
-        tempRef.child("Lunch").setValue("False");
-        tempRef.child("Dinner").setValue("False");
-        Modle med = new Modle();
-        tempRef.child(medKey).child(medName).setValue(med);
+        if (breakfastValid==1){
+            tempRef.child("Breakfast").setValue("True");
+            med = new Modle(medName,"Breakfast","",doseNumber.toString(),food);
+            tempRef.child(medKey).child(medName+"1").setValue(med);
+
+
+        }if (dinnerValid==1){
+            med = new Modle(medName,"Lunch","",doseNumber.toString(),food);
+            tempRef.child(medKey).child(medName+"2").setValue(med);
+
+
+
+        }if (dinnerValid==1){
+            med = new Modle(medName,"Dinner","",doseNumber.toString(),food);
+            tempRef.child(medKey).child(medName+"3").setValue(med);
+
+
+
+        }
+
+
+
+
     }
 }
