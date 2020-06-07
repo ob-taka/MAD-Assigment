@@ -54,12 +54,8 @@ public class ViewPatient extends AppCompatActivity{
         medicineList = new ArrayList<>();
         patientMList = new ArrayList<>();
 
-<<<<<<< HEAD
         nameView = findViewById(R.id.greating);
-=======
         //set patient name and image
-        nameView = findViewById(R.id.patientName);
->>>>>>> 3fa462f1cfd49ce9f23d4773ddde60a683c001ff
         nameView.setText(patientName);
         patientPicView = findViewById(R.id.profile_image);
 
