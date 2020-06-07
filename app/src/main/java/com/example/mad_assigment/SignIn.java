@@ -103,6 +103,7 @@ public class SignIn extends AppCompatActivity {
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Doctor").putExtra("pic" , pic );
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
                     }
                     else if (role.equals("Patient")){
                         mProgressBar.setVisibility(View.GONE);
@@ -114,6 +115,7 @@ public class SignIn extends AppCompatActivity {
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Patient");
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
                     }
                 }
 

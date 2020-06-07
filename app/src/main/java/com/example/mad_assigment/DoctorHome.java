@@ -52,6 +52,7 @@ public class DoctorHome extends AppCompatActivity {
         addpatient = findViewById(R.id.button5);
         greetings = findViewById(R.id.greating);
         docname = findViewById(R.id.label_Name);
+        doctorpic = findViewById(R.id.doctorpic);
         unaddedPatients = new HashMap<>();
         setTimeOfDay();
 
@@ -61,6 +62,28 @@ public class DoctorHome extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 docname.setText("Doctor " + dataSnapshot.child("patientName").getValue().toString().trim());
+                pic = dataSnapshot.child("patientProfilepic").getValue(String.class);
+                /**
+                 * fetch image view from firebase Storage (file hosting service)
+                 */
+                FirebaseStorage storage = FirebaseStorage.getInstance(
+                        "gs://quickmad-e4016.appspot.com/"
+                );
+                StorageReference storageRef = storage
+                        .getReference()
+                        .child("ProfilePicture/" + pic );
+                storageRef
+                        .getDownloadUrl()
+                        .addOnSuccessListener(
+                                new OnSuccessListener<Uri>() {
+
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        // finds image and download image from firebase storage by image path and binds it to view holder
+                                        Glide.with(DoctorHome.this).load(uri).into(doctorpic); // uses Gilde , a framework to load and download files in android
+                                    }
+                                }
+                        );
             }
 
             @Override
@@ -68,9 +91,26 @@ public class DoctorHome extends AppCompatActivity {
                 Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+        /**
+         * Fetch patient data from firebase and add patient data as a patientModel class
+         * into unaddedPatients to be passed to add patient activity
+         */
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    PatientModel patient = snapshot.getValue(PatientModel.class);
+                    if(!patient.isStatus()){
+                        unaddedPatients.put(snapshot.getKey() , patient);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
-        Intent intent = getIntent();
-        pic = intent.getStringExtra("pic");
 
         viewpatient.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -83,25 +123,10 @@ public class DoctorHome extends AppCompatActivity {
         addpatient.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // check if patient data is empty else fetch again
-                if  (unaddedPatients.isEmpty()){
-                    fetchPatientData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DoctorHome.this);
-                    builder.setTitle("Please wait for HealthAnytime to fetch data")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                }
-                            });
-                    builder.create();
-                    builder.show();
-                }
-                else{
-                    Intent intent = new Intent(getApplicationContext(), AddPatient.class);
-                    intent.putExtra("keys" , unaddedPatients);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
-                }
+                Intent intent = new Intent(getApplicationContext(), AddPatient.class);
+                intent.putExtra("keys" , unaddedPatients);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
             }
         });
     }
@@ -109,8 +134,6 @@ public class DoctorHome extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        fetchPatientData();
-        fetchDoctorPic();
     }
 
     @Override
@@ -133,51 +156,7 @@ public class DoctorHome extends AppCompatActivity {
         }
     }
 
-    /**
-     * Fetch patient data from firebase and add patient data as a patientModel class
-     * into unaddedPatients to be passed to add patient activity
-     */
-    private void fetchPatientData(){
-        databaseReference.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    PatientModel patient = snapshot.getValue(PatientModel.class);
-                    if(!patient.isStatus()){
-                        unaddedPatients.put(snapshot.getKey() , patient);
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
-    /**
-     * fetch image view from firebase Storage (file hosting service)
-     */
-    private void fetchDoctorPic() {
-        // finds image and download image from firebase storage by image path and binds it to view holder
-        FirebaseStorage storage = FirebaseStorage.getInstance(
-                "gs://quickmad-e4016.appspot.com/"
-        );
-        StorageReference storageRef = storage
-                .getReference()
-                .child("ProfilePicture/" + pic );
-        storageRef
-                .getDownloadUrl()
-                .addOnSuccessListener(
-                        new OnSuccessListener<Uri>() {
-
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Glide.with(DoctorHome.this).load(uri).into(doctorpic); // uses Gilde , a framework to load and download files in android
-                            }
-                        }
-                );
-    }
 
 
 

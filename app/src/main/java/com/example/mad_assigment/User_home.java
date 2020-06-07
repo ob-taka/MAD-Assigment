@@ -70,6 +70,7 @@ public class User_home extends AppCompatActivity {
         startActivity(intent);
 
 
+
         // set onClickListenr on the image of the user profile to got into their profile page
        /* imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
