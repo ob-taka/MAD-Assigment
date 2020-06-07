@@ -10,13 +10,10 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +32,10 @@ public class User_home extends AppCompatActivity {
     * use this line when log in is implemented */
     private String email;
     private String name;
+    private String scheduleID;
     private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("-M9CLGQZArfRz4tqFSVN");// change to recieveintent
-    private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("user_medicien"); // Date reference of the database to be use throughout the activity
+    //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
+    private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("user_medicien")/*.child(scheduleID)*/; // get the reference of the medicine list base on schedule ID from user
     ImageButton imageBtn;
     private TextView username, greating;
 
@@ -51,11 +50,14 @@ public class User_home extends AppCompatActivity {
         username = findViewById(R.id.label_Name);
         greating = findViewById(R.id.greating);
 
+
+
         createChannel();
         setTimeOfDay();
         initUser();
         setUpRecyclerView();
 
+        // set onClickListenr on the image of the user profile to got into their profile page
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +70,10 @@ public class User_home extends AppCompatActivity {
 
     }
 
+    /**
+     * fetch the user information form the firebase and get the specific data that was needed
+     * to prepare to be display on the screen and pass as a intent to the next activity
+     */
     private void initUser(){
 
         userReference.addValueEventListener(new ValueEventListener() {
@@ -75,6 +81,7 @@ public class User_home extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 email = dataSnapshot.child("patientEmail").getValue(String.class);
                 name = dataSnapshot.child("patientName").getValue(String.class);
+                scheduleID = dataSnapshot.child("medid").getValue(String.class);
                 username.setText(name);
             }
 
@@ -85,6 +92,9 @@ public class User_home extends AppCompatActivity {
         });
     }
 
+    /**
+     * change the greeting base on the time of the time
+     */
     private void setTimeOfDay(){
         Calendar calendar = Calendar.getInstance();
         int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
