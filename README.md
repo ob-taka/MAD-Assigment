@@ -1,14 +1,14 @@
 <img src="images/logo.png">
 
 # Health Anytime
-### A Mobile Application developed to give patients and doctors  a smoother and better overall experience.
+
+### A Mobile Application developed to give patients and doctors a smoother and better overall experience.
 
 > Your clinic management app
 
 > This app is catered for doctors and patients
 
 > Health android app
-
 
 **_INSERT GIF OF WORKING APP_**
 
@@ -52,22 +52,34 @@
 
 ## Clone
 
-- Clone this repo to your local machine using https://github.com/ob-taka/MAD-Assigment
+- Clone this repo to your local machine using
+
+```bash
+    git clone https://github.com/ob-taka/MAD-Assigment.git
+```
 
 ---
 
-## Documentation 
+## Documentation
 
-This app takes health and wellness to another step by helping both doctors and patients. 
+This app takes health and wellness to another step by helping both doctors and patients.
 
 Now you will never forget about taking your medicines or be confused by the doctor’s handwriting. While doctors get to keep track of their patients and prescriptions with ease.
 
 ---
 
+## Open Source Projects and Technology Used
+
+\*[Glide](https://github.com/bumptech/glide)
+
+\*[CheckView](https://github.com/cdflynn/checkview)
+
+\*[Firebase](https://firebase.google.com/)
+
 ## Contributors
 
-|             <a href="http://fvcproductions.com" target="_blank">**Kester**</a>             |             <a href="http://fvcproductions.com" target="_blank">**RunLin**</a>             |             <a href="http://fvcproductions.com" target="_blank">**Shrey**</a>              |            <a href="http://fvcproductions.com" target="_blank">**Zachary**</a>             |
-| :----------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
+|             <a href="http://fvcproductions.com" target="_blank">**Kester**</a>              |             <a href="http://fvcproductions.com" target="_blank">**RunLin**</a>              |                 <a href="http://fvcproductions.com" target="_blank">**Shrey**</a>                 |               <a href="http://fvcproductions.com" target="_blank">**Zachary**</a>               |
+| :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
 | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/EchoKes`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ob-taka`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/PrimaryHeap`</a> |
 
 - You can just grab their GitHub profile image URL
@@ -77,7 +89,7 @@ Now you will never forget about taking your medicines or be confused by the doct
 
 ## Features
 
-1. Online platform for ease of access 
+1. Online platform for ease of access
 2. Track patient’s progress
 3. Search patient and medicine on dedicated search bar for Doctors
 4. Authenticated sign ins for private and personal

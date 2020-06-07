@@ -169,25 +169,4 @@ public class PatientList extends AppCompatActivity{
         PRecycleView.setAdapter((PAdaptor));
     }
 
-
-    // input dummy data
-    public void initdata(){
-        //add med to firebase
-        String[] m = {"Panadol" , "Cough Syrup" , "Acetaminophen" ,  "Adderall" ,  "Alprazolam" ,  "Amitriptyline" ,  "Amlodipine" ,  "Amoxicillin" ,  "Ativan" , "Atorvastatin"};
-//        for (int j = 0; j < m.length; j ++) {
-//            DatabaseReference medRef = databaseReference.getReference("Medicine");
-//            Modle med = new Modle(m[j], "Before Food" , "10:00 AM" , );
-//            medRef.child(m[j]).setValue(med);
-//        }
-        // add med list to firebase
-
-        String[] n = {"Emma" , "Olivia" , "Isabella" , "Tyler" };
-        String[] e = {"Emma@gmail.com" , "Olivia@gmail.com" , "Isabella@gmail.com" , "Tyler@gmail.com"};
-        for (int i = 0; i < n.length; i++) {
-            DatabaseReference medRef = databaseReference.child("User");
-            String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , false , "Patient" , "");
-            medRef.child(key).setValue(people);
-        }
-    }
 }
