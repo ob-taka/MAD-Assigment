@@ -31,7 +31,7 @@ public class SignIn extends AppCompatActivity {
     ProgressBar mProgressBar;
     FirebaseAuth mAuth;
     DatabaseReference ref;
-    String email, uid, role;
+    String email, uid, role , pic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,9 @@ public class SignIn extends AppCompatActivity {
                         //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignIn.this,User_home.class);
+                        Intent intent = new Intent(SignIn.this,DoctorHome.class);
                         intent.putExtra("Uid",uid)
-                                .putExtra("Role","Doctor");
+                                .putExtra("Role","Doctor").putExtra("pic" , pic );
                         startActivity(intent);
                     }
                     else if (role.equals("Patient")){
@@ -133,6 +133,7 @@ public class SignIn extends AppCompatActivity {
                 for(DataSnapshot ds:dataSnapshot.getChildren()){
                     if(ds.child("patientEmail").getValue().toString().toLowerCase().equals(email)){
                         uid = ds.getKey();
+                        pic = ds.child("patientProfilePic").getValue(String.class);
                     }
                 }
             }
@@ -143,6 +144,5 @@ public class SignIn extends AppCompatActivity {
             }
         });
     }
-
 }
 
