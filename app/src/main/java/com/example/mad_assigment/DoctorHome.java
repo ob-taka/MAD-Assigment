@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.lang.annotation.Documented;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -34,6 +37,7 @@ public class DoctorHome extends AppCompatActivity {
     Button viewpatient;
     Button addpatient;
     ImageView doctorpic;
+    TextView greetings, docname;
     String pic;
     HashMap<String,PatientModel> unaddedPatients;
     DatabaseReference databaseReference;
@@ -43,10 +47,27 @@ public class DoctorHome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doctor_home);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("User");
         viewpatient = findViewById(R.id.button4);
         addpatient = findViewById(R.id.button5);
+        greetings = findViewById(R.id.greating);
+        docname = findViewById(R.id.label_Name);
         unaddedPatients = new HashMap<>();
+        setTimeOfDay();
+
+        String uid = getIntent().getStringExtra("Uid");
+        Log.d("#d",uid);
+        databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                docname.setText("Doctor " + dataSnapshot.child("patientName").getValue().toString().trim());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
 
         Intent intent = getIntent();
         pic = intent.getStringExtra("pic");
@@ -97,6 +118,20 @@ public class DoctorHome extends AppCompatActivity {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
     }
+    /**
+     * change the greeting base on the time of the time
+     */
+    private void setTimeOfDay(){
+        Calendar calendar = Calendar.getInstance();
+        int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        if(timeOfDay >= 0 && timeOfDay < 12){
+            greetings.setText("Good Morning");
+        }else if(timeOfDay >= 12 && timeOfDay < 16){
+            greetings.setText("Good Afternoon");
+        }else if(timeOfDay >= 16 && timeOfDay < 21){
+            greetings.setText("Good Evening");
+        }
+    }
 
     /**
      * Fetch patient data from firebase and add patient data as a patientModel class
@@ -115,7 +150,7 @@ public class DoctorHome extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(DoctorHome.this,"Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }
