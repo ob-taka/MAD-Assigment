@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
@@ -35,16 +36,15 @@ import java.util.Calendar;
 public class User_home extends AppCompatActivity {
 
     private MAdaptor adaptor; // adaptor refer
-    /*String receriveIntent = getIntent().getStringExtra("Uid");
-    * use this line when log in is implemented */
+    String receriveIntent;
     private String email;
     private String name;
     private String scheduleID;
     private String patientPic;
     private ArrayList<String> medicinePic;
-    private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("--M9CLGQZArfRz4tqFSVN");// change to recieveintent
+    private DatabaseReference userReference;// change to recieveintent
     //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
-    private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("user_medicien")/*.child(scheduleID)*/; // get the reference of the medicine list base on schedule ID from user
+    private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("med_list"); // get the reference of the medicine list base on schedule ID from user
     ImageView imageBtn;
     private TextView username, greating;
 
@@ -60,22 +60,23 @@ public class User_home extends AppCompatActivity {
         greating = findViewById(R.id.greating);
         medicinePic = new ArrayList<>();
 
+        receriveIntent = getIntent().getStringExtra("Uid");
+        userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);
+
         initUser();
-        fetchMData();
+        //fetchMData();
         createChannel();
         setTimeOfDay();
-        setUpRecyclerView();
+
 
         // set onClickListenr on the image of the user profile to got into their profile page
-        imageBtn.setOnClickListener(new View.OnClickListener() {
+       /* imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(User_home.this, Profile_Patient.class);
-                intent.putExtra("username", name)
-                        .putExtra("email", email);
-
+                intent.putExtra("UID", receriveIntent);
             }
-        });
+        });*/
 
     }
 
@@ -88,12 +89,10 @@ public class User_home extends AppCompatActivity {
         userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                email = dataSnapshot.child("patientEmail").getValue(String.class);
-                name = dataSnapshot.child("patientName").getValue(String.class);
                 scheduleID = dataSnapshot.child("medid").getValue(String.class);
-                patientPic = dataSnapshot.child("patientPic").getValue(String.class);
-
+                name = dataSnapshot.child("patientName").getValue(String.class);
                 username.setText(name);
+                setUpRecyclerView(scheduleID);
             }
 
             @Override
@@ -102,6 +101,9 @@ public class User_home extends AppCompatActivity {
             }
         });
     }
+
+
+
     // fetch medicine from med list
     private void fetchMData(){
         // fetch patient from firebase
@@ -141,8 +143,8 @@ public class User_home extends AppCompatActivity {
      * Using this method to set up the recycler view using the information fetched form the database
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
-    private void setUpRecyclerView(){
-        Query query = medicineReference.orderByChild("priority");
+    private void setUpRecyclerView(String ID){
+        Query query = medicineReference.child(ID).orderByChild("priority");
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
@@ -181,19 +183,19 @@ public class User_home extends AppCompatActivity {
     /**
      * ask the adaptor to start listening for changes in the firebase when the app start or resume
      */
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         adaptor.startListening();
-    }
+    }*/
     /**
      * ask the adaptor to stop listening for changes in the firebase when the app stop of put to the background
      */
-    @Override
+    /*@Override
     protected void onStop() {
         super.onStop();
         adaptor.stopListening();
-    }
+    }*/
 
     /**
      * fetch image view from firebase Storage (file hosting service)

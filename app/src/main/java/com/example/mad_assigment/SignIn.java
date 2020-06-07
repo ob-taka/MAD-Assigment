@@ -95,8 +95,6 @@ public class SignIn extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     role = dataSnapshot.child(fEmail).getValue().toString();
                     Log.d("#d",role);
-
-
                     if(role.equals("Doctor")){
                         //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                         mProgressBar.setVisibility(View.GONE);
