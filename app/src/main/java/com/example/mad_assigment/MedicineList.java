@@ -84,7 +84,7 @@ public class MedicineList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        setUpRecyclerView();
+        setUpRecyclerView(medKey);
     }
 
     @Override
@@ -93,49 +93,27 @@ public class MedicineList extends AppCompatActivity{
         overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
     }
 
-//    /**
-//     * Used to update the recyclerview and patient medicineList
-//     * Contacts firebase for updates
-//     * Using reference of medicine list from firebase
-//     * medicine is added into patient medicine list and showed in recyclerview
-//     */
-//    private void fetchpatientMedList(){
-//        // fetch patient medicine list
-//
-//        medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Modle modle = snapshot.getValue(Modle.class);
-//                    medicineList.add(modle);
-//                    Log.d("#d" , modle.getDescription());
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//
-//    }
+
 
     /**
      * setup recyclerview
      */
-    private void setUpRecyclerView(){
-        Query query = medReference.child("e6aaa1d7-d").orderByChild("priority");
-//        Query query = medReference.child(medKey);
+    private void setUpRecyclerView(String ID){
+        Query query = medReference.child(ID).orderByChild("priority");
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
 
-        adaptor = new MAdaptor( options );
+        // passing data into adaptor
+        adaptor = new MAdaptor(options);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptor);
+
+        adaptor.startListening();
+
+        // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(DataSnapshot dataSnapshot, int position) {

@@ -90,6 +90,7 @@ public class User_home extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 scheduleID = dataSnapshot.child("medid").getValue(String.class);
                 name = dataSnapshot.child("patientName").getValue(String.class);
+                patientPic = dataSnapshot.child("patientProfilepic").getValue(String.class);
                 username.setText(name);
                 setUpRecyclerView(scheduleID);
             }
@@ -101,26 +102,6 @@ public class User_home extends AppCompatActivity {
         });
     }
 
-
-
-    // fetch medicine from med list
-    private void fetchMData(){
-        // fetch patient from firebase
-        medicineReference.child(scheduleID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Modle med = snapshot.getValue(Modle.class);
-                    medicinePic.add(med.getImg());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                adaptor.stopListening();
-            }
-        });
-    }
 
     /**
      * change the greeting base on the time of the time
@@ -156,8 +137,9 @@ public class User_home extends AppCompatActivity {
         recyclerView.setAdapter(adaptor);
 
         adaptor.startListening();
+        fetchPatientPic();
 
-        // overrides the interface created in the adaptor class to customise the even of the click
+        // o`verrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(DataSnapshot dataSnapshot, int position) {
@@ -185,25 +167,25 @@ public class User_home extends AppCompatActivity {
     /**
      * fetch image view from firebase Storage (file hosting service)
      */
-//    private void fetchPatientPic() {
-//        // finds image and download image from firebase storage by image path and binds it to view holder
-//        FirebaseStorage storage = FirebaseStorage.getInstance(
-//                "gs://quickmad-e4016.appspot.com/"
-//        );
-//        StorageReference storageRef = storage
-//                .getReference()
-//                .child("ProfilePicture/" + patientPic);
-//        storageRef
-//                .getDownloadUrl()
-//                .addOnSuccessListener(
-//                        new OnSuccessListener<Uri>() {
-//
-//                            @Override
-//                            public void onSuccess(Uri uri) {
-//                                Glide.with(User_home.this).load(uri).into(imageBtn); // uses Gilde , a framework to load and download files in android
-//                            }
-//                        }
-//                );
-//    }
+    private void fetchPatientPic() {
+        // finds image and download image from firebase storage by image path and binds it to view holder
+        FirebaseStorage storage = FirebaseStorage.getInstance(
+                "gs://quickmad-e4016.appspot.com/"
+        );
+        StorageReference storageRef = storage
+                .getReference()
+                .child("ProfilePicture/" + patientPic );
+        storageRef
+                .getDownloadUrl()
+                .addOnSuccessListener(
+                        new OnSuccessListener<Uri>() {
+
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(User_home.this).load(uri).into(imageBtn); // uses Gilde , a framework to load and download files in android
+                            }
+                        }
+                );
+    }
 
 }
