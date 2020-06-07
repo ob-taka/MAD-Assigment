@@ -18,7 +18,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/patient_Pp"
             android:layout_width="125dp"
             android:layout_height="125dp"
 
@@ -45,32 +45,32 @@
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/label_Name"
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:text="Name"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/patient_Name"
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:layout_marginBottom="30dp"
-            android:text="James Charles" />
+            android:text="-" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/label_Email"
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:text="Email"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/patient_Email"
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:layout_marginBottom="30dp"
-            android:text="jamescharles@gmail.com" />
+            android:text="-" />
 
         <TextView
             android:id="@+id/textView6"
@@ -80,10 +80,10 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/patient_Phone"
             android:layout_width="330dp"
             android:layout_height="50dp"
-            android:text="94923011" />
+            android:text="-" />
 
     </LinearLayout>
 
