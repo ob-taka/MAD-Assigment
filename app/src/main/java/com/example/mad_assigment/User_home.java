@@ -37,7 +37,6 @@ public class User_home extends AppCompatActivity {
 
     private MAdaptor adaptor; // adaptor refer
     String receriveIntent;
-    private String email;
     private String name;
     private String scheduleID;
     private String patientPic;
@@ -65,6 +64,10 @@ public class User_home extends AppCompatActivity {
         initUser();
         createChannel();
         setTimeOfDay();
+
+        Intent intent = new Intent(User_home.this, Profile_Patient.class);
+        intent.putExtra("Uid", receriveIntent);
+        startActivity(intent);
 
 
         // set onClickListenr on the image of the user profile to got into their profile page
