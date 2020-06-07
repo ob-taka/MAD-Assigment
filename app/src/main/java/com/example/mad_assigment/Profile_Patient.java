@@ -5,14 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +24,7 @@ public class Profile_Patient extends AppCompatActivity {
     TextView Name, Email;
     ImageView ProfPic;
     DatabaseReference databaseReference;
+    String patientProfilepic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class Profile_Patient extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         String uid = getIntent().getStringExtra("Uid");
         getDetails(uid);
-        //fetchPatientPic();
+        fetchPatientPic();
 
     }
 
@@ -50,6 +49,7 @@ public class Profile_Patient extends AppCompatActivity {
                 Name.setText(patientName);
                 String patientEmail = dataSnapshot.child("patientEmail").getValue().toString();
                 Email.setText(patientEmail);
+                patientProfilepic = dataSnapshot.child("patientProfilepic").getValue().toString();
             }
 
             @Override
@@ -62,15 +62,16 @@ public class Profile_Patient extends AppCompatActivity {
     /**
      * fetch image view from firebase Storage (file hosting service)
      */
-//    private void fetchPatientPic(){
-//        // finds image and download image from firebase storage by image path and binds it to view holder
-//        FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
-//        StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + patient.getProfilePicture());
-//        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                Glide.with(Profile_Patient.this ).load(uri).into(ProfPic); // uses Gilde , a framework to load and download files in android
-//            }
-//        });
-//    }
+    private void fetchPatientPic(){
+        // finds image and download image from firebase storage by image path and binds it to view holder
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
+        StorageReference storageRef = storage.getReference().child( "ProfilePicture/" + patientProfilepic);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+            @Override
+            public void onSuccess(Uri uri) {
+                // uses Gilde , a framework to load and download files in android
+                Glide.with(Profile_Patient.this).load(uri).into(ProfPic);
+            }
+        });
+    }
 }
