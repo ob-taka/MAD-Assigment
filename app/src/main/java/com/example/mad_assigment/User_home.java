@@ -65,20 +65,16 @@ public class User_home extends AppCompatActivity {
         createChannel();
         setTimeOfDay();
 
-        Intent intent = new Intent(User_home.this, Profile_Patient.class);
-        intent.putExtra("Uid", receriveIntent);
-        startActivity(intent);
-
-
 
         // set onClickListenr on the image of the user profile to got into their profile page
-       /* imageBtn.setOnClickListener(new View.OnClickListener() {
+       imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(User_home.this, Profile_Patient.class);
                 intent.putExtra("UID", receriveIntent);
+                startActivity(intent);
             }
-        });*/
+        });
 
     }
 
