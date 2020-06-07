@@ -7,7 +7,7 @@ public class Modle {
     private String dosage;
     private String detailDes;
     // private int img;
-    private boolean expanded;
+    private boolean expanded; // set the state the constrain layout
 
     public Modle(){}//needed for firebase
 
@@ -18,7 +18,7 @@ public class Modle {
         this.dosage = dosage;
         this.detailDes = detailDes;
         // this.img = img;
-        this.expanded = false;
+        this.expanded = false; // sat the initial stat of the layout to be inevitable
     }
 
     public void setExpanded(boolean expanded) {

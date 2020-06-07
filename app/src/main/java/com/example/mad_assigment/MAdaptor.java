@@ -43,7 +43,7 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
         holder.dosage.setText(model.getDosage());
         //holder.mimgV.setImageResource(R.drawable.pill);
         boolean isExpanded  = model.isExpanded();
-        holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+        holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE); // if the layout is expanded set to viable else set to gone so to not take up space
     }
 
     /**

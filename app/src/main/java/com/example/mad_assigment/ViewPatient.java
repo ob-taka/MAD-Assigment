@@ -5,14 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.icu.lang.UCharacter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,7 +52,7 @@ public class ViewPatient extends AppCompatActivity{
         patientMList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        nameView = findViewById(R.id.patientName);
+        nameView = findViewById(R.id.greating);
         nameView.setText(patientName);
         patientPicView = findViewById(R.id.profile_image);
 

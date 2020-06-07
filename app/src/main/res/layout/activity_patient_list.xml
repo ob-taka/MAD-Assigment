@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/patientName"
+        android:id="@+id/greating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -35,7 +35,7 @@
         android:layout_marginTop="28dp"
         android:hint="Search Patient..."
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/patientName" />
+        app:layout_constraintTop_toBottomOf="@+id/greating" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="410dp"
