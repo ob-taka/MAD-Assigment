@@ -68,7 +68,7 @@ public class SignIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
+                            onAuthSuccess(task.getResult().getUser(),email);
                         }
                         else {
                             Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException(), Toast.LENGTH_SHORT).show();
@@ -82,7 +82,7 @@ public class SignIn extends AppCompatActivity {
     //need to add validation to keep user signed in. (Stage 2)
 
     //This method checks for user's role and direct them to their respective pages.
-    private void onAuthSuccess(FirebaseUser user) {
+    private void onAuthSuccess(FirebaseUser user, final String email) {
         //Replacing '@' & '.' to '_' as firebase key does not allow special characters
         final String fEmail = email
                 .replace("@","_")
@@ -96,6 +96,7 @@ public class SignIn extends AppCompatActivity {
                     role = dataSnapshot.child(fEmail).getValue().toString();
                     Log.d("#d",role);
                     returnKey();
+
                     if(role.equals("Doctor")){
                         //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                         mProgressBar.setVisibility(View.GONE);
@@ -107,7 +108,7 @@ public class SignIn extends AppCompatActivity {
                     }
                     else if (role.equals("Patient")){
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignIn.this, uid,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Patient");
@@ -124,7 +125,7 @@ public class SignIn extends AppCompatActivity {
     }
     //This Method searches the email in Child "Users" of database and return the key
     private void returnKey(){
-        ref = FirebaseDatabase.getInstance().getReference("User");
+        ref = FirebaseDatabase.getInstance().getReference().child("Users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
