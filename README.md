@@ -10,26 +10,37 @@
 
 > Health android app
 
-**Demo**
+**Site Map**
 
-[![INSERT YOUR GRAPHIC HERE](http://i.imgur.com/dt8AUb6.png)]()
+[![](https://cdn.discordapp.com/attachments/703063187053871244/708275297484800070/2020-05-08_3.png)]
 
 ---
 
 **Login**
-![Login Page](http://g.recordit.co/3OGh5uBAKf.gif)
+
+[![Login Page](https://recordit.co/1sW0ATqOvD)]()
+
+---
 
 **User**
 
-![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![User Profile Page](http://g.recordit.co/3OGh5uBAKf.gif)
+[![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)]()
+
+[![User Profile Page](http://recordit.co/teGFtP6Uqe)]()
+
+---
 
 **Doctor**
-![Doctor Home Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Patient List Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Add Patient Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Medicine List Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Add Medicine Page](http://g.recordit.co/3OGh5uBAKf.gif)
+
+[![Doctor Home Page](https://recordit.co/WmSEEBXzr3)]()
+
+[![Patient List Page](https://recordit.co/qiCrzihnkk)]()
+
+[![Add Patient Page](https://recordit.co/apy590YN0I)]()
+
+[![Medicine List Page](https://recordit.co/NVMEiAz42t)]()
+
+[![Add Medicine Page](https://recordit.co/x4ep7DcFPK)]()
 
 ---
 
