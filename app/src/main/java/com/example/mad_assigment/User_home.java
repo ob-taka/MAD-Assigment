@@ -92,7 +92,7 @@ public class User_home extends AppCompatActivity {
                 scheduleID = dataSnapshot.child("medid").getValue(String.class);
                 name = dataSnapshot.child("patientName").getValue(String.class);
                 username.setText(name);
-                setUpRecyclerView(scheduleID);
+                //setUpRecyclerView(scheduleID);
             }
 
             @Override
@@ -143,7 +143,7 @@ public class User_home extends AppCompatActivity {
      * Using this method to set up the recycler view using the information fetched form the database
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
-    private void setUpRecyclerView(String ID){
+    /*private void setUpRecyclerView(String ID){
         Query query = medicineReference.child(ID).orderByChild("priority");
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
@@ -164,7 +164,7 @@ public class User_home extends AppCompatActivity {
                 adaptor.notifyItemChanged(position);
             }
         });
-    }
+    }*/
 
 
     /**
