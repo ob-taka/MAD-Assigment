@@ -129,6 +129,7 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds:dataSnapshot.getChildren()){
+                    PatientModel patientModel = ds.getValue(PatientModel.class);
                     if(ds.child("patientEmail").getValue().toString().equals(email)){
                         uid = ds.getKey();
                     }

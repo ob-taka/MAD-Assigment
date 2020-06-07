@@ -1,12 +1,15 @@
 package com.example.mad_assigment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
@@ -15,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -47,10 +51,25 @@ public class DoctorHome extends AppCompatActivity {
         addpatient.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddPatient.class);
-                intent.putExtra("keys" , unaddedPatients);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                // check if patient data is empty else fetch again
+                if  (unaddedPatients.isEmpty()){
+                    fetchPatientData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DoctorHome.this);
+                    builder.setTitle("Please wait for HealthAnytime to fetch data")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            });
+                    builder.create();
+                    builder.show();
+                }
+                else{
+                    Intent intent = new Intent(getApplicationContext(), AddPatient.class);
+                    intent.putExtra("keys" , unaddedPatients);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                }
             }
         });
     }

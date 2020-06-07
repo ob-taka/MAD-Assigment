@@ -71,7 +71,6 @@ public class AddPatient extends AppCompatActivity{
 
 
                     success.check();// check animation
-                    Toast.makeText(AddPatient.this  , medkey , Toast.LENGTH_SHORT).show();
 
                     // delay moving to medicineList , wait for check animation to finish
                     Handler handler = new Handler();

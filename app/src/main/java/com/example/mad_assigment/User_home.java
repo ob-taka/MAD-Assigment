@@ -42,7 +42,7 @@ public class User_home extends AppCompatActivity {
     private String scheduleID;
     private String patientPic;
     private ArrayList<String> medicinePic;
-    private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("-M9CLGQZArfRz4tqFSVN");// change to recieveintent
+    private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("--M9CLGQZArfRz4tqFSVN");// change to recieveintent
     //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
     private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("user_medicien")/*.child(scheduleID)*/; // get the reference of the medicine list base on schedule ID from user
     ImageView imageBtn;

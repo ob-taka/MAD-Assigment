@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class MedicineList extends AppCompatActivity{
     String medKey;
     MAdaptor adaptor;
     ArrayList<String> medicinepic;
+    ArrayList<Modle> medicineList;
     DatabaseReference databaseReference;
     DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
 
@@ -46,11 +48,14 @@ public class MedicineList extends AppCompatActivity{
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("patientKey");
         medKey = intent.getStringExtra("patientmlist");
-        Toast.makeText(this, medKey , Toast.LENGTH_SHORT).show();
         // init list and firebase connection
         databaseReference = FirebaseDatabase.getInstance().getReference();
         medicinepic = new ArrayList<>();
-        setUpRecyclerView();
+        medicineList = new ArrayList<>();
+
+        //setup rv
+
+
 
         //onclicklistener for buttons
 
@@ -83,7 +88,7 @@ public class MedicineList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        fetchpatientMedList();
+        setUpRecyclerView();
     }
 
     @Override
@@ -98,29 +103,39 @@ public class MedicineList extends AppCompatActivity{
 //     * Using reference of medicine list from firebase
 //     * medicine is added into patient medicine list and showed in recyclerview
 //     */
-    private void fetchpatientMedList(){
-        // fetch patient medicine list
-        medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Modle med = snapshot.getValue(Modle.class);
-                    medicinepic.add(med.getImg());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    private void fetchpatientMedList(){
+//        // fetch patient medicine list
+//
+//        medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Modle modle = snapshot.getValue(Modle.class);
+//                    medicineList.add(modle);
+//                    Log.d("#d" , modle.getDescription());
+//                    Log.d("#d" , modle.getDescription());
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//        Madaptor = new MedicineAdaptor(this , medicineList);
+//        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
+//        recyclerView.setAdapter(Madaptor);
+//
+//    }
 
     /**
      * setup recyclerview
      */
     private void setUpRecyclerView(){
-        Query query = medReference.child(medKey).orderByChild("priority");
+//        Query query = medReference.child("e6aaa1d7-d").orderByChild("priority");
+        Query query = medReference.child(medKey);
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
@@ -129,7 +144,7 @@ public class MedicineList extends AppCompatActivity{
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this ));
         recyclerView.setAdapter(adaptor);
-
+        Log.d("#d" , "fetched med");
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(DataSnapshot dataSnapshot, int position) {
@@ -140,52 +155,7 @@ public class MedicineList extends AppCompatActivity{
         });
     }
 
-    /**
-     * creates and display alert dialog to Add patient activity , as confirmation
-     * that the user wants to add the patient.
-     * The user can choose to accept or cancel
-     * Accept : changes patient status to true and update patient medicine list in firebase
-     * Cancel : does nothing
-     *
-     */
-//    private void buildDialog(){
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MedicineList.this);
-//        builder.setTitle(R.string.addpatient)
-//                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        firebaseAddpatient();
-//                        Intent nextActivity = new Intent(MedicineList.this  , PatientList.class );
-//                        startActivity(nextActivity);
-//
-//                    }
-//                })
-//                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User cancelled the dialog
-//                    }
-//                });
-//        builder.create();
-//        builder.show();
-//
-//    }
 
-    /**
-     *
-     */
-//    private void firebaseAddpatient(){
-//        // construct medicine list from addmedicine activity
-//        HashMap<String, Boolean> patientMedicineList = new HashMap<>();
-//        // populate list with medicine in medicineList
-//
-//        // find patient using name and email
-//        for (String i : patientList.keySet()) {
-//            PatientModel patient = patientList.get(i);
-//            if(patient.getPatientEmail().equals(email.getText().toString().trim()) && !patient.isStatus()) {
-//                databaseReference.child("patientMedicineList").child(i).setValue(patientMedicineList);
-//                databaseReference.child("Users").child(i).child("Status").setValue(true);
-//            }
-//        }
-//    }
 
 
 }

@@ -10,19 +10,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".User_home"></activity>
-        <activity android:name=".MainActivity"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".DoctorHome" />
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />
         <activity android:name=".AddPatient" />
         <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".MedicineList"/>
+        <activity android:name=".MedicineList">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".PatientList"
             android:windowSoftInputMode="adjustPan">
 
