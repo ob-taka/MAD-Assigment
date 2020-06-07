@@ -87,7 +87,7 @@ public class SignIn extends AppCompatActivity {
         final String fEmail = email
                 .replace("@","_")
                 .replace(".","_");
-
+        returnKey();
         if (user != null) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Role");
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -95,12 +95,12 @@ public class SignIn extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     role = dataSnapshot.child(fEmail).getValue().toString();
                     Log.d("#d",role);
-                    returnKey();
+
 
                     if(role.equals("Doctor")){
                         //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Doctor");
@@ -108,7 +108,8 @@ public class SignIn extends AppCompatActivity {
                     }
                     else if (role.equals("Patient")){
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_LONG).show();
+                        Log.d("#d",uid);
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Patient");
@@ -125,15 +126,14 @@ public class SignIn extends AppCompatActivity {
     }
     //This Method searches the email in Child "Users" of database and return the key
     private void returnKey(){
-        ref = FirebaseDatabase.getInstance().getReference().child("Users");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference refe = FirebaseDatabase.getInstance().getReference("User");
+        refe.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    if(ds.child("patientEmail").getValue().toString().equals(email)){
+                    if(ds.child("patientEmail").getValue().toString().toLowerCase().equals(email)){
                         uid = ds.getKey();
                     }
-                    //need to add statement to check for doctor uid
                 }
             }
 
