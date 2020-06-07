@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login"
-    tools:context=".MainActivity">
+    tools:context=".SignIn">
 
     <TextView
         android:id="@+id/textView_Login"
@@ -29,15 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_Login">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="132dp"
-            android:layout_height="136dp"
-            android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ic_round"
-            tools:ignore="VectorDrawableCompat" />
 
         <FrameLayout
             android:id="@+id/frameLayout"
@@ -86,6 +77,19 @@
             android:text="Sign In" />
 
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_Login"
+        app:srcCompat="@drawable/ic_round"
+        tools:ignore="VectorDrawableCompat" />
 
     <ProgressBar
         android:id="@+id/progressBar_signIn"
