@@ -43,13 +43,12 @@ public class ViewPatient extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_view_patient);
 
-    //init data
+    //init data and get data from intent
     final Bundle data = getIntent().getExtras();
     patientName = data.getString("patientname");
     patientPic = data.getString("patientpic");
     medKey = data.getString("medKey");
     medicineList = new ArrayList<>();
-
 
     nameView = findViewById(R.id.greating);
     nameView.setText(patientName);
@@ -63,8 +62,11 @@ public class ViewPatient extends AppCompatActivity {
     setUpRecyclerView();
   }
 
+  /**
+   *fetching medicine data from firebase and set recyclerview
+   */
   private void setUpRecyclerView() {
-    Query query = medReference.orderByChild("priority");
+    Query query = medReference.child(medKey).orderByChild("priority");
     FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
       .setQuery(query, Modle.class)
       .build();
@@ -75,6 +77,9 @@ public class ViewPatient extends AppCompatActivity {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adaptor);
 
+    adaptor.startListening();// listening for data in firebase
+
+    // when clicked expand the view
     adaptor.setOnItemClickListener(
       new MAdaptor.OnItemClickListener() {
 
@@ -86,25 +91,6 @@ public class ViewPatient extends AppCompatActivity {
         }
       }
     );
-  }
-
-  // fetch medicine from med list
-  private void fetchMData(){
-    // fetch patient from firebase
-    medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-          Modle med = snapshot.getValue(Modle.class);
-          medicineList.add(med.getImg());
-        }
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
-
-      }
-    });
   }
 
   /**
@@ -131,70 +117,4 @@ public class ViewPatient extends AppCompatActivity {
       );
   }
 
-
-
-  //    // this function fetches patient data from firebase server
-  //    private void fetchData(){
-  //
-  //        databaseReference.child("User").addListenerForSingleValueEvent(new ValueEventListener() {
-  //            @Override
-  //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-  //                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-  //                    PatientModel patient = snapshot.getValue(PatientModel.class);
-  //
-  //                    if(patient.getPatientName().equals(patientName)){
-  //                        patientKey = snapshot.getKey();
-  //                    }
-  //                }
-  //            }
-  //            @Override
-  //            public void onCancelled(@NonNull DatabaseError databaseError) {
-  //
-  //            }
-  //        });
-  //    }
-  //    // this method fetches medicine data from firebase server
-  //    private  void fetchMdata(){
-  //        databaseReference.child("medicine_list").addListenerForSingleValueEvent(new ValueEventListener() {
-  //            @Override
-  //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-  //                medicineList.clear();
-  //                mRecycleView.removeAllViews();
-  //                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-  //                    if (snapshot.getKey().equals(patientKey)){
-  //                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
-  //                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
-  //                        HashMap<String, Boolean> map = snapshot.getValue(to);
-  //                        int count = 0;
-  //                        for(boolean ml: map.values()) {
-  //                            if(ml) {
-  //                                medicineList.add(patientMList.get(count));
-  //                            }
-  //                            count++;
-  //                        }
-  //                        System.out.println(medicineList);
-  //                    }
-  //                }
-  //            }
-  //            @Override
-  //            public void onCancelled(@NonNull DatabaseError databaseError) {
-  //                // add dialog
-  //            }
-  //        });
-  //    }
-  //    //fetch medicine list from firebase
-  //    private void fetchMedicineData(){
-  //        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
-  //            @Override
-  //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-  //                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-  //                    patientMList.add(snapshot.getValue(MedicineModel.class));
-  //                }
-  //            }
-  //            @Override
-  //            public void onCancelled(@NonNull DatabaseError databaseError) {
-  //
-  //            }
-  //        });
-  //    }
 }

@@ -111,7 +111,7 @@ public class MedicineList extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptor);
 
-        adaptor.startListening();
+        adaptor.startListening();// listening for data in firebase
 
         // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {

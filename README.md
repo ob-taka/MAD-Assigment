@@ -10,37 +10,30 @@
 
 > Health android app
 
-**_INSERT GIF OF WORKING APP_**
+**Demo**
 
 [![INSERT YOUR GRAPHIC HERE](http://i.imgur.com/dt8AUb6.png)]()
 
-- Most people will glance at your `README`, _maybe_ star it, and leave
-- Ergo, people should understand instantly what your project is about based on your repo
+---
 
-> Tips
+**Login**
+![Login Page](http://g.recordit.co/3OGh5uBAKf.gif)
 
-- HAVE WHITE SPACE
-- MAKE IT PRETTY
-- GIFS ARE REALLY COOL
+**User**
 
-> GIF Tools
+![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)
+![User Profile Page](http://g.recordit.co/3OGh5uBAKf.gif)
 
-- Use <a href="http://recordit.co/" target="_blank">**Recordit**</a> to create quicks screencasts of your desktop and export them as `GIF`s.
-- For terminal sessions, there's <a href="https://github.com/chjj/ttystudio" target="_blank">**ttystudio**</a> which also supports exporting `GIF`s.
-
-**Recordit**
-
-![Recordit GIF](http://g.recordit.co/iLN6A0vSD8.gif)
-
-**ttystudio**
-
-![ttystudio GIF](https://raw.githubusercontent.com/chjj/ttystudio/master/img/example.gif)
+**Doctor**
+![Doctor Home Page](http://g.recordit.co/3OGh5uBAKf.gif)
+![Patient List Page](http://g.recordit.co/3OGh5uBAKf.gif)
+![Add Patient Page](http://g.recordit.co/3OGh5uBAKf.gif)
+![Medicine List Page](http://g.recordit.co/3OGh5uBAKf.gif)
+![Add Medicine Page](http://g.recordit.co/3OGh5uBAKf.gif)
 
 ---
 
-## Table of Contents (Optional)
-
-> If your `README` has a lot of info, section headers might be nice.
+## Table of Contents
 
 - [Clone](#clone)
 - [Documentation](#documentation)
