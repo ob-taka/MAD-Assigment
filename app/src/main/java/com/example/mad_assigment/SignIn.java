@@ -79,9 +79,11 @@ public class SignIn extends AppCompatActivity {
             }
         });
     }
-    //add validation to keep user signed in.
+    //need to add validation to keep user signed in. (Stage 2)
 
+    //This method checks for user's role and direct them to their respective pages.
     private void onAuthSuccess(FirebaseUser user, final String email) {
+        //Replacing '@' & '.' to '_' as firebase key does not allow special characters
         final String fEmail = email
                 .replace("@","_")
                 .replace(".","_");
@@ -115,12 +117,12 @@ public class SignIn extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
         }
     }
-    //Method to find email in Child "Users" of database and return the key
+    //This Method searches the email in Child "Users" of database and return the key
     private void returnKey(){
         ref = FirebaseDatabase.getInstance().getReference().child("Users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
