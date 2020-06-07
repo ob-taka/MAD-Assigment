@@ -55,7 +55,7 @@
 
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/before"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Before Food" />
@@ -65,7 +65,7 @@
                 android:layout_height="match_parent" />
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/after"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="After Food" />
