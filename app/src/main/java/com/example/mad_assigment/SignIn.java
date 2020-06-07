@@ -108,6 +108,8 @@ public class SignIn extends AppCompatActivity {
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_LONG).show();
                         Log.d("#d",uid);
+                        Intent intent2prof = new Intent(SignIn.this,Profile_Patient.class);
+                        intent2prof.putExtra("Uid",uid);
                         Intent intent = new Intent(SignIn.this,User_home.class);
                         intent.putExtra("Uid",uid)
                                 .putExtra("Role","Patient");
