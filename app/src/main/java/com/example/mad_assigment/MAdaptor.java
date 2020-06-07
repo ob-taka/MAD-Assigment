@@ -41,14 +41,14 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
         holder.mTime.setText(model.getTime());
         holder.detilDes.setText(model.getDetailDes());
         holder.dosage.setText(model.getDosage());
-        //holder.mimgV.setImageResource(R.drawable.pill);
+        holder.mimgV.setImageResource(R.drawable.pill);
         boolean isExpanded  = model.isExpanded();
         holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }
 
     class MHolder extends RecyclerView.ViewHolder {
 
-        //ImageView mimgV;
+        ImageView mimgV;
         TextView mTitle, mDes, mTime, detilDes, dosage;
         ConstraintLayout expandableLayout;
 
@@ -59,7 +59,7 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
             this.dosage = itemView.findViewById(R.id.dosage);
             this.mTitle = itemView.findViewById(R.id.mTitle);
             this.mDes = itemView.findViewById(R.id.mDes);
-            //this.mimgV = itemView.findViewById(R.id.mImageV);
+            this.mimgV = itemView.findViewById(R.id.mImageV);
             this.mTime = itemView.findViewById(R.id.mTime);
             mTitle.setOnClickListener(new View.OnClickListener() {
                 @Override

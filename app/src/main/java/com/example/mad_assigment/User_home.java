@@ -43,7 +43,6 @@ public class User_home extends AppCompatActivity {
     private String patientPic;
     private ArrayList<String> medicinePic;
     private DatabaseReference userReference;// change to recieveintent
-    //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
     private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("med_list"); // get the reference of the medicine list base on schedule ID from user
     ImageView imageBtn;
     private TextView username, greating;
@@ -60,8 +59,8 @@ public class User_home extends AppCompatActivity {
         greating = findViewById(R.id.greating);
         medicinePic = new ArrayList<>();
 
-        receriveIntent = getIntent().getStringExtra("Uid");
-        userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);
+        receriveIntent = getIntent().getStringExtra("Uid"); // get Uid intent form SignIn
+        userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);// get reference of the current using the uid pass in form login
 
         initUser();
         //fetchMData();
@@ -118,7 +117,7 @@ public class User_home extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                adaptor.stopListening();
             }
         });
     }
@@ -148,12 +147,15 @@ public class User_home extends AppCompatActivity {
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
+
         // passing data into adaptor
-        //adaptor = new MAdaptor(this , options , medicinePic);
+        adaptor = new MAdaptor(options);
         RecyclerView recyclerView = findViewById(R.id.mRV);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptor);
+
+        adaptor.startListening();
 
         // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
@@ -179,23 +181,6 @@ public class User_home extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
-    /**
-     * ask the adaptor to start listening for changes in the firebase when the app start or resume
-     */
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-        adaptor.startListening();
-    }*/
-    /**
-     * ask the adaptor to stop listening for changes in the firebase when the app stop of put to the background
-     */
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        adaptor.stopListening();
-    }*/
 
     /**
      * fetch image view from firebase Storage (file hosting service)
