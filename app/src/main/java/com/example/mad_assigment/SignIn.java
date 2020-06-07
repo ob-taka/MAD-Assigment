@@ -98,6 +98,7 @@ public class SignIn extends AppCompatActivity {
                     returnKey();
 
                     if(role.equals("Doctor")){
+                        //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignIn.this,User_home.class);

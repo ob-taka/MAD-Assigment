@@ -36,7 +36,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +48,8 @@
             android:id="@+id/label_Name"
             android:layout_width="330dp"
             android:layout_height="50dp"
+            android:layout_marginTop="40dp"
+            android:textSize="20sp"
             android:text="Name"
             android:textStyle="bold"/>
 
@@ -55,6 +57,7 @@
             android:id="@+id/patient_Name"
             android:layout_width="330dp"
             android:layout_height="50dp"
+            android:textSize="15sp"
             android:layout_marginBottom="30dp"
             android:text="-" />
 
@@ -62,6 +65,8 @@
             android:id="@+id/label_Email"
             android:layout_width="330dp"
             android:layout_height="50dp"
+            android:textSize="20sp"
+
             android:text="Email"
             android:textStyle="bold"/>
 
@@ -69,20 +74,8 @@
             android:id="@+id/patient_Email"
             android:layout_width="330dp"
             android:layout_height="50dp"
+            android:textSize="15sp"
             android:layout_marginBottom="30dp"
-            android:text="-" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="330dp"
-            android:layout_height="50dp"
-            android:text="Phone Number"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/patient_Phone"
-            android:layout_width="330dp"
-            android:layout_height="50dp"
             android:text="-" />
 
     </LinearLayout>
