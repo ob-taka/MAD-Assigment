@@ -52,7 +52,7 @@ public class AddPatient extends AppCompatActivity{
         patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys"); //serialized hashmap
 
         // submit button to push patient medicine list to firebase
-        create = (Button) findViewById(R.id.button7);
+        create = findViewById(R.id.button7);
         name = findViewById(R.id.name_edit_text);
         email = findViewById(R.id.email_edit_text);
         success = findViewById(R.id.check);
@@ -110,6 +110,7 @@ public class AddPatient extends AppCompatActivity{
      *
      */
     private Boolean checkPatient(){
+        // traversing hashmap
         for (Map.Entry patientEntry : patientList.entrySet()){
             key = (String) patientEntry.getKey();
             PatientModel patient = (PatientModel) patientEntry.getValue();
@@ -123,7 +124,7 @@ public class AddPatient extends AppCompatActivity{
     }
 
     /**
-     * Used to alert user that patient entered does not exist
+     * Used to alert user that patient email entered does not exist
      */
     private void buildDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(AddPatient.this);
@@ -148,11 +149,14 @@ public class AddPatient extends AppCompatActivity{
     }
 
 
-
-    //update patient medlist value to unique id
+    /**
+     * update patient medicine list key value to unique id
+     */
     private void updatePatient(){
+        //check if medicine list key has been generated before
         if (medkey.equals("")){
-            medkey = UUID.randomUUID().toString().substring(0,10);// generate unique id using UUID 128 bits (java class)
+            // generate a 10 chars long unique id , using UUID( build-in java class) , a 128 bits value String 
+            medkey = UUID.randomUUID().toString().substring(0,10);
             FirebaseDatabase.getInstance().getReference().child("test").child(key).child("medid").setValue(medkey);
         }
 

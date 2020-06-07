@@ -10,7 +10,7 @@ public class PatientModel implements Serializable{
   private String patientEmail;
   private boolean status;
   private String role;
-  private String medid;
+  private String medId;
 
   public PatientModel(){
 
@@ -22,7 +22,7 @@ public class PatientModel implements Serializable{
     this.patientEmail = email;
     this.status = status;
     this.role = role;
-    this.medid = med;
+    this.medId = med;
   }
 
   public String getPatientProfilepic() {
@@ -65,9 +65,9 @@ public class PatientModel implements Serializable{
   }
 
   public String getMedid() {
-    return medid;
+    return medId;
   }
   public void setMedid(String medid) {
-    this.medid = medid;
+    this.medId = medid;
   }
 }

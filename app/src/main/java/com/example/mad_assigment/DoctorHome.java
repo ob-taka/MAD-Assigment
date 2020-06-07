@@ -75,12 +75,10 @@ public class DoctorHome extends AppCompatActivity {
         databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(getApplicationContext().getApplicationContext(), "fetching", Toast.LENGTH_SHORT).show();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     PatientModel patient = snapshot.getValue(PatientModel.class);
                     if(!patient.isStatus()){
                         unaddedPatients.put(snapshot.getKey() , patient);
-                        Toast.makeText(getApplicationContext().getApplicationContext(), "ADDED", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

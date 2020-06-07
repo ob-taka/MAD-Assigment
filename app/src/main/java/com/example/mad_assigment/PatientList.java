@@ -128,7 +128,6 @@ public class PatientList extends AppCompatActivity{
         databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(getApplicationContext().getApplicationContext(), "fetching", Toast.LENGTH_SHORT).show();
                 patientLists.clear();
                 PRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -141,7 +140,6 @@ public class PatientList extends AppCompatActivity{
                         clonePatientList.add(patient);
                     }else if(!patient.isStatus()){
                         unaddedPatients.put(snapshot.getKey() , patient);
-                        Toast.makeText(getApplicationContext().getApplicationContext(), "ADDED", Toast.LENGTH_SHORT).show();
                     }
 
                 }
