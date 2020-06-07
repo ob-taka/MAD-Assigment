@@ -63,7 +63,6 @@ public class User_home extends AppCompatActivity {
         userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);// get reference of the current using the uid pass in form login
 
         initUser();
-        //fetchMData();
         createChannel();
         setTimeOfDay();
 
