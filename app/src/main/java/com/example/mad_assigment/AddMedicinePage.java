@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -48,13 +49,14 @@ import java.util.ArrayList;
 public class AddMedicinePage extends AppCompatActivity {
 
     public static EditText searchMed;
+    RadioButton before,after;
     TextView dose;
-    String medName,medType;
+    String medName,medType,medKey;
     ImageButton plus,minus;
     Button breakfast,lunch,dinner,submit;
     Double doseNumber;
 
-    Integer correctMed,breakfastValid,lunchValid,dinnerValid;
+    Integer correctMed,breakfastValid,lunchValid,dinnerValid,errors;
 
 
     DatabaseReference databaseReference;
@@ -83,6 +85,11 @@ public class AddMedicinePage extends AppCompatActivity {
         lunch=findViewById(R.id.lunch);
         dinner=findViewById(R.id.dinner);
         submit=findViewById(R.id.submit);
+        before=findViewById(R.id.before);
+        after=findViewById(R.id.after);
+        Intent intent = getIntent();
+
+        medKey = intent.getStringExtra("patientmlist");
 
         final DecimalFormat df = new DecimalFormat("#");
 
@@ -97,13 +104,10 @@ public class AddMedicinePage extends AppCompatActivity {
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
         recyclerView.addItemDecoration((new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)));
 
-
+        //Creating Spinner
         Spinner spinner=findViewById(R.id.spinner1);
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this,R.array.medType,android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -134,7 +138,7 @@ public class AddMedicinePage extends AppCompatActivity {
             }
         });
 
-
+        //Changing colour when selected
         breakfast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +182,7 @@ public class AddMedicinePage extends AppCompatActivity {
             }
         });
 
+        //Changing number in textview based on button pressed
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +229,7 @@ public class AddMedicinePage extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId==EditorInfo.IME_ACTION_DONE){
-                    //Clear focus here from edittext
+                    //Clearing recycler view
                     med_list.clear();
                     id_list.clear();
                     searchAdapter.notifyDataSetChanged();
@@ -237,7 +242,7 @@ public class AddMedicinePage extends AppCompatActivity {
             }
         });
 
-
+        //When text is edited in editText
         searchMed.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -275,15 +280,19 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 //Check if all tasks has been selected.
                 //
+
                 checkValid();
+                if (errors==0){
+                    sendData();
+                }
             }
         });
 
     }
 
     private void setAdapter(final String searchedString) {
-
-        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
+        //Retrieving data in firebase
+        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 med_list.clear();
@@ -293,8 +302,7 @@ public class AddMedicinePage extends AppCompatActivity {
 
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     //String med_num=snapshot.getKey();
-                    String med_name=snapshot.child("medicineTitle").getValue().toString();
-//                    String id_num=snapshot.child("ID").getValue().toString();
+                    String med_name=snapshot.child("title").getValue().toString();
                     String id_num=snapshot.child("ID").getValue().toString();
                     if(med_name.toLowerCase().contains(searchedString.toLowerCase())){
                         med_list.add(med_name);
@@ -306,6 +314,7 @@ public class AddMedicinePage extends AppCompatActivity {
                         id_list.add(id_num);
                         counter++;
                     }
+                    //limit search result
                     if(counter==5){
                         break;
                     }
@@ -322,22 +331,29 @@ public class AddMedicinePage extends AppCompatActivity {
     }
     public void checkValid(){
         correctMed = 0;
+        errors=0;
 
-        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String med_name=snapshot.child("medicineTitle").getValue().toString();
+                    String med_name=snapshot.child("title").getValue().toString();
                     Log.v("number",correctMed.toString());
+                    //Validating if medicine name entered is same as medicine name in firebase
                     if (med_name.equals(medName)) {
                         correctMed=1;
 
                     }
 
                 }
-                if (correctMed==0){
+                if (searchMed.getText().toString().length()==0){
+                    searchMed.setError("Please enter Medicine Name");
+                }
+                else if (correctMed==0){
                     searchMed.setError("Invalid Medicine Name");
+                    errors=1;
+
                 }
 
             }
@@ -351,15 +367,20 @@ public class AddMedicinePage extends AppCompatActivity {
 
 
 
-
+        //Validating if all other fields have been filled
         if (radioGroup.getCheckedRadioButtonId() == -1) {
             errorMsg+="Please select before or after food";
+            errors=1;
         }
         if(breakfastValid==0 && lunchValid==0 && dinnerValid==0){
             errorMsg+="\n Please select the meal for medicine intake";
+            errors=1;
+
         }
         if (doseNumber==0.0){
             errorMsg+="\n Please select the dosage";
+            errors=1;
+
         }
 
 
@@ -371,6 +392,37 @@ public class AddMedicinePage extends AppCompatActivity {
         toast.show();
 
 
+
+    }
+    public void sendData(){
+        //Adding data to firebase
+        DatabaseReference tempRef=databaseReference.child("med_list").child(medKey);
+        tempRef.child("MedicineName").setValue(medName);
+        tempRef.child("Dosage").setValue(doseNumber);
+        tempRef.child("MedType").setValue(medType);
+        tempRef.child("Breakfast").setValue("False");
+        tempRef.child("Lunch").setValue("False");
+        tempRef.child("Dinner").setValue("False");
+        if (breakfastValid==1){
+            tempRef.child("Breakfast").setValue("True");
+
+        }if (dinnerValid==1){
+            tempRef.child("Breakfast").setValue("True");
+
+        }if (dinnerValid==1){
+            tempRef.child("Breakfast").setValue("True");
+
+        }
+        if(before.isChecked())
+        {
+            tempRef.child("Food").setValue("Before");
+
+        }
+        else if (after.isChecked())
+        {
+            tempRef.child("Food").setValue("After");
+
+        }
 
     }
 }

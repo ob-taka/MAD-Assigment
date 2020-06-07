@@ -14,11 +14,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.UUID;
 import cdflynn.android.library.checkview.CheckView;
 
 public class AddPatient extends AppCompatActivity{
@@ -27,6 +34,7 @@ public class AddPatient extends AppCompatActivity{
     EditText email;
     Button create;
     String key;
+    String medkey;
     CheckView success;
     HashMap<String,PatientModel> patientList;
 
@@ -41,10 +49,10 @@ public class AddPatient extends AppCompatActivity{
 
         //init list and database
         Intent intent = getIntent();
-        patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys");
+        patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys"); //serialized hashmap
 
         // submit button to push patient medicine list to firebase
-        create = (Button) findViewById(R.id.button7);
+        create = findViewById(R.id.button7);
         name = findViewById(R.id.name_edit_text);
         email = findViewById(R.id.email_edit_text);
         success = findViewById(R.id.check);
@@ -58,6 +66,9 @@ public class AddPatient extends AppCompatActivity{
                     nextActivity.putExtra("pname",name.getText().toString().trim());
                     nextActivity.putExtra("pemail",email.getText().toString().trim());
                     nextActivity.putExtra("patientKey" , key);
+                    updatePatient();
+                    nextActivity.putExtra("patientmlist" ,medkey);
+
 
                     success.check();// check animation
 
@@ -99,18 +110,21 @@ public class AddPatient extends AppCompatActivity{
      *
      */
     private Boolean checkPatient(){
+        // traversing hashmap
         for (Map.Entry patientEntry : patientList.entrySet()){
             key = (String) patientEntry.getKey();
             PatientModel patient = (PatientModel) patientEntry.getValue();
             if(patient.getPatientEmail().equals(email.getText().toString().trim())){
+                medkey = patient.getMedid();
                 return true;
             }
+
         }
         return false;
     }
 
     /**
-     * Used to alert user that patient entered does not exist
+     * Used to alert user that patient email entered does not exist
      */
     private void buildDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(AddPatient.this);
@@ -133,4 +147,21 @@ public class AddPatient extends AppCompatActivity{
         name.setText("");
         email.setText("");
     }
+
+
+    /**
+     * update patient medicine list key value to unique id
+     */
+    private void updatePatient(){
+        //check if medicine list key has been generated before
+        if (medkey.equals("")){
+            // generate a 10 chars long unique id , using UUID( build-in java class) , a 128 bits value String 
+            medkey = UUID.randomUUID().toString().substring(0,10);
+            FirebaseDatabase.getInstance().getReference().child("test").child(key).child("medid").setValue(medkey);
+        }
+
+    }
+
+
+
 }
