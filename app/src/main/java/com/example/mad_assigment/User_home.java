@@ -149,7 +149,7 @@ public class User_home extends AppCompatActivity {
                 .setQuery(query, Modle.class)
                 .build();
         // passing data into adaptor
-        adaptor = new MAdaptor(this , options , medicinePic);
+        //adaptor = new MAdaptor(this , options , medicinePic);
         RecyclerView recyclerView = findViewById(R.id.mRV);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

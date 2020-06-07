@@ -53,10 +53,6 @@ public class MedicineList extends AppCompatActivity{
         medicinepic = new ArrayList<>();
         medicineList = new ArrayList<>();
 
-        //setup rv
-
-
-
         //onclicklistener for buttons
 
         // button inside recyclerview button : redirects user to add medicine activity
@@ -113,7 +109,6 @@ public class MedicineList extends AppCompatActivity{
 //                    Modle modle = snapshot.getValue(Modle.class);
 //                    medicineList.add(modle);
 //                    Log.d("#d" , modle.getDescription());
-//                    Log.d("#d" , modle.getDescription());
 //
 //                }
 //            }
@@ -123,10 +118,7 @@ public class MedicineList extends AppCompatActivity{
 //
 //            }
 //        });
-//        Madaptor = new MedicineAdaptor(this , medicineList);
-//        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this ));
-//        recyclerView.setAdapter(Madaptor);
+//
 //
 //    }
 
@@ -134,17 +126,16 @@ public class MedicineList extends AppCompatActivity{
      * setup recyclerview
      */
     private void setUpRecyclerView(){
-//        Query query = medReference.child("e6aaa1d7-d").orderByChild("priority");
-        Query query = medReference.child(medKey);
+        Query query = medReference.child("e6aaa1d7-d").orderByChild("priority");
+//        Query query = medReference.child(medKey);
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
 
-        adaptor = new MAdaptor(this , options , medicinepic);
+        adaptor = new MAdaptor( options );
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this ));
         recyclerView.setAdapter(adaptor);
-        Log.d("#d" , "fetched med");
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
             @Override
             public void onItemClick(DataSnapshot dataSnapshot, int position) {

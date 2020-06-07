@@ -69,7 +69,7 @@ public class ViewPatient extends AppCompatActivity {
       .setQuery(query, Modle.class)
       .build();
 
-    adaptor = new MAdaptor(this ,options , medicineList);
+    adaptor = new MAdaptor(options);
     RecyclerView recyclerView = findViewById(R.id.mRV);
     recyclerView.setHasFixedSize(true);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
