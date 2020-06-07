@@ -30,27 +30,26 @@ public class ViewPatient extends AppCompatActivity {
     .getInstance()
     .getReference()
     .child("med_list");
-  ArrayList<MedicineModel> medicineList;
-  ArrayList<MedicineModel> patientMList;
   String patientName;
   TextView nameView;
   String patientPic;
   String medKey;
   ImageView patientPicView;
+  ArrayList<String> medicineList;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_view_patient);
 
+    //init data
     final Bundle data = getIntent().getExtras();
     patientName = data.getString("patientname");
     patientPic = data.getString("patientpic");
     medKey = data.getString("medKey");
-
-    //init data
     medicineList = new ArrayList<>();
-    patientMList = new ArrayList<>();
+
 
     nameView = findViewById(R.id.greating);
     nameView.setText(patientName);
@@ -63,6 +62,76 @@ public class ViewPatient extends AppCompatActivity {
     fetchPatientPic();
     setUpRecyclerView();
   }
+
+  private void setUpRecyclerView() {
+    Query query = medReference.orderByChild("priority");
+    FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
+      .setQuery(query, Modle.class)
+      .build();
+
+    adaptor = new MAdaptor(this ,options , medicineList);
+    RecyclerView recyclerView = findViewById(R.id.mRV);
+    recyclerView.setHasFixedSize(true);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    recyclerView.setAdapter(adaptor);
+
+    adaptor.setOnItemClickListener(
+      new MAdaptor.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(DataSnapshot dataSnapshot, int position) {
+          Modle modle = adaptor.getItem(position);
+          modle.setExpanded(!modle.isExpanded());
+          adaptor.notifyItemChanged(position);
+        }
+      }
+    );
+  }
+
+  // fetch medicine from med list
+  private void fetchMData(){
+    // fetch patient from firebase
+    medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+          Modle med = snapshot.getValue(Modle.class);
+          medicineList.add(med.getImg());
+        }
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+
+      }
+    });
+  }
+
+  /**
+   * fetch image view from firebase Storage (file hosting service)
+   */
+  private void fetchPatientPic() {
+    // finds image and download image from firebase storage by image path and binds it to view holder
+    FirebaseStorage storage = FirebaseStorage.getInstance(
+      "gs://quickmad-e4016.appspot.com/"
+    );
+    StorageReference storageRef = storage
+      .getReference()
+      .child("ProfilePicture/" + patientPic);
+    storageRef
+      .getDownloadUrl()
+      .addOnSuccessListener(
+        new OnSuccessListener<Uri>() {
+
+          @Override
+          public void onSuccess(Uri uri) {
+            Glide.with(ViewPatient.this).load(uri).into(patientPicView); // uses Gilde , a framework to load and download files in android
+          }
+        }
+      );
+  }
+
+
 
   //    // this function fetches patient data from firebase server
   //    private void fetchData(){
@@ -128,53 +197,4 @@ public class ViewPatient extends AppCompatActivity {
   //            }
   //        });
   //    }
-
-  private void setUpRecyclerView() {
-    Query query = medReference.orderByChild("priority");
-    FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
-      .setQuery(query, Modle.class)
-      .build();
-
-    adaptor = new MAdaptor(options);
-    RecyclerView recyclerView = findViewById(R.id.mRV);
-    recyclerView.setHasFixedSize(true);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    recyclerView.setAdapter(adaptor);
-
-    adaptor.setOnItemClickListener(
-      new MAdaptor.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(DataSnapshot dataSnapshot, int position) {
-          Modle modle = adaptor.getItem(position);
-          modle.setExpanded(!modle.isExpanded());
-          adaptor.notifyItemChanged(position);
-        }
-      }
-    );
-  }
-
-  /**
-   * fetch image view from firebase Storage (file hosting service)
-   */
-  private void fetchPatientPic() {
-    // finds image and download image from firebase storage by image path and binds it to view holder
-    FirebaseStorage storage = FirebaseStorage.getInstance(
-      "gs://quickmad-e4016.appspot.com/"
-    );
-    StorageReference storageRef = storage
-      .getReference()
-      .child("ProfilePicture/" + patientPic);
-    storageRef
-      .getDownloadUrl()
-      .addOnSuccessListener(
-        new OnSuccessListener<Uri>() {
-
-          @Override
-          public void onSuccess(Uri uri) {
-            Glide.with(ViewPatient.this).load(uri).into(patientPicView); // uses Gilde , a framework to load and download files in android
-          }
-        }
-      );
-  }
 }

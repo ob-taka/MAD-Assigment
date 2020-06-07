@@ -6,18 +6,18 @@ public class Modle {
     private String time;
     private String dosage;
     private String detailDes;
-    // private int img;
+    private String img;
     private boolean expanded; // set the state the constrain layout
 
     public Modle(){}//needed for firebase
 
-    public Modle(String title, String description, String time, String dosage, String detailDes/*, int img*/){
+    public Modle(String title, String description, String time, String dosage, String detailDes, String img){
         this.title = title;
         this.description = description;
         this.time = time;
         this.dosage = dosage;
         this.detailDes = detailDes;
-        // this.img = img;
+        this.img = img;
         this.expanded = false; // sat the initial stat of the layout to be inevitable
     }
 
@@ -49,9 +49,8 @@ public class Modle {
         return description;
     }
 
-    /*public int getImg() {
+    public String getImg() {
         return img;
-
-    }*/
+    }
 
 }

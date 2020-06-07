@@ -16,20 +16,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="1dp">
 
-        <ImageButton
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageButton"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="118dp"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/profile"
-            android:clickable="true"
-            android:elevation="20dp"
-            android:tint="#00BCD4"
-            app:srcCompat="@android:drawable/btn_star_big_on" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="34dp"
+            android:layout_marginEnd="254dp"
+            android:padding="2dp"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/greating"
@@ -37,8 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="116dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="118dp"
             android:shadowColor="#000000"
             android:shadowDx="2"
             android:shadowDy="2"
@@ -54,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="145dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="154dp"
             android:shadowColor="#000000"
             android:shadowDx="2"
             android:shadowDy="2"

@@ -32,8 +32,7 @@ public class MedicineList extends AppCompatActivity{
     String patientKey;
     String medKey;
     MAdaptor adaptor;
-    ArrayList<MedicineModel> medicineList;
-    ArrayList<MedicineModel> patientMedList;
+    ArrayList<String> medicinepic;
     DatabaseReference databaseReference;
     DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
 
@@ -49,10 +48,8 @@ public class MedicineList extends AppCompatActivity{
         medKey = intent.getStringExtra("patientmlist");
         Toast.makeText(this, medKey , Toast.LENGTH_SHORT).show();
         // init list and firebase connection
-        medicineList = new ArrayList<>();
-        patientMedList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
+        medicinepic = new ArrayList<>();
         setUpRecyclerView();
 
         //onclicklistener for buttons
@@ -86,7 +83,7 @@ public class MedicineList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-
+        fetchpatientMedList();
     }
 
     @Override
@@ -95,63 +92,29 @@ public class MedicineList extends AppCompatActivity{
         overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
     }
 
-    /**
-     * fetch medicine list from firebase
-     * Used as a copy of a list of medicine in firebase
-     * Called to fill up list and to reduce the number of requests to firebase
-     */
-//    private void fetchMedicineData(){
-//        databaseReference.child("Medicine").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    medicineList.add(snapshot.getValue(MedicineModel.class));
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-//
 //    /**
 //     * Used to update the recyclerview and patient medicineList
 //     * Contacts firebase for updates
 //     * Using reference of medicine list from firebase
 //     * medicine is added into patient medicine list and showed in recyclerview
 //     */
-//    private void fetchpatientMedList(){
-//        // fetch patient medicine list
-//        databaseReference.child("medicine_list").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                //clear rv views and data
-//                patientMedList.clear();
-//                mRecycleView.removeAllViews();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    if (snapshot.getKey().equals(medKey)){
-//                        GenericTypeIndicator<HashMap<String, Boolean>> to = new
-//                                GenericTypeIndicator<HashMap<String, Boolean>>() {};
-//                        HashMap<String, Boolean> map = snapshot.getValue(to);
-//                        int count = 0;
-//                        for(boolean ml: map.values()) {
-//                            if(ml) {
-//                                patientMedList.add(medicineList.get(count));
-//                            }
-//                            count++;
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+    private void fetchpatientMedList(){
+        // fetch patient medicine list
+        medReference.child(medKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Modle med = snapshot.getValue(Modle.class);
+                    medicinepic.add(med.getImg());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     /**
      * setup recyclerview
@@ -162,7 +125,7 @@ public class MedicineList extends AppCompatActivity{
                 .setQuery(query, Modle.class)
                 .build();
 
-        adaptor = new MAdaptor(options);
+        adaptor = new MAdaptor(this , options , medicinepic);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this ));
         recyclerView.setAdapter(adaptor);

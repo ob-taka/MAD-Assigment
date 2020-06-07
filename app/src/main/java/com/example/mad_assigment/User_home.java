@@ -8,21 +8,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class User_home extends AppCompatActivity {
@@ -33,10 +40,12 @@ public class User_home extends AppCompatActivity {
     private String email;
     private String name;
     private String scheduleID;
+    private String patientPic;
+    private ArrayList<String> medicinePic;
     private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("-M9CLGQZArfRz4tqFSVN");// change to recieveintent
     //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
     private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("user_medicien")/*.child(scheduleID)*/; // get the reference of the medicine list base on schedule ID from user
-    ImageButton imageBtn;
+    ImageView imageBtn;
     private TextView username, greating;
 
 
@@ -49,12 +58,12 @@ public class User_home extends AppCompatActivity {
         imageBtn = findViewById(R.id.imageButton); // when clicked go to patient profile detail
         username = findViewById(R.id.label_Name);
         greating = findViewById(R.id.greating);
+        medicinePic = new ArrayList<>();
 
-
-
+        initUser();
+        fetchMData();
         createChannel();
         setTimeOfDay();
-        initUser();
         setUpRecyclerView();
 
         // set onClickListenr on the image of the user profile to got into their profile page
@@ -82,7 +91,27 @@ public class User_home extends AppCompatActivity {
                 email = dataSnapshot.child("patientEmail").getValue(String.class);
                 name = dataSnapshot.child("patientName").getValue(String.class);
                 scheduleID = dataSnapshot.child("medid").getValue(String.class);
+                patientPic = dataSnapshot.child("patientPic").getValue(String.class);
+
                 username.setText(name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    // fetch medicine from med list
+    private void fetchMData(){
+        // fetch patient from firebase
+        medicineReference.child(scheduleID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Modle med = snapshot.getValue(Modle.class);
+                    medicinePic.add(med.getImg());
+                }
             }
 
             @Override
@@ -118,7 +147,7 @@ public class User_home extends AppCompatActivity {
                 .setQuery(query, Modle.class)
                 .build();
         // passing data into adaptor
-        adaptor = new MAdaptor(options);
+        adaptor = new MAdaptor(this , options , medicinePic);
         RecyclerView recyclerView = findViewById(R.id.mRV);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -165,5 +194,29 @@ public class User_home extends AppCompatActivity {
         super.onStop();
         adaptor.stopListening();
     }
+
+    /**
+     * fetch image view from firebase Storage (file hosting service)
+     */
+//    private void fetchPatientPic() {
+//        // finds image and download image from firebase storage by image path and binds it to view holder
+//        FirebaseStorage storage = FirebaseStorage.getInstance(
+//                "gs://quickmad-e4016.appspot.com/"
+//        );
+//        StorageReference storageRef = storage
+//                .getReference()
+//                .child("ProfilePicture/" + patientPic);
+//        storageRef
+//                .getDownloadUrl()
+//                .addOnSuccessListener(
+//                        new OnSuccessListener<Uri>() {
+//
+//                            @Override
+//                            public void onSuccess(Uri uri) {
+//                                Glide.with(User_home.this).load(uri).into(imageBtn); // uses Gilde , a framework to load and download files in android
+//                            }
+//                        }
+//                );
+//    }
 
 }

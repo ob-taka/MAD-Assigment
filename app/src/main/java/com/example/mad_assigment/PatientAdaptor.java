@@ -76,6 +76,7 @@ public class PatientAdaptor extends RecyclerView.Adapter<PatientCardHolder> {
           Intent nextActivity = new Intent(context, ViewPatient.class);
           nextActivity.putExtra("patientname" , patientData.get(position).getPatientName());
           nextActivity.putExtra("patientpic" , patientpic.get(position));
+          nextActivity.putExtra("medKey" , patientData.get(position).getMedid());
           context.startActivity(nextActivity);
         }
       }
