@@ -86,8 +86,7 @@ Now you will never forget about taking your medicines or be confused by the doct
 | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
 | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/EchoKes`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ob-taka`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/PrimaryHeap`</a> |
 
-- You can just grab their GitHub profile image URL
-- You should probably resize their picture using `?s=200` at the end of the image URL.
+-You can check out the contributors github by clicking on their links
 
 ---
 
