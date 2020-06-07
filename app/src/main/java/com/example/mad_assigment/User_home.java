@@ -37,7 +37,6 @@ public class User_home extends AppCompatActivity {
 
     private MAdaptor adaptor; // adaptor refer
     String receriveIntent;
-    private String email;
     private String name;
     private String scheduleID;
     private String patientPic;
