@@ -10,26 +10,37 @@
 
 > Health android app
 
-**Demo**
+**Site Map**
 
-[![INSERT YOUR GRAPHIC HERE](http://i.imgur.com/dt8AUb6.png)]()
+[![](https://cdn.discordapp.com/attachments/703063187053871244/708275297484800070/2020-05-08_3.png)]
 
 ---
 
 **Login**
-![Login Page](http://g.recordit.co/3OGh5uBAKf.gif)
+
+[![Login Page](https://recordit.co/1sW0ATqOvD.gif)]()
+
+---
 
 **User**
 
-![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![User Profile Page](http://g.recordit.co/3OGh5uBAKf.gif)
+[![UserHome Page](http://g.recordit.co/3OGh5uBAKf.gif)]()
+
+[![User Profile Page](http://recordit.co/teGFtP6Uqe.gif)]()
+
+---
 
 **Doctor**
-![Doctor Home Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Patient List Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Add Patient Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Medicine List Page](http://g.recordit.co/3OGh5uBAKf.gif)
-![Add Medicine Page](http://g.recordit.co/3OGh5uBAKf.gif)
+
+[![Doctor Home Page](https://recordit.co/WmSEEBXzr3.gif)]()
+
+[![Patient List Page](https://recordit.co/qiCrzihnkk.gif)]()
+
+[![Add Patient Page](https://recordit.co/apy590YN0I.gif)]()
+
+[![Medicine List Page](https://recordit.co/NVMEiAz42t.gif)]()
+
+[![Add Medicine Page](https://recordit.co/x4ep7DcFPK.gif)]()
 
 ---
 
@@ -75,8 +86,7 @@ Now you will never forget about taking your medicines or be confused by the doct
 | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
 | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/EchoKes`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ob-taka`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/PrimaryHeap`</a> |
 
-- You can just grab their GitHub profile image URL
-- You should probably resize their picture using `?s=200` at the end of the image URL.
+-You can check out the contributors github by clicking on their links
 
 ---
 
@@ -98,17 +108,9 @@ For any queries, leave us a message at xuahuapiaopiaobeifengxiaoxiao@gmail.com
 
 ---
 
-## Donations (Optional)
-
-- You could include a <a href="https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png" target="_blank">Gratipay</a> link as well.
-
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/fvcproductions/)
-
----
-
 ## License
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
-- **[Xue Hua Hua Piao Piao license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2015 © <a href="http://fvcproductions.com" target="_blank">Bei Feng Xiao Xiao</a>.
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2020 © Bei Feng Xiao Xiao.

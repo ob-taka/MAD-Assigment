@@ -76,6 +76,9 @@ public class MedicineList extends AppCompatActivity{
                 // changing status of a patient from false to true
                 // to indicate the patient has been added to the doctor's list
                 databaseReference.child("User").child(patientKey).child("status").setValue(true);
+                Intent nextActivity = new Intent(MedicineList.this  , PatientList.class );
+                startActivity(nextActivity);
+                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
             }
         });
 
