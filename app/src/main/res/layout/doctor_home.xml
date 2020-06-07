@@ -65,62 +65,56 @@
             android:text="Mr, so and so"
             android:textColor="#000000"
             android:textSize="20dp" />
+
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="350dp"
-        android:orientation="vertical"
+    <Button
 
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="40dp"
+
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/buttonwithshadow"
+        android:padding="20dp"
+        android:text="View Patient"
+        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+
+        android:layout_marginEnd="40dp"
+
+        android:background="@drawable/buttonwithshadow"
+        android:padding="20dp"
+        android:text="Chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+        app:layout_constraintTop_toBottomOf="@+id/button5" />
 
-        <Button
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:background="@drawable/buttonwithshadow"
+        android:layout_marginStart="40dp"
 
-            android:padding="20dp"
+        android:layout_marginEnd="40dp"
 
-            android:text="View Patient" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-
-            android:background="@drawable/buttonwithshadow"
-
-            android:padding="20dp"
-
-            android:text="Add Patient" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:background="@drawable/buttonwithshadow"
-
-            android:padding="20dp"
-
-            android:text="Chat" />
-    </LinearLayout>
+        android:background="@drawable/buttonwithshadow"
+        android:padding="20dp"
+        android:text="Add Patient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -283,6 +283,7 @@ public class AddMedicinePage extends AppCompatActivity {
                 if (errors==0){
                     sendData();
                     Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
+                    nextActivity.putExtra("patientmlist" , medKey);
                     startActivity(nextActivity);
                 }
             }

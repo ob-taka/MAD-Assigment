@@ -91,6 +91,3 @@
         tools:layout_editor_absoluteY="102dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    android:src="@drawable/undraw_add_post_64nu"-->
-<!--    android:contentDescription="TODO"-->

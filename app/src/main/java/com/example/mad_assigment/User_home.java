@@ -36,14 +36,13 @@ import java.util.Calendar;
 public class User_home extends AppCompatActivity {
 
     private MAdaptor adaptor; // adaptor refer
-    /*String receriveIntent = getIntent().getStringExtra("Uid");
-    * use this line when log in is implemented */
+    String receriveIntent;
     private String email;
     private String name;
     private String scheduleID;
     private String patientPic;
     private ArrayList<String> medicinePic;
-    private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("-M9CLGQaQy0XWQUiptqD");// change to recieveintent
+    private DatabaseReference userReference;// change to recieveintent
     //private final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child("receriveIntent"); // get reference of the current using the uid pass in form login
     private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("med_list"); // get the reference of the medicine list base on schedule ID from user
     ImageView imageBtn;
@@ -61,11 +60,13 @@ public class User_home extends AppCompatActivity {
         greating = findViewById(R.id.greating);
         medicinePic = new ArrayList<>();
 
+        receriveIntent = getIntent().getStringExtra("Uid");
+        userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);
+
         initUser();
         //fetchMData();
         createChannel();
         setTimeOfDay();
-
 
 
         // set onClickListenr on the image of the user profile to got into their profile page

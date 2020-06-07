@@ -62,6 +62,7 @@ public class PatientList extends AppCompatActivity{
         unaddedPatients = new HashMap<>();
         clonePatientList = new ArrayList<>();
 
+        //setup recyclerview
         PRecycleView = findViewById(R.id.PatientrecyclerView);
         PRecycleView.setLayoutManager(new LinearLayoutManager(this));
         PAdaptor = new PatientAdaptor(this, patientLists , patientpic);
