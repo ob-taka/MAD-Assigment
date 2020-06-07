@@ -41,7 +41,8 @@ public class Profile_Patient extends AppCompatActivity {
 
 
     }
-
+    //This method retrieves the name, email, prof pic url from firebase database. it also sets the profile
+    //pic through the fetchPatientPic() method
     private void getDetails(String uid) {
         databaseReference.child("User").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -63,6 +64,7 @@ public class Profile_Patient extends AppCompatActivity {
 
     /**
      * fetch image view from firebase Storage (file hosting service)
+     * References FirebaseStorage profile pic folder and uses glide to load the image into profpic imageview.
      */
     private void fetchPatientPic() {
         // finds image and download image from firebase storage by image path and binds it to view holder
