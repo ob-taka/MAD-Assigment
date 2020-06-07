@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
 
-    private OnItemClickListener listener;
+    private OnItemClickListener listener; // create a instance of a OnClickListener that I have created
     public MAdaptor(@NonNull FirebaseRecyclerOptions<Modle> optiions){
         super(optiions);
     }
@@ -46,6 +46,10 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
         holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * Model holder that sets the items in the view to display the information
+     * setOnClickListener bind to mTitle so when user clicks on the title the even will be triggered
+     */
     class MHolder extends RecyclerView.ViewHolder {
 
         //ImageView mimgV;
@@ -75,10 +79,17 @@ public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
         }
     }
 
+    /**
+     * custom interface to be overeaten later according to our needs
+     */
     public interface OnItemClickListener{
         void onItemClick(DataSnapshot dataSnapshot, int position);
     }
 
+    /**
+     * constructor for the listener
+     * @param listener
+     */
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
