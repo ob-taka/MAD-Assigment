@@ -19,6 +19,7 @@
 
         </activity>
         <activity android:name=".DoctorHome" />
+        <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />
         <activity android:name=".AddPatient" />
         <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>

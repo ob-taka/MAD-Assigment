@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorSpace;
 import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,6 +46,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddMedicinePage extends AppCompatActivity {
 
@@ -89,7 +91,7 @@ public class AddMedicinePage extends AppCompatActivity {
         after=findViewById(R.id.after);
         Intent intent = getIntent();
 
-        medKey = intent.getStringExtra("patientmlist");
+        medKey = intent.getStringExtra("medKey");
 
         final DecimalFormat df = new DecimalFormat("#");
 
@@ -392,21 +394,17 @@ public class AddMedicinePage extends AppCompatActivity {
     }
     public void sendData(){
         //Adding data to firebase
-        DatabaseReference tempRef=databaseReference.child("med_list").child(medKey);
-        tempRef.child("MedicineName").setValue(medName);
-        tempRef.child("Dosage").setValue(doseNumber);
-        tempRef.child("MedType").setValue(medType);
-        tempRef.child("Breakfast").setValue("False");
-        tempRef.child("Lunch").setValue("False");
-        tempRef.child("Dinner").setValue("False");
+        DatabaseReference tempRef=databaseReference.child("med_list");
+        tempRef.child(medKey).setValue("");
+
         if (breakfastValid==1){
             tempRef.child("Breakfast").setValue("True");
 
         }if (dinnerValid==1){
-            tempRef.child("Breakfast").setValue("True");
+            tempRef.child("Lunch").setValue("True");
 
         }if (dinnerValid==1){
-            tempRef.child("Breakfast").setValue("True");
+            tempRef.child("Dinner").setValue("True");
 
         }
         if(before.isChecked())
@@ -419,6 +417,13 @@ public class AddMedicinePage extends AppCompatActivity {
             tempRef.child("Food").setValue("After");
 
         }
-
+        tempRef.child("MedicineName").setValue(medName);
+        tempRef.child("Dosage").setValue(doseNumber);
+        tempRef.child("MedType").setValue(medType);
+        tempRef.child("Breakfast").setValue("False");
+        tempRef.child("Lunch").setValue("False");
+        tempRef.child("Dinner").setValue("False");
+        Modle med = new Modle();
+        tempRef.child(medKey).child(medName).setValue(med);
     }
 }

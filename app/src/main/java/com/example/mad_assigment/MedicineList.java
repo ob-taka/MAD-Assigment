@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,7 +47,7 @@ public class MedicineList extends AppCompatActivity{
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("patientKey");
         medKey = intent.getStringExtra("patientmlist");
-
+        Toast.makeText(this, medKey , Toast.LENGTH_SHORT).show();
         // init list and firebase connection
         medicineList = new ArrayList<>();
         patientMedList = new ArrayList<>();
