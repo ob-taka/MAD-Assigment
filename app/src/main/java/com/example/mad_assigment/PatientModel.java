@@ -10,17 +10,19 @@ public class PatientModel implements Serializable{
   private String patientEmail;
   private boolean status;
   private String role;
+  private String medId;
 
   public PatientModel(){
 
   }
 
-  public PatientModel(String pic, String name , String email , boolean status , String role) {
+  public PatientModel(String pic, String name , String email , boolean status , String role, String med) {
     this.patientProfilepic = pic;
     this.patientName = name;
     this.patientEmail = email;
     this.status = status;
     this.role = role;
+    this.medId = med;
   }
 
   public String getPatientProfilepic() {
@@ -62,4 +64,10 @@ public class PatientModel implements Serializable{
     this.patientPhoneNum = patientPhoneNum;
   }
 
+  public String getMedid() {
+    return medId;
+  }
+  public void setMedid(String medid) {
+    this.medId = medid;
+  }
 }

@@ -22,8 +22,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 
-import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -129,7 +128,6 @@ public class PatientList extends AppCompatActivity{
         databaseReference.child("test").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(getApplicationContext().getApplicationContext(), "fetching", Toast.LENGTH_SHORT).show();
                 patientLists.clear();
                 PRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -142,7 +140,6 @@ public class PatientList extends AppCompatActivity{
                         clonePatientList.add(patient);
                     }else if(!patient.isStatus()){
                         unaddedPatients.put(snapshot.getKey() , patient);
-                        Toast.makeText(getApplicationContext().getApplicationContext(), "ADDED", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -154,6 +151,7 @@ public class PatientList extends AppCompatActivity{
             }
         });
     }
+
     /**
      *
      * @param searchedString , text user types in edittext to search for patient name
@@ -192,14 +190,8 @@ public class PatientList extends AppCompatActivity{
         for (int i = 0; i < n.length; i++) {
             DatabaseReference medRef = databaseReference.child("test");
             String key = medRef.push().getKey();
-            PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , true , "Patient");
+            PatientModel people = new PatientModel(key+".jpg", n[i] , e[i] , false , "Patient" , "");
             medRef.child(key).setValue(people);
-            HashMap<String , Boolean> mlist = new HashMap<>();
-            DatabaseReference userRef = databaseReference.child("patientMedicineList");
-            for (String s : mId) {
-                mlist.put(s, false);
-            }
-            userRef.child(key).setValue(mlist);
         }
     }
 }

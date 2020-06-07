@@ -27,6 +27,7 @@ public class MedicineList extends AppCompatActivity{
     FloatingActionButton addMedicine;
     Button submit;
     String patientKey;
+    String medKey;
     RecyclerView mRecycleView;
     MedicineAdaptor mAdaptor;
     ArrayList<MedicineModel> medicineList;
@@ -38,9 +39,10 @@ public class MedicineList extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicine_list);
 
-        //receive patient key from add patient
+        //receive patient key and medlist key from add patient
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("patientKey");
+        medKey = intent.getStringExtra("patientmlist");
 
         // init list and firebase connection
         medicineList = new ArrayList<>();
@@ -62,6 +64,7 @@ public class MedicineList extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent nextActivity = new Intent(MedicineList.this  , AddMedicinePage.class );
+                nextActivity.putExtra("medKey" , medKey);
                 startActivity(nextActivity);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
             }
@@ -122,14 +125,14 @@ public class MedicineList extends AppCompatActivity{
      */
     private void fetchpatientMedList(){
         // fetch patient medicine list
-        databaseReference.child("patientMedicineList").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("med_list").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //clear rv views and data
                 patientMedList.clear();
                 mRecycleView.removeAllViews();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(patientKey)){
+                    if (snapshot.getKey().equals(medKey)){
                         GenericTypeIndicator<HashMap<String, Boolean>> to = new
                                 GenericTypeIndicator<HashMap<String, Boolean>>() {};
                         HashMap<String, Boolean> map = snapshot.getValue(to);
