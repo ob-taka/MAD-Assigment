@@ -97,9 +97,10 @@ Now you will never forget about taking your medicines or be confused by the doct
 2. Track patient’s progress
 3. Search patient and medicine on dedicated search bar for Doctors
 4. Authenticated sign ins for private and personal
-5. Medicine alarm to remind patients it’s time they take dem drugs
+5. Medicine alarm to remind patients it’s time their medicine
 6. Allow doctors to prescribe medicine for their patients
 7. A database to store Users and Medicine information
+8. Storage place for resources like images
 
 ---
 
