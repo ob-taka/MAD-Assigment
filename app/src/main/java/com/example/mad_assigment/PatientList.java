@@ -109,7 +109,6 @@ public class PatientList extends AppCompatActivity{
         super.onStart();
         search.setText("");
         clonePatientList.clear();
-        //initdata();
         fetchPatientData();
 
     }
@@ -168,5 +167,4 @@ public class PatientList extends AppCompatActivity{
         PAdaptor = new PatientAdaptor(this, patientLists , patientpic);
         PRecycleView.setAdapter((PAdaptor));
     }
-
 }
