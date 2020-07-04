@@ -1,11 +1,11 @@
-package com.example.mad_assigment;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.health.anytime;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class test extends AppCompatActivity {
 

@@ -1,7 +1,5 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

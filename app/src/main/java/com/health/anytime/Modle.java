@@ -1,4 +1,4 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
 public class Modle {
     private String title;

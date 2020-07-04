@@ -1,8 +1,7 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class SignIn extends AppCompatActivity {
     EditText mEmail, mPassword;
@@ -94,6 +95,7 @@ public class SignIn extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     role = dataSnapshot.child(fEmail).getValue().toString();
+                    //role = Objects.requireNonNull(dataSnapshot.child(fEmail).getValue()).toString();
                     Log.d("#d",role);
                     if(role.equals("Doctor")){
                         //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.

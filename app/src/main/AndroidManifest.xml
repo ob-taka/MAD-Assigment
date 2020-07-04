@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mad_assigment">
+    package="com.health.anytime">
 
     <application
         android:allowBackup="true"
@@ -9,31 +9,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".User_home"></activity>
-        <activity android:name=".SignIn">
+        <activity android:name="com.health.anytime.User_home"></activity>
+        <activity android:name="com.health.anytime.SignIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DoctorHome" >
+        <activity android:name="com.health.anytime.DoctorHome" >
 
         </activity>
-        <activity android:name=".Profile_Patient" />
-        <activity android:name=".ViewPatient" />
-        <activity android:name=".AddPatient" >
+        <activity android:name="com.health.anytime.Profile_Patient" />
+        <activity android:name="com.health.anytime.ViewPatient" />
+        <activity android:name="com.health.anytime.AddPatient" >
 
         </activity>
-        <activity android:name=".AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".MedicineList">
+        <activity android:name="com.health.anytime.AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
+        <activity android:name="com.health.anytime.MedicineList">
 
         </activity>
-        <activity android:name=".PatientList"
+        <activity android:name="com.health.anytime.PatientList"
             android:windowSoftInputMode="adjustPan">
 
 
         </activity>
-        <receiver android:name=".NotificationReceiver"/>
+        <receiver android:name="com.health.anytime.NotificationReceiver"/>
 
     </application>
 

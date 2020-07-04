@@ -1,4 +1,4 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
 import android.content.Context;
 import android.net.Uri;

@@ -1,4 +1,4 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
 import android.view.View;
 import android.widget.ImageView;

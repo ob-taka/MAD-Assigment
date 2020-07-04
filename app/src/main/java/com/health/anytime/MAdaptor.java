@@ -1,7 +1,5 @@
-package com.example.mad_assigment;
+package com.health.anytime;
 
-import android.content.Context;
-import android.media.midi.MidiOutputPort;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
-
-import java.util.ArrayList;
 
 public class MAdaptor extends FirebaseRecyclerAdapter<Modle, MAdaptor.MHolder> {
 
