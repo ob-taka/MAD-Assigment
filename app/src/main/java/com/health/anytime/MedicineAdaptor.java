@@ -2,6 +2,7 @@ package com.health.anytime;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
-    private ArrayList<Modle> MedicineData;
+    private ArrayList<MedicineModel> MedicineData;
     Context context;
-    public MedicineAdaptor(Context context , ArrayList<Modle> data) {
+
+    public MedicineAdaptor(Context context , ArrayList<MedicineModel> data) {
         this.MedicineData = data;
         this.context = context;
     }
@@ -27,17 +29,19 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineCardHolder>{
     @NonNull
     @Override
     public MedicineCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.medicinerow, parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.medicinecard, parent , false);
         return new MedicineCardHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MedicineCardHolder holder, int position) {
-        holder.medicineName.setText(MedicineData.get(position).getTitle());
+        holder.medicineName.setText(MedicineData.get(position).getMedicineTitle());
+        holder.medicineqty.setText("Quantity :" + String.valueOf(MedicineData.get(position).getQuantity()));
         // finds image and download image from firebase storage by image path and binds it to view holder
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
         // get image path
-        StorageReference storageRef = storage.getReference().child(MedicineData.get(position).getImg());
+        Log.d("t" , MedicineData.get(position).getMedicineImg());
+        StorageReference storageRef = storage.getReference().child(MedicineData.get(position).getMedicineImg());
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
             @Override
             public void onSuccess(Uri uri) {

@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MedicineCardHolder extends RecyclerView.ViewHolder{
     TextView medicineName;
     ImageView medicineIcon;
+    TextView medicineqty;
 
     public MedicineCardHolder(@NonNull View itemView) {
         super(itemView);
 
-        this.medicineName = itemView.findViewById(R.id.mTitle);
-        this.medicineIcon = itemView.findViewById(R.id.mImageV);
+        this.medicineName = itemView.findViewById(R.id.med_title);
+        this.medicineIcon = itemView.findViewById(R.id.med_image);
+        this.medicineqty = itemView.findViewById(R.id.med_qty);
     }
 }

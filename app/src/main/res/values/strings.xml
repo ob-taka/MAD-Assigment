@@ -7,4 +7,11 @@
     <string name="No">Cancel</string>
     <string name="add">Add Patient</string>
     <string name="addButton">ADD</string>
+    <string name="label_hint_medicinetitle">Title</string>
+    <string name="label_hint_medicinequantity">Quantity</string>
+    <string name="label_hint_medicineimage">Image</string>
+    <string name="label_add">ADD</string>
+    <string name="label_hint_medicineDesc">Description</string>
+
+
 </resources>
