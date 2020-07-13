@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ha_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateMedicine"></activity>
+        <activity android:name=".MedicineDetails"></activity>
+        <activity android:name=".CreateMedicine" />
         <activity android:name=".Pharmacy">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".User_home" />
-        <activity android:name=".SignIn"></activity>
+        <activity android:name=".SignIn" />
         <activity android:name=".DoctorHome" />
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />

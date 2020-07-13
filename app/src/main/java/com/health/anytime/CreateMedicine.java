@@ -29,11 +29,7 @@ public class CreateMedicine extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_medicine);
 
-        //setup edittext
-        medicineTitle = findViewById(R.id.title_edit_text);
         medicineQty = findViewById(R.id.qty_edit_text);
-        medicineImg = findViewById(R.id.image_edit_text);
-        medicineDesc = findViewById(R.id.desc_edit_text);
 
         //setup onclicklistener on add button
         addButton = findViewById(R.id. add_button);
@@ -44,7 +40,6 @@ public class CreateMedicine extends AppCompatActivity{
                 String title = medicineTitle.getText().toString().trim();
                 int qty = Integer.parseInt(medicineQty.getText().toString());
                 String img = medicineImg.getText().toString().trim();
-                String desc = medicineDesc.getText().toString().trim();
                 MedicineModel medicine = new MedicineModel(numMed+1,title,img,qty);
                 databaseReference.child("Pharmacy").child(title).setValue(medicine);
 
