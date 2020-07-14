@@ -24,9 +24,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +46,7 @@ public class SignIn extends AppCompatActivity {
     Button mLoginBtn, mGoogleSignInBtn;
     ProgressBar mProgressBar;
     FirebaseAuth mAuth;
+    FirebaseDatabase mDatabase;
     StorageReference mStorage;
     DatabaseReference ref;
     String email, uid, role , pic;
@@ -59,10 +63,13 @@ public class SignIn extends AppCompatActivity {
         mLoginBtn = findViewById(R.id.btn_signIn);
         mProgressBar = findViewById(R.id.progressBar_signIn);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mGoogleSignInBtn = findViewById(R.id.btn_gsi);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail().build();
+                .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
+                .requestEmail()
+                .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
@@ -97,14 +104,14 @@ public class SignIn extends AppCompatActivity {
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Authenticate User
-                if(validate == true) {
+                if(validate == true && isEmailExist(email)) {
                     mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 onAuthSuccess(task.getResult().getUser(), email);
                             } else {
-                                Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 mProgressBar.setVisibility(View.GONE);
                             }
                         }
@@ -140,8 +147,19 @@ public class SignIn extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            insertGSI_Details(account);
+            returnKey();
+            AuthCredential authCredential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+            mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    Intent intent = new Intent(SignIn.this, User_home.class);
+                    intent.putExtra("Uid",uid)
+                            .putExtra("Role","Patient");
+                    startActivity(intent);
+                }
+            });
 
-            startActivity(new Intent(SignIn.this, User_home.class));
         }
         catch (ApiException e) {
             // This will log the error that is returned from the api exception
@@ -154,20 +172,32 @@ public class SignIn extends AppCompatActivity {
     private void insertGSI_Details(GoogleSignInAccount account){
         String medid = "7d55d1c0-d";
         String role = "Patient";
-        Boolean status = false;
-        String email = account.getEmail();
+        boolean status = false;
+        email = account.getEmail();
+        String dbEmail = emailFormat(email);
         String name = account.getDisplayName();
         Uri pic = account.getPhotoUrl();
         String fileName = uploadPhoto(pic);
-
-
+        Log.d("#D", email + " " + dbEmail + " " + name + " " + fileName);
+        //***IMPT WLL NEED TO CONSOLIDATE WITH SIGN UP
+        //this sets the role of the email/user which in this case is default to Patient as this log in is for patients only
+        DatabaseReference dr = mDatabase.getReference("Role").child(dbEmail);
+        dr.setValue(role);
+        Log.d("#D","Passed this stage");
+        //this creates a unique generated key in "User" and store the patient's details
+        DatabaseReference du = mDatabase.getReference("User");
+        String ukey = du.push().getKey();
+        Log.d("#D","Passed this stage");
+        PatientModel user = new PatientModel(fileName, name, email, status, role, medid);
+        du.child(ukey).setValue(user);
+        Log.d("#D","Passed this stage");
 
 
         //use googleSignInClient.signOut(); when signing out
     }
 
     //This method simply gets the type of the file for e.g. .jpg or .png
-    private String getFileType(Uri uri ){
+    private String getFileType(Uri uri){
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 
@@ -177,11 +207,31 @@ public class SignIn extends AppCompatActivity {
     //This method uploads the google account's image into firebase storage.
     //It also returns the file name of the picture
     private String uploadPhoto(Uri pic){
-        String picName = System.currentTimeMillis() + "." + getFileType(pic);
-        StorageReference storageReference = mStorage.child("ProfilePicture/" + picName);
-        storageReference.putFile(pic);
+        String picName = "default.jpg";
+        if(pic != null) {
+            picName = System.currentTimeMillis() + "." + getFileType(pic);
+            StorageReference storageReference = mStorage.child("ProfilePicture/" + picName);
+            storageReference.putFile(pic);
+        }
 
         return picName;
+    }
+
+    //***IMPT WLL NEED TO CONSOLIDATE WITH SIGN UP
+    //this method formats the email for database insertion
+    private String emailFormat(String sEmail){
+        //Replacing '@' & '.' to '_' as firebase key does not allow special characters
+        String Email = sEmail
+                .replace("@","_")
+                .replace(".","_");
+        return(Email);
+    }
+
+    //***IMPT WLL NEED TO CONSOLIDATE WITH SIGN UP
+    //this method accesses the firebase authentication to check if an email already exists
+    private Boolean isEmailExist(String email){
+        boolean results = mAuth.fetchSignInMethodsForEmail(email).isSuccessful();
+        return results;
     }
 
     //This method checks for user's role and direct them to their respective pages.
