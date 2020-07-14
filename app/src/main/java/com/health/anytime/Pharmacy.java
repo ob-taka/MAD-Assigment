@@ -35,8 +35,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     RecyclerView recyclerView;
     FragmentManager fragmentManager = getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    boolean clicked = false;
+
 
     @Override
     protected void onStart() {
@@ -64,13 +63,12 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!clicked){
-                    RefillMedicine fragment = new RefillMedicine();
-                    fragmentTransaction.add(R.id.container, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                    clicked = true;
-                }
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                RefillMedicine fragment = new RefillMedicine(getApplicationContext());
+                fragmentTransaction.add(R.id.container, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
 
 
 //                // inflate the layout of the popup window
@@ -96,6 +94,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
 //                        return true;
 //                    }
 //                });
+
 //                Intent nextActivity = new Intent(Pharmacy.this  , CreateMedicine.class );
 //                startActivity(nextActivity);
 //                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation

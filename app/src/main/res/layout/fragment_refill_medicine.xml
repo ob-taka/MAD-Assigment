@@ -25,6 +25,7 @@
 
             <Spinner
                 android:id="@+id/spinner"
+                android:prompt="@string/medspinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
