@@ -43,7 +43,6 @@ public class SignUp extends AppCompatActivity {
         rProgressBar = findViewById(R.id.progressBar_signUp);
         rAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference dRef = firebaseDatabase.getReference();
 
         final Intent intent = new Intent(SignUp.this, SignIn.class);
 
@@ -69,15 +68,15 @@ public class SignUp extends AppCompatActivity {
                     validate = false;
                 }
                 if(TextUtils.isEmpty(email)){
-                    rName.setError("Please enter your email address.");
+                    rEmail.setError("Please enter your email address.");
                     validate = false;
                 }
                 if(TextUtils.isEmpty(pass)){
-                    rName.setError("Please enter a password.");
+                    rPass.setError("Please enter a password.");
                     validate = false;
                 }
                 if(TextUtils.isEmpty(cfmPass)){
-                    rName.setError("Please enter a password.");
+                    rCfmPass.setError("Please enter a password.");
                     validate = false;
                 }
 
@@ -97,23 +96,25 @@ public class SignUp extends AppCompatActivity {
 
                 rProgressBar.setVisibility(View.VISIBLE);
                 //the following code registers the user using the entered email and password
-                if(validate==true){
+                if(validate==true && !isEmailExist(email)){
                     rAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 Toast.makeText(SignUp.this,"User has been created successfully!",Toast.LENGTH_LONG).show();
-                                insertDetails(name,email,pass,cfmPass);
+                                insertDetails(name,email);
                                 startActivity(intent);
                             }
                             else {
-                                Toast.makeText(SignUp.this,"Registration unsuccessful! " + task.getException(),Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUp.this,"Registration unsuccessful! " + task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                                rProgressBar.setVisibility(View.GONE);
                             }
                         }
                     });
                 }
                 else{
                     Toast.makeText(SignUp.this,"Registration unsuccessful! ",Toast.LENGTH_LONG).show();
+                    rProgressBar.setVisibility(View.GONE);
                 }
 
             }
@@ -137,14 +138,30 @@ public class SignUp extends AppCompatActivity {
     }
 
     //this method generates and inserts the database details into firebase database
-    private void insertDetails(String name, String email, String pass, String cfmPass){
+    private void insertDetails(String name, String email){
         String Email = emailFormat(email);
         String Role = "Patient";
+        String Pic = "default.jpg";
+        String Med = "7d55d1c0-d";
+        boolean Status = false;
 
         //this sets the role of the email/user which in this case is default to Patient as this log in is for patients only
-        DatabaseReference d = firebaseDatabase.getReference("Role").child(Email);
-        d.setValue(Role);
+        DatabaseReference dr = firebaseDatabase.getReference("Role").child(Email);
+        dr.setValue(Role);
 
+        //this creates a unique generated key in "User" and store the patient's details
+        DatabaseReference du = firebaseDatabase.getReference("User");
+        String ukey = du.push().getKey();
+        PatientModel user = new PatientModel(Pic, name, email, Status, Role, Med);
+        du.child(ukey).setValue(user);
 
     }
+
+    //this method accesses the firebase authentication to check if an email already exists
+    private Boolean isEmailExist(String email){
+        boolean results = rAuth.fetchSignInMethodsForEmail(email).isSuccessful();
+        return results;
+    }
+
+
 }
