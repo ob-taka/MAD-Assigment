@@ -28,7 +28,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,20 +37,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.Objects;
-
 public class SignIn extends AppCompatActivity {
     EditText mEmail, mPassword;
-    //need to add another button for google login
     Button mLoginBtn, mGoogleSignInBtn;
     ProgressBar mProgressBar;
     FirebaseAuth mAuth;
     FirebaseDatabase mDatabase;
     StorageReference mStorage;
-    DatabaseReference ref;
     String email, uid, role , pic;
     GoogleSignInClient googleSignInClient;
     int CONSTANT = 0;
+    Boolean STATE = false;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +68,36 @@ public class SignIn extends AppCompatActivity {
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        intent = new Intent(SignIn.this, User_home.class);
     }
 
     @Override
     protected void onStart() {
+        super.onStart();
         //Check if user has been previously signed in using google sign in or normal sign in
         ///Will need to add code for normal sign in
-        /*
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account != null) {
-            startActivity(new Intent(SignIn.this, User_home.class));
-        }
-        */
 
-        super.onStart();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null || mAuth.getCurrentUser() != null) {
+            if(mAuth.getCurrentUser() != null) {
+                email = mAuth.getCurrentUser().getEmail();
+            }
+            else{
+                email = account.getEmail();
+            }
+            Log.d("#D", "Passed this state " + email);
+            ExampleThread thread = new ExampleThread();
+            thread.start();
+        }
+        ExampleThread1 thread2 = new ExampleThread1();
+        thread2.start();
+
         //Event listener on Sign In button, validation along the way.
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 email = mEmail.getText().toString().trim();
+                returnKey();
                 String pw = mPassword.getText().toString().trim();
                 boolean validate = true;
                 if (TextUtils.isEmpty(email)) {
@@ -104,11 +111,12 @@ public class SignIn extends AppCompatActivity {
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Authenticate User
-                if(validate == true && isEmailExist(email)) {
+                if(validate && !isEmailExist(email)) {
                     mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+
                                 onAuthSuccess(task.getResult().getUser(), email);
                             } else {
                                 Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -134,6 +142,96 @@ public class SignIn extends AppCompatActivity {
     }
     //need to add validation to keep user signed in. (Stage 2)
 
+    //This method checks for user's role and direct them to their respective pages.
+    private void onAuthSuccess(FirebaseUser user, final String email) {
+        //Replacing '@' & '.' to '_' as firebase key does not allow special characters
+        final String fEmail = email
+                .replace("@","_")
+                .replace(".","_");
+        //returnKey();
+        //Log.d("#D",uid);
+        if (user != null) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Role");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    role = dataSnapshot.child(fEmail).getValue().toString();
+                    //role = Objects.requireNonNull(dataSnapshot.child(fEmail).getValue()).toString();
+                    Log.d("#d",role);
+                    if(role.equals("Doctor")){
+                        //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SignIn.this,DoctorHome.class);
+                        intent.putExtra("Uid",uid)
+                                .putExtra("Role","Doctor").putExtra("pic" , pic);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                    }
+                    else if (role.equals("Patient")){
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_LONG).show();
+                        Log.d("#d",uid);
+                        //Intent intent2prof = new Intent(SignIn.this,Profile_Patient.class);
+                        //intent2prof.putExtra("Uid",uid);
+                        Intent intent = new Intent(SignIn.this,User_home.class);
+                        intent.putExtra("Uid",uid)
+                                .putExtra("Role","Patient");
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    class ExampleThread extends Thread{
+        @Override
+        public void run() {
+            returnKey();
+        }
+    }
+    class ExampleThread1 extends Thread{
+        @Override
+        public void run() {
+            while(true){
+                if(STATE==true){
+                    startActivity(intent);
+                    break;
+                }
+            }
+        }
+    }
+
+    //This Method searches the email in Child "User" of database and return the key
+    private void returnKey(){
+        DatabaseReference ref = mDatabase.getReference("User");
+         ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds:dataSnapshot.getChildren()){
+                    if(ds.child("patientEmail").getValue().toString().toLowerCase().equals(email)){
+                        uid = ds.getKey();
+                        STATE = true;
+                        intent.putExtra("Uid", uid)
+                                .putExtra("Role", "Patient");
+                        Log.d("#D","got the uid" + uid + email);
+                        //pic = ds.child("patientProfilepic").getValue().toString();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     @Override
     //This gets a result from the google sign in activity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -232,73 +330,6 @@ public class SignIn extends AppCompatActivity {
     private Boolean isEmailExist(String email){
         boolean results = mAuth.fetchSignInMethodsForEmail(email).isSuccessful();
         return results;
-    }
-
-    //This method checks for user's role and direct them to their respective pages.
-    private void onAuthSuccess(FirebaseUser user, final String email) {
-        //Replacing '@' & '.' to '_' as firebase key does not allow special characters
-        final String fEmail = email
-                .replace("@","_")
-                .replace(".","_");
-        returnKey();
-        if (user != null) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Role");
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    role = dataSnapshot.child(fEmail).getValue().toString();
-                    //role = Objects.requireNonNull(dataSnapshot.child(fEmail).getValue()).toString();
-                    Log.d("#d",role);
-                    if(role.equals("Doctor")){
-                        //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
-                        mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignIn.this,DoctorHome.class);
-                        intent.putExtra("Uid",uid)
-                                .putExtra("Role","Doctor").putExtra("pic" , pic );
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
-                    }
-                    else if (role.equals("Patient")){
-                        mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_LONG).show();
-                        Log.d("#d",uid);
-                        //Intent intent2prof = new Intent(SignIn.this,Profile_Patient.class);
-                        //intent2prof.putExtra("Uid",uid);
-                        Intent intent = new Intent(SignIn.this,User_home.class);
-                        intent.putExtra("Uid",uid)
-                                .putExtra("Role","Patient");
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
-    //This Method searches the email in Child "Users" of database and return the key
-    private void returnKey(){
-        DatabaseReference refe = FirebaseDatabase.getInstance().getReference("User");
-        refe.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    if(ds.child("patientEmail").getValue().toString().toLowerCase().equals(email)){
-                        uid = ds.getKey();
-                        pic = ds.child("patientProfilepic").getValue().toString();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(SignIn.this, "Error" + databaseError.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
 
