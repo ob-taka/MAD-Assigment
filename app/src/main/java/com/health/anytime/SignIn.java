@@ -55,28 +55,35 @@ public class SignIn extends AppCompatActivity {
             public void onClick(View v) {
                 email = mEmail.getText().toString().trim();
                 String pw = mPassword.getText().toString().trim();
-
+                boolean validate = true;
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required!");
+                    validate = false;
                 }
                 if (TextUtils.isEmpty(pw)) {
-                    mEmail.setError("Password is required!");
+                    mPassword.setError("Password is required!");
+                    validate = false;
                 }
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 //Authenticate User
-                mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser(),email);
+                if(validate == true) {
+                    mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                onAuthSuccess(task.getResult().getUser(), email);
+                            } else {
+                                Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException(), Toast.LENGTH_SHORT).show();
+                                mProgressBar.setVisibility(View.GONE);
+                            }
                         }
-                        else {
-                            Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException(), Toast.LENGTH_SHORT).show();
-                            mProgressBar.setVisibility(View.GONE);
-                        }
-                    }
-                });
+                    });
+                }
+                else{
+                    Toast.makeText(SignIn.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                }
             }
         });
     }
