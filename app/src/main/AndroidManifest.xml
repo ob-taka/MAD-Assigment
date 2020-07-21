@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ha_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignIn"></activity>
+        <activity android:name=".SignUp"></activity>
         <activity android:name=".User_home" />
-        <activity android:name=".SignUp">
+        <activity android:name=".ChatHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
