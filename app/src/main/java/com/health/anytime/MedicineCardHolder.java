@@ -17,7 +17,6 @@ public class MedicineCardHolder extends RecyclerView.ViewHolder implements View.
 
         this.medicineName = itemView.findViewById(R.id.med_title);
         this.medicineIcon = itemView.findViewById(R.id.med_image);
-        this.medicineqty = itemView.findViewById(R.id.med_qty);
 
         itemView.setOnClickListener(this);
     }

@@ -3,6 +3,7 @@
     package="com.health.anytime">
 
     <application
+        android:name=".MedicineNotification"
         android:allowBackup="true"
         android:icon="@mipmap/ha_icon_round"
         android:label="@string/app_name"
@@ -19,7 +20,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".User_home" />
-        <activity android:name=".SignIn" />
+        <activity android:name=".SignIn">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity android:name=".DoctorHome" />
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />

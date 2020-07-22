@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,13 +47,12 @@ public class RefillMedicine extends Fragment{
     private EditText Qty;
     private int medqty;
     private String text;
-    private Spinner medicine;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    List<String> spinnerArray =  new ArrayList<String>();
 
-    public RefillMedicine(Context context) {
+    public RefillMedicine(Context context , String medicine) {
         // Required empty public constructor
         this.context = context;
+        this.text = medicine;
     }
 
 
@@ -65,37 +66,20 @@ public class RefillMedicine extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_refill_medicine, container, false);
-        // you need to have a list of data that you want the spinner to display
-
-        getMedName();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context , R.layout.support_simple_spinner_dropdown_item , spinnerArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        medicine = (Spinner) view.findViewById(R.id.spinner);
-        medicine.setAdapter(adapter);
-        medicine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                text = parent.getItemAtPosition(position).toString();
-                Log.d("NigGA", text);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
         Button addButton = view.findViewById(R.id. add_button);
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Qty = view.findViewById(R.id.qty_edit_text);
-                int qty = Integer.parseInt(Qty.getText().toString());
                 getMed(text);
-                databaseReference.child("Pharmacy").child(text).child("quantity").setValue(qty+medqty);
-
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        int qty = Integer.parseInt(Qty.getText().toString()) + medqty;
+                        databaseReference.child("Pharmacy").child(text).child("quantity").setValue(qty);
+                        view.setVisibility(View.GONE);
+                    }
+                }, 300);
             }
         });
 
@@ -105,27 +89,11 @@ public class RefillMedicine extends Fragment{
                 return true;
             }
         });
+
         return view;
     }
 
-    private void getMedName(){
-        // fetch patient from firebase
-        databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    spinnerArray.add(snapshot.getKey());
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void getMed(final String title){
-        // fetch patient from firebase
         databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

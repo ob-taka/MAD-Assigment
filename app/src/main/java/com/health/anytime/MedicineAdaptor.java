@@ -40,7 +40,6 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineAdaptor.Medici
     @Override
     public void onBindViewHolder(@NonNull final MedicineCardHolder holder, int position) {
         holder.medicineName.setText(MedicineData.get(position).getMedicineTitle());
-        holder.medicineqty.setText("Quantity :" + String.valueOf(MedicineData.get(position).getQuantity()));
         // finds image and download image from firebase storage by image path and binds it to view holder
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
         // get image path
@@ -70,7 +69,7 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineAdaptor.Medici
 
             this.medicineName = itemView.findViewById(R.id.med_title);
             this.medicineIcon = itemView.findViewById(R.id.med_image);
-            this.medicineqty = itemView.findViewById(R.id.med_qty);
+            //this.medicineqty = itemView.findViewById(R.id.med_qty);
             this.cardListener = cardListener;
 
             itemView.setOnClickListener(this);

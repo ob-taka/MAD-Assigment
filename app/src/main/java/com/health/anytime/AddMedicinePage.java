@@ -3,6 +3,7 @@ package com.health.anytime;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -55,6 +56,7 @@ public class AddMedicinePage extends AppCompatActivity {
     RadioGroup radioGroup;
     public static RecyclerView recyclerView;
     TimePickerDialog picker;
+    private int medqty;
 
 //git
 
@@ -363,23 +365,15 @@ public class AddMedicinePage extends AppCompatActivity {
         if(breakfastValid==0 && lunchValid==0 && dinnerValid==0){
             errorMsg+="\n Please select the meal for medicine intake";
             errors=1;
-
         }
         if (doseNumber==0.0){
             errorMsg+="\n Please select the dosage";
             errors=1;
-
         }
-
-
-
         Toast toast = Toast.makeText(getApplicationContext(),
                 errorMsg,
                 Toast.LENGTH_LONG);
-
         toast.show();
-
-
 
     }
     public void sendData(){
@@ -394,30 +388,49 @@ public class AddMedicinePage extends AppCompatActivity {
         else if (after.isChecked())
         {
             food="After Food";
-
         }
         if (breakfastValid==1){
-            tempRef.child("Breakfast").setValue("True");
             med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"1").setValue(med);
 
-
-        }if (dinnerValid==1){
+        }if (lunchValid==1){
             med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"2").setValue(med);
-
-
 
         }if (dinnerValid==1){
             med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
             tempRef.child(medKey).child(medName+"3").setValue(med);
-
-
-
         }
+        getMedQty(medName);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    if ( medqty > ((dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
+                                        medqty -= ((dinnerValid + lunchValid + breakfastValid) * doseNumber);
+                                        databaseReference.child("Pharmacy").child(medName).child("quantity").setValue(medqty);
+                                    }else {
+                                        //build dialog
+                                    }
 
+                                }
+                            },300);
+    }
 
+    private void getMedQty(final String title){
+        databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    MedicineModel med = snapshot.getValue(MedicineModel.class);
+                    if (snapshot.getKey().equals(title)){
+                        medqty = med.getQuantity();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
+            }
+        });
     }
 }
