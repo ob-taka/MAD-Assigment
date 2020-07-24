@@ -204,6 +204,7 @@ public class SignIn extends AppCompatActivity {
             while(true){
                 if(STATE==true){
                     startActivity(intent);
+
                     break;
                 }
             }
@@ -225,6 +226,8 @@ public class SignIn extends AppCompatActivity {
                                 .putExtra("Role", "Patient");
                         Log.d("#D","got the uid" + uid + email);
                         //pic = ds.child("patientProfilepic").getValue().toString();
+                        role = ds.child("role").getValue().toString();
+                        Log.d("#d",role);
                     }
                 }
             }

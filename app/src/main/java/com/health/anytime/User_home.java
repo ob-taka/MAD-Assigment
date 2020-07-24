@@ -90,6 +90,7 @@ public class User_home extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.options_menu,menu);
+
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
