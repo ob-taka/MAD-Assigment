@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SignUp"></activity>
         <activity android:name=".User_home" />
-        <activity android:name=".ChatHome">
+        <activity android:name=".SignIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DoctorHome"></activity>
+        <activity android:name=".ChatHome"></activity>
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />
         <activity android:name=".AddPatient"></activity>

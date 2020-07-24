@@ -2,6 +2,7 @@ package com.health.anytime;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -98,6 +99,7 @@ public class SignIn extends AppCompatActivity {
             public void onClick(View v) {
                 email = mEmail.getText().toString().trim();
                 returnKey();
+                saveData();
                 String pw = mPassword.getText().toString().trim();
                 boolean validate = true;
                 if (TextUtils.isEmpty(email)) {
@@ -205,6 +207,7 @@ public class SignIn extends AppCompatActivity {
                     break;
                 }
             }
+            saveData();
         }
     }
 
@@ -247,6 +250,7 @@ public class SignIn extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             insertGSI_Details(account);
             returnKey();
+            saveData();
             AuthCredential authCredential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
             mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -330,6 +334,13 @@ public class SignIn extends AppCompatActivity {
     private Boolean isEmailExist(String email){
         boolean results = mAuth.fetchSignInMethodsForEmail(email).isSuccessful();
         return results;
+    }
+
+    public void saveData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("SharedPref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("uid",uid);
+        editor.commit();
     }
 }
 

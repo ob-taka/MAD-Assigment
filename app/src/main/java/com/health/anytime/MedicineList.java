@@ -1,6 +1,8 @@
 package com.health.anytime;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +69,7 @@ public class MedicineList extends AppCompatActivity{
                 // changing status of a patient from false to true
                 // to indicate the patient has been added to the doctor's list
                 databaseReference.child("User").child(patientKey).child("status").setValue(true);
+                populateContacts();
                 Intent nextActivity = new Intent(MedicineList.this  , PatientList.class );
                 startActivity(nextActivity);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
@@ -118,7 +121,20 @@ public class MedicineList extends AppCompatActivity{
         });
     }
 
+    /**
+     * Add doctor's contact to patient's contact list
+    */
+    private void populateContacts(){
+        databaseReference.child("Contacts").child(patientKey).child(getDoctorKey()).child("Contacts").setValue("Contact Saved");
+        databaseReference.child("Contacts").child(getDoctorKey()).child(patientKey).child("Contacts").setValue("Contact Saved");
+    }
 
-
+    /**
+     * Retrieve uid of doctor using from shared preferences
+     */
+    private String getDoctorKey(){
+        SharedPreferences sharedPreferences = MedicineList.this.getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("uid","");
+    }
 
 }

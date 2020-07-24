@@ -1,6 +1,11 @@
 package com.health.anytime;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class ChatHome extends AppCompatActivity {
@@ -16,6 +22,7 @@ public class ChatHome extends AppCompatActivity {
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private TabsAccessorAdapter mTAA;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,4 +42,28 @@ public class ChatHome extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
 
     }
+/*
+option menu code below only works with toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.options_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if(item.getItemId() == R.id.chat_button){
+            startActivity(new Intent(ChatHome.this, ChatHome.class));
+        }
+        if(item.getItemId() == R.id.logout_button){
+            auth.signOut();
+        }
+
+        return true;
+    }
+ */
+
 }

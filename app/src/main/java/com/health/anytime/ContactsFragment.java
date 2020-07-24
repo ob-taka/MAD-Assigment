@@ -1,11 +1,15 @@
 package com.health.anytime;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +25,20 @@ public class ContactsFragment extends Fragment {
     private View contactsView;
     private RecyclerView mRecyclerView;
     private DatabaseReference contactsRef;
+    private String uid;
+
 
     public ContactsFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        contactsRef = FirebaseDatabase.getInstance().getReference("Contacts");
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+        uid = sharedPreferences.getString("uid","");
+        Log.d("#d",uid);
+        contactsRef = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
     }
 
     @Override
@@ -50,5 +58,14 @@ public class ContactsFragment extends Fragment {
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<PatientModel>()
                 .setQuery(contactsRef, PatientModel.class)
                 .build();
+
+        //FirebaseRecyclerAdapter<PatientModel, >
+    }
+
+    public static class ContactsViewHolder extends RecyclerView.ViewHolder{
+
+        public ContactsViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
     }
 }
