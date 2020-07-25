@@ -1,5 +1,6 @@
 package com.health.anytime;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class DoctorHome extends AppCompatActivity {
 
     Button viewpatient;
     Button addpatient;
+    Button medstock;
     ImageView doctorpic;
     TextView greetings, docname;
     String pic;
@@ -45,6 +47,7 @@ public class DoctorHome extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("User");
         viewpatient = findViewById(R.id.button4);
         addpatient = findViewById(R.id.button5);
+        medstock = findViewById(R.id.button6);
         greetings = findViewById(R.id.greating);
         docname = findViewById(R.id.label_Name);
         doctorpic = findViewById(R.id.doctorpic);
@@ -54,6 +57,7 @@ public class DoctorHome extends AppCompatActivity {
         String uid = getIntent().getStringExtra("Uid");
         Log.d("#d",uid);
         databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 docname.setText("Doctor " + dataSnapshot.child("patientName").getValue().toString().trim());
@@ -120,6 +124,14 @@ public class DoctorHome extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddPatient.class);
                 intent.putExtra("keys" , unaddedPatients);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+            }
+        });
+        medstock.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Pharmacy.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
             }

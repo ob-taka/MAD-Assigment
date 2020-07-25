@@ -3,11 +3,14 @@ package com.health.anytime;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,16 +30,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.sql.Ref;
 import java.util.ArrayList;
 
-public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCardListener {
+
+
+public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCardListener   {
     ArrayList<MedicineModel> medicineModels = new ArrayList<>();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     RecyclerView recyclerView;
-    FragmentManager fragmentManager = getSupportFragmentManager();
-
+    FloatingActionButton createMedicine;
 
     @Override
     protected void onStart() {
@@ -49,6 +55,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         setContentView(R.layout.activity_pharmacy);
 
         recyclerView = findViewById(R.id.recycler_view);
+        createMedicine = findViewById(R.id.floatingActionButton4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
         MedicineAdaptor adapter = new MedicineAdaptor(this , medicineModels , this);
@@ -58,49 +65,16 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
         recyclerView.addItemDecoration(new MedicineCardDecorator(largePadding, smallPadding));
 
-        //onclicklistener for FloatingActionButton and edit text
-        final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton4);
-        addPatient.setOnClickListener(new View.OnClickListener() {
+        //notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //refillmedicine();
+
+        createMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                RefillMedicine fragment = new RefillMedicine(getApplicationContext());
-                fragmentTransaction.add(R.id.container, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
-
-
-//                // inflate the layout of the popup window
-//                LayoutInflater inflater = (LayoutInflater)
-//                        getSystemService(LAYOUT_INFLATER_SERVICE);
-//                View popupView = inflater.inflate(R.layout.activity_create_medicine, null);
-//
-//                // create the popup window
-//                int width = LinearLayout.LayoutParams.MATCH_PARENT;
-//                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//                boolean focusable = true; // lets taps outside the popup also dismiss it
-//                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-//
-//                // show the popup window
-//                // which view you pass in doesn't matter, it is only used for the window tolken
-//                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//
-//                // dismiss the popup window when touched
-//                popupView.setOnTouchListener(new View.OnTouchListener() {
-//                    @Override
-//                    public boolean onTouch(View v, MotionEvent event) {
-//                        popupWindow.dismiss();
-//                        return true;
-//                    }
-//                });
-
-//                Intent nextActivity = new Intent(Pharmacy.this  , CreateMedicine.class );
-//                startActivity(nextActivity);
-//                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+            public void onClick(View v) {
+                Intent intent = new Intent(Pharmacy.this, CreateMedicine.class);
+                startActivity(intent);
             }
         });
-
 
 
     }
@@ -131,6 +105,10 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         intent.putExtra("medicname" , medicineModels.get(position).getMedicineTitle());
         intent.putExtra("medicimg" , medicineModels.get(position).getMedicineImg());
         intent.putExtra("medicdesc" , medicineModels.get(position).getMedid());
+        intent.putExtra("medicqty" , medicineModels.get(position).getQuantity());
         startActivity(intent);
     }
+
+
+
 }

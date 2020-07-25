@@ -1,47 +1,77 @@
 package com.health.anytime;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 
 public class CreateMedicine extends AppCompatActivity{
     EditText medicineTitle;
     EditText medicineQty;
-    EditText medicineImg;
-    EditText medicineDesc;
+    Button uploadButton;
     Button addButton;
+    TextView fileName;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    public Uri mImageUri;
+
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
     int numMed = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_medicine);
-
+        medicineTitle = findViewById(R.id.title_edit_text);
         medicineQty = findViewById(R.id.qty_edit_text);
-
+        uploadButton = findViewById(R.id.button_choose_image);
+        fileName = findViewById(R.id.file_name);
+        uploadButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
         //setup onclicklistener on add button
         addButton = findViewById(R.id. add_button);
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 countId();
-                String title = medicineTitle.getText().toString().trim();
-                int qty = Integer.parseInt(medicineQty.getText().toString());
-                String img = medicineImg.getText().toString().trim();
-                MedicineModel medicine = new MedicineModel(numMed+1,title,img,qty);
-                databaseReference.child("Pharmacy").child(title).setValue(medicine);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        String title = medicineTitle.getText().toString().trim();
+                        uploadFile(mImageUri , title);
+                        int qty = Integer.parseInt(medicineQty.getText().toString());
+                        MedicineModel medicine = new MedicineModel(numMed+1,title,"/Medicine/"+title+".jpg",qty);
+                        databaseReference.child("Pharmacy").child(title).setValue(medicine);
+                    }
+                },300);
+
+
 
                 //to add to user medicine
 
@@ -67,4 +97,52 @@ public class CreateMedicine extends AppCompatActivity{
             }
         });
     }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            fileName.setText(mImageUri.toString());
+        }
+    }
+
+    private void uploadFile(Uri file , String medname ){
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("Medicine/").child(medname+".jpg");
+        mStorageRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+                        buildDialog("File Upload Success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        buildDialog("File Upload Failure");
+                    }
+                });
+    }
+
+    private void buildDialog(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateMedicine.this);
+        builder.setTitle(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
+
 }

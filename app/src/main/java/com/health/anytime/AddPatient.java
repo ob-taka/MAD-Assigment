@@ -128,7 +128,6 @@ public class AddPatient extends AppCompatActivity{
                 });
         builder.create();
         builder.show();
-
     }
 
     /**

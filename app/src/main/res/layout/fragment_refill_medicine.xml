@@ -10,11 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        app:cardElevation="@dimen/cardview_compat_inset_shadow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,12 +24,6 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <Spinner
-                android:id="@+id/spinner"
-                android:prompt="@string/medspinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/qty_text_input"
@@ -40,6 +36,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:hint="@string/label_hint_medicinequantity" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,5 +49,6 @@
                 android:text="@string/label_add" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
