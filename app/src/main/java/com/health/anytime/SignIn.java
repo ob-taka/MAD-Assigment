@@ -3,6 +3,7 @@ package com.health.anytime;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,12 +52,14 @@ public class SignIn extends AppCompatActivity {
     int CONSTANT = 0;
     Boolean STATE = false;
     Intent intent;
+    TextView signup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
-
+        signup=findViewById(R.id.signup);
+        signup.setPaintFlags(signup.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
         mEmail = findViewById(R.id.editText_email);
         mPassword = findViewById(R.id.editText_password);
         mLoginBtn = findViewById(R.id.btn_signIn);
@@ -64,6 +68,14 @@ public class SignIn extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mGoogleSignInBtn = findViewById(R.id.btn_gsi);
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(SignIn.this, SignUp.class);
+                startActivity(intent);
+
+            }
+        });
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
                 .requestEmail()

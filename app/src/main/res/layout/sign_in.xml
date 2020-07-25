@@ -66,6 +66,16 @@
                 android:hint="  Password"
                 android:inputType="textPassword" />
 
+            <TextView
+                android:id="@+id/signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not a user? Sign Up"
+                android:textSize="15dp"
+                android:textColor="@color/blue"
+                android:layout_gravity="center"
+                android:layout_marginTop="120dp"/>
+
         </FrameLayout>
 
         <Button
