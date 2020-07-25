@@ -12,11 +12,13 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -41,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class SignIn extends AppCompatActivity {
     private EditText mEmail, mPassword;
+    private AppCompatButton mSignUpBtn;
     private Button mLoginBtn, mGoogleSignInBtn;
     private ProgressBar mProgressBar;
     private FirebaseAuth mAuth;
@@ -65,6 +68,7 @@ public class SignIn extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mGoogleSignInBtn = findViewById(R.id.btn_gsi);
+        mSignUpBtn = findViewById(R.id.ACB_loginSUBtn);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
                 .requestEmail()
@@ -107,7 +111,7 @@ public class SignIn extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful() && mAuth.getCurrentUser().isEmailVerified()) {
+                            if (task.isSuccessful()) {
                                 onAuthSuccess(task.getResult().getUser());
                             } else {
                                 Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -123,12 +127,18 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
-
         mGoogleSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = googleSignInClient.getSignInIntent();
                 startActivityForResult(intent, CONSTANT);
+            }
+        });
+
+        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignIn.this, SignUp.class));
             }
         });
     }

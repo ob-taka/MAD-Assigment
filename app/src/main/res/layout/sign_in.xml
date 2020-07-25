@@ -24,7 +24,7 @@
     <FrameLayout
         android:id="@+id/frameLayout2"
         android:layout_width="415dp"
-        android:layout_height="420dp"
+        android:layout_height="440dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="345dp"
-            android:layout_height="310dp"
+            android:layout_height="330dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="70dp"
             android:background="@drawable/signin_box"
@@ -65,6 +65,21 @@
                 android:padding="10dp"
                 android:hint="  Password"
                 android:inputType="textPassword" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="245dp"
+                android:paddingLeft="24dp">
+
+                <TextView
+                    android:id="@+id/textView_forgotPass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forgot Password?"
+                    android:textColor="#105CAF" />
+            </LinearLayout>
+
+
 
         </FrameLayout>
 
@@ -73,7 +88,7 @@
             android:layout_width="127dp"
             android:layout_height="51dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="360dp"
+            android:layout_marginTop="375dp"
             android:background="@drawable/myrect"
             android:elevation="2dp"
             android:text="Sign In" />
@@ -104,15 +119,35 @@
         app:layout_constraintStart_toStartOf="@+id/frameLayout2"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_gsi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:text="google sign in"
+        android:backgroundTint="#ffffff"
+        android:drawableStart="@drawable/common_google_signin_btn_icon_light"
+        android:drawablePadding="10dp"
+        android:text="Continue with Google"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/frameLayout2"
         app:layout_constraintStart_toStartOf="@+id/frameLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
 
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/ACB_loginSUBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#ffffff"
+        android:drawableStart="@drawable/emailpass_box"
+        android:text="New user? Sign up here!"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/btn_gsi"
+        app:layout_constraintStart_toStartOf="@+id/btn_gsi"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gsi" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
