@@ -21,6 +21,7 @@
         <activity android:name="com.health.anytime.DoctorHome" >
 
         </activity>
+        <activity android:name=".SignUp"></activity>
         <activity android:name="com.health.anytime.Profile_Patient" />
         <activity android:name="com.health.anytime.ViewPatient" />
         <activity android:name="com.health.anytime.AddPatient" >

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,18 +33,19 @@ import java.util.HashMap;
 public class DoctorHome extends AppCompatActivity {
 
     Button viewpatient;
-    Button addpatient;
+    Button addpatient, opt;
     ImageView doctorpic;
     TextView greetings, docname;
     String pic;
     HashMap<String,PatientModel> unaddedPatients;
     DatabaseReference databaseReference;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doctor_home);
-
+        auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("User");
         viewpatient = findViewById(R.id.button4);
         addpatient = findViewById(R.id.button5);
@@ -50,8 +54,10 @@ public class DoctorHome extends AppCompatActivity {
         doctorpic = findViewById(R.id.doctorpic);
         unaddedPatients = new HashMap<>();
         setTimeOfDay();
+        opt = findViewById(R.id.menu_btn);
+        registerForContextMenu(opt);
 
-        String uid = getIntent().getStringExtra("Uid");
+        String uid = auth.getCurrentUser().getUid();
         Log.d("#d",uid);
         databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -151,7 +157,29 @@ public class DoctorHome extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.options_menu,menu);
 
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()){
+            case R.id.chat_button :
+                startActivity(new Intent(DoctorHome.this, ChatHome.class));
+                break;
+            case R.id.logout_button :
+                auth.signOut();
+                startActivity(new Intent(DoctorHome.this,SignIn.class));
+                break;
+            default:
+                break;
+
+        }
+        return super.onContextItemSelected(item);
+    }
 
 
 

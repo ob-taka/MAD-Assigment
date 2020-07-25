@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,10 +45,12 @@ public class User_home extends AppCompatActivity {
     private String scheduleID;
     private String patientPic;
     private ArrayList<String> medicinePic;
+    private FirebaseAuth auth;
     private DatabaseReference userReference;// change to recieveintent
     private final DatabaseReference medicineReference = FirebaseDatabase.getInstance().getReference().child("med_list"); // get the reference of the medicine list base on schedule ID from user
     ImageView imageBtn;
     private TextView username, greating;
+    private Button opt;
 
 
     @Override
@@ -55,17 +63,21 @@ public class User_home extends AppCompatActivity {
         username = findViewById(R.id.label_Name);
         greating = findViewById(R.id.greating);
         medicinePic = new ArrayList<>();
-
-        receriveIntent = getIntent().getStringExtra("Uid"); // get Uid intent form SignIn
+        auth = FirebaseAuth.getInstance();
+        //receriveIntent = getIntent().getStringExtra("Uid"); // get Uid intent form SignIn
+        receriveIntent = auth.getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);// get reference of the current using the uid pass in form login
+        opt = findViewById(R.id.menu_btn);
+        // set btn for menu
+        registerForContextMenu(opt);
 
         initUser();
         createChannel();
         setTimeOfDay();
 
-
+        //Glide.with(this).load(auth.getCurrentUser().getPhotoUrl()).into(imageBtn);
         // set onClickListenr on the image of the user profile to got into their profile page
-       imageBtn.setOnClickListener(new View.OnClickListener() {
+        imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(User_home.this, Profile_Patient.class);
@@ -74,6 +86,29 @@ public class User_home extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.options_menu,menu);
+
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()){
+            case R.id.chat_button :
+                startActivity(new Intent(User_home.this, ChatHome.class));
+                break;
+            case R.id.logout_button :
+                auth.signOut();
+                startActivity(new Intent(User_home.this,SignIn.class));
+                break;
+            default:
+                break;
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     /**
