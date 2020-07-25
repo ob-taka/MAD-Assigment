@@ -46,13 +46,6 @@ public class SignUp extends AppCompatActivity {
 
         final Intent intent = new Intent(SignUp.this, SignIn.class);
 
-        //this checks whether user is already logged in
-        /*
-        if(rAuth.getCurrentUser() != null){
-            startActivity(intent);
-            finish();
-        }
-*/
         rRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,11 +89,22 @@ public class SignUp extends AppCompatActivity {
 
                 rProgressBar.setVisibility(View.VISIBLE);
                 //the following code registers the user using the entered email and password
-                if(validate==true && !isEmailExist(email)){
+                if(validate){
                     rAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
+                                rAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(SignUp.this,"User has been created successfully! Verification email has been sent. Please verify before loggin in. Email might be in junk mail.",Toast.LENGTH_LONG).show();
+                                        }
+                                        else {
+                                            task.isCanceled();
+                                        }
+                                    }
+                                });
                                 Toast.makeText(SignUp.this,"User has been created successfully!",Toast.LENGTH_LONG).show();
                                 insertDetails(name,email);
                                 startActivity(intent);
@@ -128,40 +132,26 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    //this method formats the email for database insertion
-    private String emailFormat(String sEmail){
-        //Replacing '@' & '.' to '_' as firebase key does not allow special characters
-        String Email = sEmail
-                .replace("@","_")
-                .replace(".","_");
-        return(Email);
-    }
-
     //this method generates and inserts the database details into firebase database
     private void insertDetails(String name, String email){
-        String Email = emailFormat(email);
         String Role = "Patient";
         String Pic = "default.jpg";
         String Med = "7d55d1c0-d";
         boolean Status = false;
 
-        //this sets the role of the email/user which in this case is default to Patient as this log in is for patients only
-        DatabaseReference dr = firebaseDatabase.getReference("Role").child(Email);
-        dr.setValue(Role);
-
         //this creates a unique generated key in "User" and store the patient's details
         DatabaseReference du = firebaseDatabase.getReference("User");
-        String ukey = du.push().getKey();
+        String ukey = rAuth.getCurrentUser().getUid();
         PatientModel user = new PatientModel(Pic, name, email, Status, Role, Med);
         du.child(ukey).setValue(user);
 
     }
-
+/*
     //this method accesses the firebase authentication to check if an email already exists
     private Boolean isEmailExist(String email){
         boolean results = rAuth.fetchSignInMethodsForEmail(email).isSuccessful();
         return results;
     }
-
+ */
 
 }

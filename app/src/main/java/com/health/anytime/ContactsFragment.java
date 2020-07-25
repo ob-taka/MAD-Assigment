@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +40,7 @@ public class ContactsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DatabaseReference contactsRef, usersRef;
     private FirebaseStorage firebaseStorage;
+    private FirebaseAuth mAuth;
     private StorageReference storageRef;
     private String uid;
 
@@ -51,14 +53,17 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
-        uid = sharedPreferences.getString("uid","");
-        Log.d("#d",uid);
+        //SharedPreferences sharedPreferences = getContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+        //uid = sharedPreferences.getString("uid","");
 
+        mAuth = FirebaseAuth.getInstance();
+        uid = mAuth.getCurrentUser().getUid();
         contactsRef = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
         usersRef = FirebaseDatabase.getInstance().getReference("User");
         firebaseStorage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
         storageRef = firebaseStorage.getReference();
+
+        Log.d("#d",uid);
     }
 
     @Override

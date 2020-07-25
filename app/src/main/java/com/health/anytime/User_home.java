@@ -64,7 +64,8 @@ public class User_home extends AppCompatActivity {
         greating = findViewById(R.id.greating);
         medicinePic = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
-        receriveIntent = getIntent().getStringExtra("Uid"); // get Uid intent form SignIn
+        //receriveIntent = getIntent().getStringExtra("Uid"); // get Uid intent form SignIn
+        receriveIntent = auth.getCurrentUser().getUid();
         userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);// get reference of the current using the uid pass in form login
         opt = findViewById(R.id.menu_btn);
         // set btn for menu
@@ -74,7 +75,7 @@ public class User_home extends AppCompatActivity {
         createChannel();
         setTimeOfDay();
 
-
+        //Glide.with(this).load(auth.getCurrentUser().getPhotoUrl()).into(imageBtn);
         // set onClickListenr on the image of the user profile to got into their profile page
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override

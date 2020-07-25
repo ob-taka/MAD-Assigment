@@ -45,7 +45,7 @@ public class DoctorHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doctor_home);
-
+        auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("User");
         viewpatient = findViewById(R.id.button4);
         addpatient = findViewById(R.id.button5);
@@ -57,7 +57,7 @@ public class DoctorHome extends AppCompatActivity {
         opt = findViewById(R.id.menu_btn);
         registerForContextMenu(opt);
 
-        String uid = getIntent().getStringExtra("Uid");
+        String uid = auth.getCurrentUser().getUid();
         Log.d("#d",uid);
         databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
