@@ -34,5 +34,4 @@ public class MedicineNotification extends Application {
             manager.createNotificationChannel(channel2);
         }
     }
-
 }

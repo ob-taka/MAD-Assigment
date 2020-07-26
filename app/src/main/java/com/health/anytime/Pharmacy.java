@@ -123,15 +123,12 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         startActivity(intent);
     }
 
+
     private void refillmedicine(){
-        StringBuilder medicines  = new StringBuilder();
-        for (String title : medicineRefills ) {
-            medicines.append(title);
-        }
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.ic_add_24dp)
+                .setSmallIcon(R.drawable.ha_icon_background)
                 .setContentTitle("Low on supplies")
-                .setContentText(medicines)
+                .setContentText("Panadol")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .build();
