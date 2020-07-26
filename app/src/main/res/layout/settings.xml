@@ -79,29 +79,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
-        android:id="@+id/info">
+        android:id="@+id/pattern">
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:srcCompat="@drawable/info"
+            app:srcCompat="@drawable/lock"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"/>
+
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Change Personal Details"
-            android:textSize="20dp" />
+            android:text="Pattern Lock"
+            android:textSize="20dp"/>
+
+        <Switch
+            android:id="@+id/lock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="150dp" />
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info"
+        app:layout_constraintTop_toBottomOf="@+id/pattern"
         android:id="@+id/delete">
 
         <ImageView
