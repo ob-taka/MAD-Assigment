@@ -1,6 +1,8 @@
 package com.health.anytime;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +46,8 @@ public class ContactsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private StorageReference storageRef;
     private String uid;
+    private Button dialogOK;
+    private Button dialogNO;
 
 
     public ContactsFragment() {
@@ -53,15 +58,11 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //SharedPreferences sharedPreferences = getContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
-        //uid = sharedPreferences.getString("uid","");
-
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
         contactsRef = FirebaseDatabase.getInstance().getReference("Contacts").child(uid);
         usersRef = FirebaseDatabase.getInstance().getReference("User");
         firebaseStorage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
-        storageRef = firebaseStorage.getReference();
 
         Log.d("#d",uid);
     }
@@ -83,23 +84,29 @@ public class ContactsFragment extends Fragment {
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<PatientModel>()
                 .setQuery(contactsRef, PatientModel.class)
                 .build();
+        //Custom dialog
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.custom_chat_dialog);
+        dialogOK = dialog.findViewById(R.id.dialogButtonOK);
+        dialogNO = dialog.findViewById(R.id.dialogButtonNO);
 
         FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull PatientModel model) {
-                String userIDS = getRef(position).getKey();
+                final String userIDS = getRef(position).getKey();
                 usersRef.child(userIDS).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String name = snapshot.child("patientName").getValue().toString();
+                        final String name = snapshot.child("patientName").getValue().toString();
                         String email = snapshot.child("patientEmail").getValue().toString();
-                        String pic = snapshot.child("patientProfilepic").getValue().toString();
+                        final String pic = snapshot.child("patientProfilepic").getValue(String.class);
 
                         holder.userName.setText(name);
                         holder.userEmail.setText(email);
 
-                        storageRef = storageRef.child("ProfilePicture/" + pic);
-                        storageRef.getDownloadUrl().addOnSuccessListener(
+                        storageRef = firebaseStorage.getReference().child("ProfilePicture/" + pic);
+                        storageRef.getDownloadUrl()
+                                .addOnSuccessListener(
                                 new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
@@ -107,6 +114,32 @@ public class ContactsFragment extends Fragment {
                                     }
                                 }
                         );
+
+                        //start activity to chat when user is clicked
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.show();
+                                dialogOK.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(getContext(),ChatActivity.class);
+                                        intent
+                                                .putExtra("UID",userIDS)
+                                                .putExtra("Name", name)
+                                                .putExtra("Pic", pic);
+                                        startActivity(intent);
+                                    }
+                                });
+                                dialogNO.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+
                     }
 
                     @Override
