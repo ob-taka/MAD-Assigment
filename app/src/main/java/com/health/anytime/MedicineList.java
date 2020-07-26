@@ -1,6 +1,8 @@
 package com.health.anytime;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,6 +29,7 @@ public class MedicineList extends AppCompatActivity{
     MAdaptor adaptor;
     ArrayList<String> medicinepic;
     ArrayList<Modle> medicineList;
+    FirebaseAuth auth;
     DatabaseReference databaseReference;
     DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
 
@@ -41,6 +45,7 @@ public class MedicineList extends AppCompatActivity{
         medKey = intent.getStringExtra("patientmlist");
         // init list and firebase connection
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
         medicinepic = new ArrayList<>();
         medicineList = new ArrayList<>();
 
@@ -67,6 +72,7 @@ public class MedicineList extends AppCompatActivity{
                 // changing status of a patient from false to true
                 // to indicate the patient has been added to the doctor's list
                 databaseReference.child("User").child(patientKey).child("status").setValue(true);
+                populateContacts();
                 Intent nextActivity = new Intent(MedicineList.this  , PatientList.class );
                 startActivity(nextActivity);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
@@ -116,7 +122,20 @@ public class MedicineList extends AppCompatActivity{
         });
     }
 
+    /**
+     * Add doctor's contact to patient's contact list
+    */
+    private void populateContacts(){
+        databaseReference.child("Contacts").child(patientKey).child(auth.getCurrentUser().getUid()).child("Contacts").setValue("Contact Saved");
+        databaseReference.child("Contacts").child(auth.getCurrentUser().getUid()).child(patientKey).child("Contacts").setValue("Contact Saved");
+    }
 
-
+    /**
+     * Retrieve uid of doctor using from shared preferences
+     */
+    private String getDoctorKey(){
+        SharedPreferences sharedPreferences = MedicineList.this.getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("uid","");
+    }
 
 }

@@ -9,7 +9,7 @@ android {
         applicationId "com.health.anytime"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,4 +46,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.firebaseui:firebase-ui-database:6.2.1'
     implementation 'com.github.cdflynn:checkview:v1.1'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
 }

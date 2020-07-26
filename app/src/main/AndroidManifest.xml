@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.health.anytime">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".MedicineNotification"
         android:allowBackup="true"
@@ -14,6 +17,12 @@
         <activity android:name=".MedicineDetails"></activity>
         <activity android:name=".CreateMedicine" />
         <activity android:name=".Pharmacy">
+        </activity>
+        <activity android:name=".SignUp"></activity>
+        <activity android:name="com.health.anytime.Profile_Patient" />
+        <activity android:name="com.health.anytime.ViewPatient" />
+        <activity android:name=".ChatHome"></activity>
+        <activity android:name="com.health.anytime.AddPatient" >
 
         </activity>
         <activity android:name=".User_home" />
