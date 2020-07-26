@@ -13,19 +13,15 @@
         <activity android:name=".MedicineDetails"></activity>
         <activity android:name=".CreateMedicine" />
         <activity android:name=".Pharmacy">
+
+        </activity>
+        <activity android:name=".User_home" />
+        <activity android:name=".SignIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".User_home" />
-        <activity android:name=".SignIn">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
         <activity android:name=".DoctorHome" />
         <activity android:name=".Profile_Patient" />
@@ -41,13 +37,13 @@
 
         <receiver android:name=".NotificationReceiver" />
 
-        <service
-            android:name=".MedicineNotification"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+<!--        <service-->
+<!--            android:name=".MedicineNotification"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
     </application>
 

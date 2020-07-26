@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,6 +15,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,19 +36,28 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.sql.Ref;
 import java.util.ArrayList;
-
+import static com.health.anytime.MedicineNotification.CHANNEL_1_ID;
 
 
 public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCardListener   {
     ArrayList<MedicineModel> medicineModels = new ArrayList<>();
+    ArrayList<String> medicineRefills = new ArrayList<>();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     RecyclerView recyclerView;
     FloatingActionButton createMedicine;
+    private NotificationManager notificationManager;
 
     @Override
     protected void onStart() {
         super.onStart();
         fetchMedicineData();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                refillmedicine();
+            }
+        }, 1000);
+
     }
 
     @Override
@@ -64,9 +75,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         int largePadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing);
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
         recyclerView.addItemDecoration(new MedicineCardDecorator(largePadding, smallPadding));
-
-        //notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //refillmedicine();
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         createMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -86,9 +95,14 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 medicineModels.clear();
                 recyclerView.removeAllViews();
+                //get all medicine from firebase
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     MedicineModel medicineModel = snapshot.getValue(MedicineModel.class);
                     medicineModels.add(medicineModel);
+                    //get list of medicine below quantity 10
+                    if (medicineModel.getQuantity() < 10){
+                        medicineRefills.add(medicineModel.getMedicineTitle());
+                    }
                 }
             }
 
@@ -109,6 +123,20 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         startActivity(intent);
     }
 
+    private void refillmedicine(){
+        StringBuilder medicines  = new StringBuilder();
+        for (String title : medicineRefills ) {
+            medicines.append(title);
+        }
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_add_24dp)
+                .setContentTitle("Low on supplies")
+                .setContentText(medicines)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
 
+        notificationManager.notify(1, notification);
+    }
 
 }
