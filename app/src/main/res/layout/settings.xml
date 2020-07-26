@@ -42,7 +42,7 @@
             android:id="@+id/imageView2"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"
 
             app:srcCompat="@drawable/email" />
@@ -61,7 +61,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/password" />
 
         <TextView
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Change Password"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </FrameLayout>
 
     <FrameLayout
@@ -87,7 +87,7 @@
             android:layout_height="40dp"
             app:srcCompat="@drawable/lock"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/textView6"
@@ -95,14 +95,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Pattern Lock"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
         <Switch
             android:id="@+id/lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="150dp" />
+            android:layout_marginStart="150dp" />
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
@@ -118,14 +118,14 @@
             android:layout_height="40dp"
             app:srcCompat="@drawable/delete"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginStart="10dp"/>
         <TextView
             android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Delete Account"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/red"/>
     </FrameLayout>
     <FrameLayout
@@ -142,14 +142,14 @@
             android:layout_height="40dp"
             app:srcCompat="@drawable/logout"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginStart="10dp"/>
         <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Log Out"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/red"/>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

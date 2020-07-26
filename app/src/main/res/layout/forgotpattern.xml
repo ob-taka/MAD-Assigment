@@ -13,7 +13,7 @@
         android:layout_height="33dp"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
-        android:text="Forgot Password"
+        android:text="Forgot Pattern"
         android:textColor="#000"
         android:textSize="24sp"
         android:textStyle="normal"
@@ -38,12 +38,11 @@
             android:layout_marginTop="70dp"
             android:background="@drawable/signin_box"
 
-
             android:elevation="2dp">
 
 
             <EditText
-                android:id="@+id/editText_email"
+                android:id="@+id/password"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
@@ -51,20 +50,18 @@
                 android:background="@drawable/emailpass_box"
                 android:ems="10"
 
-                android:hint="  Email"
+                android:hint="Password"
                 android:inputType="textEmailAddress"
                 android:padding="10dp" />
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="307dp"
-                android:layout_height="96dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="200dp"
-                android:ems="10"
-                android:padding="10dp"
-                android:text="Reset password link will be emailed to you. Email might be in junk mail."
-                android:textSize="20dp" />
+                android:id="@+id/textView_forgotPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password?"
+                android:textColor="#105CAF"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"/>
 
         </FrameLayout>
 
@@ -76,7 +73,7 @@
             android:layout_marginTop="360dp"
             android:background="@drawable/myrect"
             android:elevation="2dp"
-            android:text="Send Link" />
+            android:text="Log In" />
 
     </FrameLayout>
 

@@ -45,7 +45,7 @@ public class ConfirmLock extends AppCompatActivity {
                     Log.v("Code",code);
                     Toast.makeText(ConfirmLock.this, "Pattern lock has been set", Toast.LENGTH_LONG).show();
 
-                    Intent intent1 = new Intent(ConfirmLock.this, home.class);
+                    Intent intent1 = new Intent(ConfirmLock.this, Settings.class);
                     startActivity(intent1);
 
                 }
@@ -55,7 +55,7 @@ public class ConfirmLock extends AppCompatActivity {
                     patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
 
                     Toast.makeText(ConfirmLock.this, "Pattern does not match", Toast.LENGTH_LONG).show();
-                    Intent intent1 = new Intent(ConfirmLock.this, home.class);
+                    Intent intent1 = new Intent(ConfirmLock.this, Settings.class);
                     startActivity(intent1);
 
                 }
@@ -70,7 +70,7 @@ public class ConfirmLock extends AppCompatActivity {
     }
     public void onBackPressed() {
         super.onBackPressed();
-        Intent goToMainActivity = new Intent(getApplicationContext(), home.class);
+        Intent goToMainActivity = new Intent(getApplicationContext(), Settings.class);
         goToMainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Will clear out your activity history stack till now
         startActivity(goToMainActivity);
     }

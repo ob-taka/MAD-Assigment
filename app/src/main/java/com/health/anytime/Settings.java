@@ -1,5 +1,6 @@
 package com.health.anytime;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,8 +21,8 @@ public class Settings extends AppCompatActivity {
     FirebaseAuth mAuth;
     Switch lock;
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         pw=findViewById(R.id.password);
         email=findViewById(R.id.email);
@@ -47,10 +49,15 @@ public class Settings extends AppCompatActivity {
         });
         lock.setTextOff("OFF");
         lock.setTextOn("ON");
+
         SharedPreferences prefs = getSharedPreferences("Lock", MODE_PRIVATE);
         final String code = prefs.getString("Code", "");
         if (code.equals("")) {
             lock.setChecked(false);
+
+        }
+        else{
+            lock.setChecked(true);
 
         }
 
@@ -60,8 +67,23 @@ public class Settings extends AppCompatActivity {
                     Intent intent=new Intent(Settings.this,SetLock.class);
                     startActivity(intent);
                 } else {
-                    editor.putString("Code",null);
-                    editor.apply();
+                    new AlertDialog.Builder(Settings.this)
+                            .setTitle("Remove pattern lock")
+                            .setMessage("Are you sure you want to remove the pattern lock?")
+
+
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    editor.putString("Code",null);
+                                    editor.apply();
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton("No", null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    ;
 
                 }
             }

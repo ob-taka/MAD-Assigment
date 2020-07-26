@@ -29,6 +29,14 @@
 
         </activity>
         <activity android:name="com.health.anytime.AddMedicinePage" android:windowSoftInputMode="adjustNothing"/>
+        <activity android:name="com.health.anytime.Settings"/>
+        <activity android:name="com.health.anytime.SetLock" android:screenOrientation="portrait" />
+        <activity android:name="com.health.anytime.ConfirmLock" android:screenOrientation="portrait"/>
+        <activity android:name="com.health.anytime.HomeLock" android:screenOrientation="portrait"/>
+        <activity android:name="com.health.anytime.ForgetPassword" />
+        <activity android:name="com.health.anytime.DeleteAccount"/>
+        <activity android:name="com.health.anytime.ChangePassword"/>
+        <activity android:name="com.health.anytime.ChangeEmail" />
         <activity android:name="com.health.anytime.MedicineList">
 
         </activity>

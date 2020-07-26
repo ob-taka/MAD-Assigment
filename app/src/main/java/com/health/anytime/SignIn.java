@@ -3,6 +3,7 @@ package com.health.anytime;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -43,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class SignIn extends AppCompatActivity {
     private EditText mEmail, mPassword;
+    private TextView forgetPw;
     private AppCompatButton mSignUpBtn;
     private Button mLoginBtn, mGoogleSignInBtn;
     private ProgressBar mProgressBar;
@@ -68,6 +70,7 @@ public class SignIn extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mGoogleSignInBtn = findViewById(R.id.btn_gsi);
+        forgetPw = findViewById(R.id.textView_forgotPass);
         mSignUpBtn = findViewById(R.id.ACB_loginSUBtn);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
@@ -126,7 +129,15 @@ public class SignIn extends AppCompatActivity {
                 }
             }
         });
+        forgetPw.setPaintFlags(forgetPw.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 
+        forgetPw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignIn.this, ForgetPassword.class));
+
+            }
+        });
         mGoogleSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
