@@ -19,6 +19,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="1dp">
 
+        <Button
+            android:id="@+id/menu_btn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="..."
+            android:textAlignment="center" />
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/doctorpic"
             android:layout_width="wrap_content"
