@@ -1,11 +1,17 @@
 package com.health.anytime;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +21,21 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +50,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class User_home extends AppCompatActivity {
+public class User_home extends AppCompatActivity{
 
     private MAdaptor adaptor; // adaptor refer
     String receriveIntent;
@@ -51,7 +64,7 @@ public class User_home extends AppCompatActivity {
     ImageView imageBtn;
     private TextView username, greating;
     private Button opt;
-
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +90,7 @@ public class User_home extends AppCompatActivity {
 
         //Glide.with(this).load(auth.getCurrentUser().getPhotoUrl()).into(imageBtn);
         // set onClickListenr on the image of the user profile to got into their profile page
-        imageBtn.setOnClickListener(new View.OnClickListener() {
+        imageBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(User_home.this, Profile_Patient.class);
@@ -87,22 +100,27 @@ public class User_home extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.options_menu,menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
 
     }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()){
-            case R.id.chat_button :
+        switch (item.getItemId()) {
+            case R.id.chat_button:
                 startActivity(new Intent(User_home.this, ChatHome.class));
                 break;
-            case R.id.logout_button :
+            case R.id.find_location:
+                getLocationpermission();
+                break;
+            case R.id.logout_button:
                 auth.signOut();
-                startActivity(new Intent(User_home.this,SignIn.class));
+                startActivity(new Intent(User_home.this, SignIn.class));
                 break;
             default:
                 break;
@@ -115,9 +133,9 @@ public class User_home extends AppCompatActivity {
      * fetch the user information form the firebase and get the specific data that was needed
      * to prepare to be display on the screen and pass as a intent to the next activity
      */
-    private void initUser(){
+    private void initUser() {
 
-        userReference.addValueEventListener(new ValueEventListener() {
+        userReference.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 scheduleID = dataSnapshot.child("medid").getValue(String.class);
@@ -138,14 +156,14 @@ public class User_home extends AppCompatActivity {
     /**
      * change the greeting base on the time of the time
      */
-    private void setTimeOfDay(){
+    private void setTimeOfDay() {
         Calendar calendar = Calendar.getInstance();
         int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        if(timeOfDay >= 0 && timeOfDay < 12){
+        if (timeOfDay >= 0 && timeOfDay < 12) {
             greating.setText("Good Morning");
-        }else if(timeOfDay >= 12 && timeOfDay < 16){
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
             greating.setText("Good Afternoon");
-        }else if(timeOfDay >= 16 && timeOfDay < 21){
+        } else if (timeOfDay >= 16 && timeOfDay < 21) {
             greating.setText("Good Evening");
         }
     }
@@ -155,7 +173,7 @@ public class User_home extends AppCompatActivity {
      * Using this method to set up the recycler view using the information fetched form the database
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
-    private void setUpRecyclerView(String ID){
+    private void setUpRecyclerView(String ID) {
         Query query = medicineReference.child(ID).orderByChild("priority");
         FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
@@ -172,7 +190,7 @@ public class User_home extends AppCompatActivity {
         fetchPatientPic();
 
         // o`verrides the interface created in the adaptor class to customise the even of the click
-        adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
+        adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener(){
             @Override
             public void onItemClick(DataSnapshot dataSnapshot, int position) {
                 Modle modle = adaptor.getItem(position);
@@ -186,8 +204,8 @@ public class User_home extends AppCompatActivity {
     /**
      * this help create channel due to android lv 26 requires the app to create a channel inorder to send notification
      */
-    private void createChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private void createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("channelID", "reminderChannel", NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("channel for reminder");
 
@@ -206,11 +224,11 @@ public class User_home extends AppCompatActivity {
         );
         StorageReference storageRef = storage
                 .getReference()
-                .child("ProfilePicture/" + patientPic );
+                .child("ProfilePicture/" + patientPic);
         storageRef
                 .getDownloadUrl()
                 .addOnSuccessListener(
-                        new OnSuccessListener<Uri>() {
+                        new OnSuccessListener<Uri>(){
 
                             @Override
                             public void onSuccess(Uri uri) {
@@ -220,4 +238,54 @@ public class User_home extends AppCompatActivity {
                 );
     }
 
+    //to get location permission from user
+    private void getLocationpermission() {
+        if (ContextCompat.checkSelfPermission(
+                getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(User_home.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+
+        } else {
+            getLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation();
+            } else {
+                Toast.makeText(this, "Please enable location permissions to use this feature", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    //get location of user latitude and longitude
+    private void getLocation() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(this)
+                .requestLocationUpdates(locationRequest, new LocationCallback(){
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(User_home.this).removeLocationUpdates(this);
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            int lastestlocation = locationResult.getLocations().size() - 1;
+                            double latitude = locationResult.getLocations().get(lastestlocation).getLatitude();
+                            double longitude = locationResult.getLocations().get(lastestlocation).getLongitude();
+                            Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=clinic");
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        }
+                    }
+                }, Looper.getMainLooper());
+    }
 }

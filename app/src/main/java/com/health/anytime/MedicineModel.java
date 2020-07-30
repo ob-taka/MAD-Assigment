@@ -1,27 +1,34 @@
 package com.health.anytime;
 
 public class MedicineModel{
+    private int medid;
     private String medicineTitle;
-    private String medicineDesc;
-    private String dailyIntakeTime;
-    private int medicineImg;
+    private String medicineDsec;
+    private String medicineImg;
+    private int quantity;
 
     public MedicineModel(){
 
     }
 
-    // constructor used in AddPatient and ViewPatient activity (visible to doctor only)
-    public MedicineModel(String title , int src){
-        medicineTitle = title;
-        medicineImg = src;
+    public MedicineModel(int id , String medicineTitle, String medicineImg , String medicineDsec , int qty) {
+        this.medid = id;
+        this.medicineTitle = medicineTitle;
+        this.medicineImg = medicineImg;
+        this.medicineDsec = medicineDsec;
+        this.quantity = qty;
     }
 
-    // constructor used in --- activity (visible to Patient only)
-    public MedicineModel(String medicineTitle, String medicineDesc, String dailyIntakeTime, int medicineImg) {
-        this.medicineTitle = medicineTitle;
-        this.medicineDesc = medicineDesc;
-        this.dailyIntakeTime = dailyIntakeTime;
-        this.medicineImg = medicineImg;
+    public String getMedicineDsec() {
+        return medicineDsec;
+    }
+
+    public void setMedicineDsec(String medicineDsec) {
+        this.medicineDsec = medicineDsec;
+    }
+
+    public int getMedid() {
+        return medid;
     }
 
     public String getMedicineTitle() {
@@ -32,27 +39,19 @@ public class MedicineModel{
         this.medicineTitle = medicineTitle;
     }
 
-    public String getMedicineDesc() {
-        return medicineDesc;
-    }
-
-    public void setMedicineDesc(String medicineDesc) {
-        this.medicineDesc = medicineDesc;
-    }
-
-    public String getDailyIntakeTime() {
-        return dailyIntakeTime;
-    }
-
-    public void setDailyIntakeTime(String dailyIntakeTime) {
-        this.dailyIntakeTime = dailyIntakeTime;
-    }
-
-    public int getMedicineImg() {
+    public String getMedicineImg() {
         return medicineImg;
     }
 
-    public void setMedicineImg(int medicineImg) {
+    public void setMedicineImg(String medicineImg) {
         this.medicineImg = medicineImg;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

@@ -42,6 +42,7 @@ public class AddPatient extends AppCompatActivity{
 
         //init list and database
         Intent intent = getIntent();
+        // needs fix (unchecked operatoration)
         patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys"); //serialized hashmap
 
         // submit button to push patient medicine list to firebase
@@ -62,7 +63,6 @@ public class AddPatient extends AppCompatActivity{
                     updatePatient();
                     nextActivity.putExtra("patientmlist" ,medkey);
 
-
                     success.check();// check animation
 
                     // delay moving to medicineList , wait for check animation to finish
@@ -78,7 +78,6 @@ public class AddPatient extends AppCompatActivity{
                 }else {
                     buildDialog();
                 }
-
             }
         });
     }
@@ -129,7 +128,6 @@ public class AddPatient extends AppCompatActivity{
                 });
         builder.create();
         builder.show();
-
     }
 
     /**
