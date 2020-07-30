@@ -49,24 +49,11 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     RecyclerView recyclerView;
-    FloatingActionButton createMedicine;
-    private NotificationManager notificationManager;
 
     @Override
     protected void onStart() {
         super.onStart();
         fetchMedicineData();
-        // delay to prevent race conditions
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                //if there is medicines with quantity below 10 , notify user
-//                if (!medicineRefills.isEmpty()){
-//                    refillmedicine();
-//                }
-//            }
-//        }, 300);
-
     }
 
     @Override
@@ -76,23 +63,15 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
 
         doctorId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         recyclerView = findViewById(R.id.recycler_view);
-        createMedicine = findViewById(R.id.floatingActionButton4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
         MedicineAdaptor adapter = new MedicineAdaptor(this , medicineModels , this);
         recyclerView.setAdapter(adapter);
+        //setting diamension of each card view in grid
         int largePadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing);
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
         recyclerView.addItemDecoration(new MedicineCardDecorator(largePadding, smallPadding));
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        createMedicine.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Pharmacy.this, CreateMedicine.class);
-                startActivity(intent);
-            }
-        });
     }
 
     private void fetchMedicineData(){
@@ -128,35 +107,6 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         startActivity(intent);
     }
 
-//    private void createNotificationChannel() {
-//        // Create the NotificationChannel, but only on API 26+ because
-//        // the NotificationChannel class is new and not in the support library
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            CharSequence name = getString(R.string.channel_name);
-//            String description = getString(R.string.channel_description);
-//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-//            channel.setDescription(description);
-//            // Register the channel with the system; you can't change the importance
-//            // or other notification behaviors after this
-//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//    }
-//
-//    private void refillmedicine(){
-////        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-////                .setSmallIcon(R.drawable.ha_icon_background)
-////                .setContentTitle("Low on supplies")
-////                .setPriority(NotificationCompat.PRIORITY_HIGH)
-////                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-////                .build();
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-//                .setSmallIcon(R.drawable.ha_icon_background)
-//                .setContentTitle("Low on supplies")
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//        notificationManager.notify(1, builder);
-//    }
 
     public void init_firebase(){
         String[] m = { "Antibiotics" , "Panadol" , "Benzonatate" ,  "Activiated Charcoal"};

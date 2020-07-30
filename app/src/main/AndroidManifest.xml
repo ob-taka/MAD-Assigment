@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ha_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".PharamcyNotificationManager"></activity>
         <activity android:name=".MedicineDetails" />
         <activity android:name=".CreateMedicine" />
         <activity android:name=".Pharmacy" />
@@ -46,7 +46,6 @@
             android:windowSoftInputMode="adjustPan" />
 
         <receiver android:name=".NotificationReceiver" />
-
     </application>
 
 </manifest>
