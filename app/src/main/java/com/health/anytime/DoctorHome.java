@@ -34,7 +34,6 @@ import java.util.HashMap;
 public class DoctorHome extends AppCompatActivity {
 
     Button viewpatient;
-    Button addpatient;
     Button medstock;
     Button addpatient, opt;
     ImageView doctorpic;

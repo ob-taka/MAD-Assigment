@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,19 +29,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Objects;
+
 
 public class CreateMedicine extends AppCompatActivity{
     EditText medicineTitle;
     EditText medicineQty;
+    EditText medicineDetails;
     Button uploadButton;
     Button addButton;
     TextView fileName;
     private static final int PICK_IMAGE_REQUEST = 1;
     public Uri mImageUri;
-
+    String title , desc;
+    int qty;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
     int numMed = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +55,7 @@ public class CreateMedicine extends AppCompatActivity{
         medicineTitle = findViewById(R.id.title_edit_text);
         medicineQty = findViewById(R.id.qty_edit_text);
         uploadButton = findViewById(R.id.button_choose_image);
+        medicineDetails = findViewById(R.id.desc_edit_text);
         fileName = findViewById(R.id.file_name);
         uploadButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -60,24 +69,50 @@ public class CreateMedicine extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 countId();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        String title = medicineTitle.getText().toString().trim();
-                        uploadFile(mImageUri , title);
-                        int qty = Integer.parseInt(medicineQty.getText().toString());
-                        MedicineModel medicine = new MedicineModel(numMed+1,title,"/Medicine/"+title+".jpg",qty);
-                        databaseReference.child("Pharmacy").child(title).setValue(medicine);
-                    }
-                },300);
+                boolean upload = true;
+                title = medicineTitle.getText().toString().trim();
+                if (medicineQty.getText().toString().equals("")){
+                    medicineQty.setError(getString(R.string.input_empty));
+                    upload = false;
+                }else {
+                    medicineDetails.setError(null);
+                    qty = Integer.parseInt(medicineQty.getText().toString());
+                }
+                desc = medicineDetails.getText().toString().trim();
+                if (title == null) {
+                    medicineTitle.setError(getString(R.string.input_empty));
+                    upload = false;
+                } else {
+                    medicineTitle.setError(null);
+                }
+                if (desc == null) {
+                    medicineDetails.setError(getString(R.string.input_empty));
+                    upload = false;
+                } else {
+                    medicineDetails.setError(null);
+                }
+                if (mImageUri == null){
+                    upload = false;
+                    fileName.setText("Needs to Upload File");
+                    fileName.setTextColor(Color.rgb(200,0,0));
+                }
+                if (upload) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            uploadFile(mImageUri , title);
+                            MedicineModel medicine = new MedicineModel(numMed+1,title,"/Medicine/"+title+".jpg", desc,qty);
+                            //Modle med = new Modle(title , desc ,"/Medicine/"+title+".jpg" , numMed+1 );
+                            databaseReference.child("Pharmacy").child(userId).child(title).setValue(medicine);
+                            //databaseReference.child("user_medicien").child(title).setValue(med);
+                            Intent nextActivity = new Intent(CreateMedicine.this  , Pharmacy.class );
+                            startActivity(nextActivity);
+                            overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                        }
+                    },300);
+                }
 
 
-
-                //to add to user medicine
-
-                Intent nextActivity = new Intent(CreateMedicine.this  , Pharmacy.class );
-                startActivity(nextActivity);
-                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
             }
         });
     }
@@ -85,7 +120,7 @@ public class CreateMedicine extends AppCompatActivity{
     //count the total number of
     private void countId(){
         // fetch patient from firebase
-        databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 numMed = (int)dataSnapshot.getChildrenCount();
@@ -104,6 +139,7 @@ public class CreateMedicine extends AppCompatActivity{
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -122,27 +158,12 @@ public class CreateMedicine extends AppCompatActivity{
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
                         Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-                        buildDialog("File Upload Success");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        buildDialog("File Upload Failure");
                     }
                 });
     }
-
-    private void buildDialog(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(CreateMedicine.this);
-        builder.setTitle(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-        builder.create();
-        builder.show();
-    }
-
 }

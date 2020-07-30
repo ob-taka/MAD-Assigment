@@ -13,9 +13,8 @@
     <string name="label_add">ADD</string>
     <string name="label_hint_medicineDesc">Description</string>
     <string name="medspinner">Select medicine to refill</string>
-
-
-</resources>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="input_empty">Cannot be empty</string>
+
 </resources>

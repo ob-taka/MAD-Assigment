@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.health.anytime">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--
+ Required only when requesting background location access on
+      Android 10 (API level 29).
+    -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:name=".MedicineNotification"
         android:allowBackup="true"
         android:icon="@mipmap/ha_icon_round"
         android:label="@string/app_name"
@@ -14,17 +20,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MedicineDetails"></activity>
+        <activity android:name=".MedicineDetails" />
         <activity android:name=".CreateMedicine" />
-        <activity android:name=".Pharmacy">
-        </activity>
-        <activity android:name=".SignUp"></activity>
-        <activity android:name="com.health.anytime.Profile_Patient" />
-        <activity android:name="com.health.anytime.ViewPatient" />
-        <activity android:name=".ChatHome"></activity>
-        <activity android:name="com.health.anytime.AddPatient" >
-
-        </activity>
+        <activity android:name=".Pharmacy" />
+        <activity android:name=".SignUp" />
+        <activity android:name=".Profile_Patient" />
+        <activity android:name=".ViewPatient" />
+        <activity android:name=".ChatHome" />
+        <activity android:name=".AddPatient" />
         <activity android:name=".User_home" />
         <activity android:name=".SignIn">
             <intent-filter>
@@ -33,18 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".User_home" />
-        <activity android:name=".SignIn">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
         <activity android:name=".DoctorHome" />
-        <activity android:name=".Profile_Patient" />
-        <activity android:name=".ViewPatient" />
-        <activity android:name=".AddPatient" />
         <activity
             android:name=".AddMedicinePage"
             android:windowSoftInputMode="adjustNothing" />
@@ -54,14 +46,6 @@
             android:windowSoftInputMode="adjustPan" />
 
         <receiver android:name=".NotificationReceiver" />
-
-<!--        <service-->
-<!--            android:name=".MedicineNotification"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
 
     </application>
 

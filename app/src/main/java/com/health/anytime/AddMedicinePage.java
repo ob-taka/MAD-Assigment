@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AddMedicinePage extends AppCompatActivity {
 
@@ -59,8 +61,9 @@ public class AddMedicinePage extends AppCompatActivity {
     public static RecyclerView recyclerView;
     TimePickerDialog picker;
     private int medqty;
-
-//git
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    String doctorid = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+    String patientkey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,9 +86,8 @@ public class AddMedicinePage extends AppCompatActivity {
         Intent intent = getIntent();
 
         medKey = intent.getStringExtra("medKey");
-
+        patientkey = intent.getStringExtra("patientKey");
         final DecimalFormat df = new DecimalFormat("#");
-
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         doseNumber=0.0;
@@ -137,11 +139,11 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(breakfastValid==0){
                     breakfastValid=1;
-                    breakfast.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    breakfast.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     breakfastValid=0;
-                    breakfast.setBackground(getResources().getDrawable(R.drawable.unit));
+                    breakfast.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
 
             }
@@ -151,11 +153,11 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(lunchValid==0){
                     lunchValid=1;
-                    lunch.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    lunch.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     lunchValid=0;
-                    lunch.setBackground(getResources().getDrawable(R.drawable.unit));
+                    lunch.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
 
             }
@@ -165,13 +167,12 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(dinnerValid==0){
                     dinnerValid=1;
-                    dinner.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    dinner.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     dinnerValid=0;
-                    dinner.setBackground(getResources().getDrawable(R.drawable.unit));
+                    dinner.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
-
             }
         });
 
@@ -268,14 +269,9 @@ public class AddMedicinePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Check if all tasks has been selected.
-                //
-
                 checkValid();
                 if (errors==0){
                     sendData();
-                    Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
-                    nextActivity.putExtra("patientmlist" , medKey);
-                    startActivity(nextActivity);
                 }
             }
         });
@@ -380,6 +376,7 @@ public class AddMedicinePage extends AppCompatActivity {
     }
     public void sendData(){
         //Adding data to firebase
+        getMedQty(medName);
         DatabaseReference tempRef=databaseReference.child("med_list");
         Modle med = new Modle();
         String food = "";
@@ -387,39 +384,37 @@ public class AddMedicinePage extends AppCompatActivity {
         {
             food="Before Food";
         }
-        else if (after.isChecked())
-        {
-            food="After Food";
+        else if (after.isChecked()) {
+            food = "After Food";
         }
-        if (breakfastValid==1){
-            med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"1").setValue(med);
+        if ( medqty > ((dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
+            medqty -= ((dinnerValid + lunchValid + breakfastValid) * doseNumber);
+            databaseReference.child("Pharmacy").child(doctorid).child(medName).child("quantity").setValue(medqty);
+            if (breakfastValid==1){
+                med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
+                tempRef.child(medKey).child(medName+"1").setValue(med);
 
-        }if (lunchValid==1){
-            med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"2").setValue(med);
+            }if (lunchValid==1){
+                med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
+                tempRef.child(medKey).child(medName+"2").setValue(med);
 
-        }if (dinnerValid==1){
-            med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"3").setValue(med);
+            }if (dinnerValid==1){
+                med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
+                tempRef.child(medKey).child(medName+"3").setValue(med);
+            }
+            Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
+            nextActivity.putExtra("patientmlist" , medKey);
+            nextActivity.putExtra("patientKey" ,patientkey );
+            startActivity(nextActivity);
+        }else {
+            buildDialog();
         }
-        getMedQty(medName);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-                                public void run() {
-                                    if ( medqty > ((dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
-                                        medqty -= ((dinnerValid + lunchValid + breakfastValid) * doseNumber);
-                                        databaseReference.child("Pharmacy").child(medName).child("quantity").setValue(medqty);
-                                    }else {
-                                        buildDialog();
-                                    }
 
-                                }
-                            },300);
+
     }
 
     private void getMedQty(final String title){
-        databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

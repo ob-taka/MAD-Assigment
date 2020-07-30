@@ -38,6 +38,21 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/desc_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/desc_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="@string/label_hint_medicineDesc" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/qty_text_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:inputType="number"
                     android:hint="@string/label_hint_medicinequantity" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,13 +72,13 @@
                 android:id="@+id/button_choose_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose file" />
+                android:text="Choose a file" />
 
             <TextView
                 android:id="@+id/file_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="" />
 
             <Button
                 android:id="@+id/add_button"

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,24 +30,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RefillMedicine#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RefillMedicine extends Fragment{
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private Context context;
     private EditText Qty;
     private int medqty;
     private String text;
+    private String userId;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     public RefillMedicine(Context context , String medicine) {
@@ -59,6 +52,7 @@ public class RefillMedicine extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     }
 
     @Override
@@ -76,7 +70,7 @@ public class RefillMedicine extends Fragment{
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         int qty = Integer.parseInt(Qty.getText().toString()) + medqty;
-                        databaseReference.child("Pharmacy").child(text).child("quantity").setValue(qty);
+                        databaseReference.child("Pharmacy").child(userId).child(text).child("quantity").setValue(qty);
                         view.setVisibility(View.GONE);
                     }
                 }, 300);
@@ -94,7 +88,7 @@ public class RefillMedicine extends Fragment{
     }
 
     private void getMed(final String title){
-        databaseReference.child("Pharmacy").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

@@ -1,5 +1,6 @@
 package com.health.anytime;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -61,7 +63,6 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineAdaptor.Medici
     public class MedicineCardHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView medicineName;
         ImageView medicineIcon;
-        TextView medicineqty;
         OnCardListener cardListener;
 
         public MedicineCardHolder(@NonNull View itemView , OnCardListener cardListener) {
@@ -69,7 +70,6 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineAdaptor.Medici
 
             this.medicineName = itemView.findViewById(R.id.med_title);
             this.medicineIcon = itemView.findViewById(R.id.med_image);
-            //this.medicineqty = itemView.findViewById(R.id.med_qty);
             this.cardListener = cardListener;
 
             itemView.setOnClickListener(this);
