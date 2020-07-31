@@ -11,13 +11,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -42,12 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.validation.Validator;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
-
+//Declaration of attributes
     private String receiverName, receiverPic, receiverUID, msg, senderUID;
     private TextView userName;
     private EditText enterMSG;
@@ -79,7 +74,7 @@ public class ChatActivity extends AppCompatActivity {
 
         chatTB = findViewById(R.id.chatActivity_toolbar);
         setSupportActionBar(chatTB);
-
+        //Create instance of ActionBar and display the action bar. This is for the custom chat bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
@@ -92,13 +87,13 @@ public class ChatActivity extends AppCompatActivity {
         sendMSG = findViewById(R.id.btn_sendMSG);
         userName = findViewById(R.id.custom_profName);
         profPic = findViewById(R.id.custom_profPic);
-//set adapter
+
         messageAdapter = new MessageAdapter(msgList);
         messagesList = findViewById(R.id.RV_ChatMessageList);
         linearLayoutManager = new LinearLayoutManager(this);
         messagesList.setLayoutManager(linearLayoutManager);
         messagesList.setAdapter(messageAdapter);
-//
+//Accesses firebase storage to get profile pic and set it to the profile pic in the custom action bar
         userName.setText(receiverName);
         storageRef = firebaseStorage.getReference().child("ProfilePicture/" + receiverPic);
         storageRef.getDownloadUrl()
@@ -110,6 +105,7 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
                 );
+//Toggles the visibility on and off for the send button
         enterMSG.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -134,6 +130,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+//Accesses the firebase database to retrieve messages and set it to msglist list
         rootRef.child("Messages").child(senderUID).child(receiverUID).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -165,6 +162,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+//Method to send message to the receiver or other user. It accesses the firebase database and push the message, senderUID as well as the receiverUID.
     private void sendMessage(){
         sendMSG.setVisibility(View.GONE);
         String msg = enterMSG.getText().toString();
@@ -178,18 +176,20 @@ public class ChatActivity extends AppCompatActivity {
                     .child(receiverUID)
                     .push();
             String pushID = userMessageKeyRef.getKey();
-
+//Store message in an ordered collection aka a hashmap
             Map messageTextBody = new HashMap();
 
             messageTextBody.put("message", msg);
             messageTextBody.put("type", "text");
             messageTextBody.put("from", senderUID);
 
+//Store the messageTextBody which is the structure and some details such as from and type of message to the respective key strings.
             Map messageBodyDetails = new HashMap();
 
             messageBodyDetails.put(messageSenderRef + "/" + pushID, messageTextBody);
             messageBodyDetails.put(messageReceiverRef + "/" + pushID, messageTextBody);
 
+//Database will be updated by using pushing the messageBodyDetails into their respective fields.
             rootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
@@ -212,6 +212,11 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+/*
+* This function toggles the visibility of the send button on and off.
+* The visibility will be dependent on whether the user has typed something in or not.
+* if not, then the button will be invisible, otherwise it will be visible.
+*/
     private boolean buttonDisplay(){
         final boolean[] result = {true};
         msg = enterMSG.getText().toString();

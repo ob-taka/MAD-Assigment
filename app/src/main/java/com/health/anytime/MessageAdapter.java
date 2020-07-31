@@ -2,7 +2,6 @@ package com.health.anytime;
 
 import android.graphics.Color;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>
 {
+//Declaration of attributes
     private List<Message> msgList;
     private FirebaseAuth auth;
     private DatabaseReference ref;
@@ -38,6 +38,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.msgList = msgList;
     }
 
+//Declare the attributes ID in custom layout and assign to a variable
     public class MessageViewHolder extends RecyclerView.ViewHolder{
         public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfPic;
@@ -50,6 +51,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
     }
 
+//Message view holder will be set to a custom chat message layout
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,6 +62,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return new MessageViewHolder(view);
     }
 
+//Sets sent and received messages and profile pic to this view holder
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         String senderUID = auth.getCurrentUser().getUid();
@@ -68,6 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         String fromMessageType = message.getType();
 
         ref = FirebaseDatabase.getInstance().getReference().child("User").child(fromUserID);
+//Access firebase storage to set the profile picture in view holder
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -90,6 +94,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
 
+/*
+*Display the sent or received messages using visibility depending on the sender or receiver.
+*The sender should not be able to see the receiver's received message and vise versa for the receiver.
+*/
         if (fromMessageType.equals("text"))
         {
 
@@ -118,7 +126,5 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public int getItemCount() {
         return msgList.size();
     }
-
-
 
 }

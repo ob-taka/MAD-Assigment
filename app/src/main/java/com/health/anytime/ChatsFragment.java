@@ -77,13 +77,17 @@ public class ChatsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+/*
+The following will set up a query and get the necessary details from firebase database, assign it a to viewholder with a custom layout
+and finally be managed by the firebase recycler adapter, displaying the this viewholder in the recycler view.
+*/
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<PatientModel>()
                 .setQuery(contactsRef, PatientModel.class)
                 .build();
 
-        FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder>(options) {
+        FirebaseRecyclerAdapter<PatientModel, ChatViewHolder> adapter = new FirebaseRecyclerAdapter<PatientModel, ChatViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull PatientModel model) {
+            protected void onBindViewHolder(@NonNull final ChatViewHolder holder, int position, @NonNull PatientModel model) {
                 final String userIDS = getRef(position).getKey();
                 usersRef.child(userIDS).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -95,6 +99,7 @@ public class ChatsFragment extends Fragment {
                         holder.userName.setText(name);
                         holder.userEmail.setText(email);
 
+                        //Retrieving the profile picture from firebase storage and assigning to the viewholder
                         storageRef = firebaseStorage.getReference().child("ProfilePicture/" + pic);
                         storageRef.getDownloadUrl()
                                 .addOnSuccessListener(
@@ -105,6 +110,7 @@ public class ChatsFragment extends Fragment {
                                             }
                                         }
                                 );
+                        //Start chat activity when the viewholder is clicked
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -125,12 +131,12 @@ public class ChatsFragment extends Fragment {
                 });
             }
 
-
             @NonNull
             @Override
-            public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//This onCreateViewHolder will use a custom display layout
+            public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_display_layout, parent, false);
-                ContactsViewHolder viewHolder = new ContactsViewHolder(view);
+                ChatViewHolder viewHolder = new ChatViewHolder(view);
                 return viewHolder;
             }
         };
@@ -138,11 +144,12 @@ public class ChatsFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class ContactsViewHolder extends RecyclerView.ViewHolder{
+//This view holder will hold contacts data such as name, email and profilepic
+    public static class ChatViewHolder extends RecyclerView.ViewHolder{
         TextView userName, userEmail;
         CircleImageView profPic;
 
-        public ContactsViewHolder(@NonNull View itemView)
+        public ChatViewHolder(@NonNull View itemView)
         {
             super(itemView);
             userName = itemView.findViewById(R.id.contacts_name);

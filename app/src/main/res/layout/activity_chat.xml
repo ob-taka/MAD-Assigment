@@ -30,14 +30,12 @@
 
         <EditText
             android:id="@+id/editText_inputChatMSG"
-            android:layout_width="335dp"
+            android:layout_width="680dp"
             android:layout_height="wrap_content"
-            android:hint="Enter your message.."
-            android:padding="15dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            >
-        </EditText>
+            android:hint="Enter your message.."
+            android:padding="15dp"></EditText>
 
         <ImageButton
             android:id="@+id/btn_sendMSG"

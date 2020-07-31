@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-
-import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -42,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class SignIn extends AppCompatActivity {
+//Declaration of attributes
     private EditText mEmail, mPassword;
     private AppCompatButton mSignUpBtn;
     private Button mLoginBtn, mGoogleSignInBtn;
@@ -49,17 +48,16 @@ public class SignIn extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private StorageReference mStorage;
-    private String email, uid, role , pic;
+    private String email, uid, role;
     private GoogleSignInClient googleSignInClient;
     private int CONSTANT = 0;
-    private Boolean STATE = false;
     private Intent patHomeActivity;
     private Intent docHomeActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
-
+//Instantiation of attributes
         mEmail = findViewById(R.id.editText_email);
         mPassword = findViewById(R.id.editText_password);
         mLoginBtn = findViewById(R.id.btn_signIn);
@@ -69,31 +67,33 @@ public class SignIn extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mGoogleSignInBtn = findViewById(R.id.btn_gsi);
         mSignUpBtn = findViewById(R.id.ACB_loginSUBtn);
+        //Configuring google sign in (GSO) and GSO object
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         patHomeActivity = new Intent(SignIn.this, User_home.class);
         docHomeActivity = new Intent(SignIn.this,DoctorHome.class);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+//Logs existing user in without having to key in necessary details
         FirebaseUser mUser = mAuth.getCurrentUser();
         if(mUser != null){
             onAuthSuccess(mUser);
         }
 
-        //Event listener on Sign In button, validation along the way.
+
+//Event listener on Sign In button, validates fields and signs the user in
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 email = mEmail.getText().toString().trim();
-                //saveData();
+
                 String pw = mPassword.getText().toString().trim();
                 boolean validate = true;
                 if (TextUtils.isEmpty(email)) {
@@ -106,12 +106,12 @@ public class SignIn extends AppCompatActivity {
                 }
                 mProgressBar.setVisibility(View.VISIBLE);
 
-                //Authenticate User
                 if(validate) {
                     mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                //Calls function to redirect user to necessary activities
                                 onAuthSuccess(task.getResult().getUser());
                             } else {
                                 Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -127,6 +127,7 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
+//Opens the google sign in activity created by google
         mGoogleSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +136,7 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
+//Redirects user to sign up page if they need to sign up
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +145,8 @@ public class SignIn extends AppCompatActivity {
         });
     }
 
-    //This method checks for user's role and direct them to their respective pages.
+//This method checks for user's role and direct them to their respective pages.
+//Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
     private void onAuthSuccess(FirebaseUser user) {
         if (user != null) {
             uid = user.getUid();
@@ -156,7 +159,6 @@ public class SignIn extends AppCompatActivity {
                     Log.d("#d",role);
                     switch (role){
                         case ("Doctor"):
-                            //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
                             mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(SignIn.this, "Succesfully signed in as Doctor",Toast.LENGTH_LONG).show();
                             startActivity(docHomeActivity);
@@ -189,6 +191,8 @@ public class SignIn extends AppCompatActivity {
             handleSignInResult(task);
         }
     }
+
+//This method handles the sign in by inserting details of the user's google account into firebase database
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -197,70 +201,28 @@ public class SignIn extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     insertGSI_Details(account);
-                    //saveData();
-                    Intent intent = new Intent(SignIn.this, User_home.class);
-                    intent.putExtra("Uid",uid)
-                            .putExtra("Role","Patient");
-                    startActivity(intent);
+                    startActivity(patHomeActivity);
                 }
             });
 
         }
         catch (ApiException e) {
-            // This will log the error that is returned from the api exception
+            //This will log the error that is returned from the api exception
             Log.d("#Error", "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(SignIn.this, "Google sign in failed. Try again later.", Toast.LENGTH_LONG).show();
         }
     }
 
-    //This method gets the details of the user from his google sign in and updates the database and storage in firebase
+//This method gets the details of the user from his google sign in and updates the database and storage in firebase
     private void insertGSI_Details(GoogleSignInAccount account){
         String medid = "7d55d1c0-d";
         String role = "Patient";
-        boolean status = false;
         email = account.getEmail();
-        String name = account.getDisplayName();
-        //Uri pic = account.getPhotoUrl();
-        //String fileName = uploadPhoto(pic);
-
         //Sets information of the user which in this case is default to Patient as this log in is for patients only
         DatabaseReference dr = mDatabase.getReference("User");
         String ukey = mAuth.getCurrentUser().getUid();
-        PatientModel user = new PatientModel("default.jpg", name, email, status, role, medid);
+        PatientModel user = new PatientModel("default.jpg", account.getDisplayName(), email, false, role, medid);
         dr.child(ukey).setValue(user);
-
-        //use googleSignInClient.signOut(); when signing out
     }
-/*
-    //This method simply gets the type of the file for e.g. .jpg or .png
-    private String getFileType(Uri uri){
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    //This method uploads the google account's image into firebase storage.
-    //It also returns the file name of the picture
-    private String uploadPhoto(Uri pic){
-        String picName = "default.jpg";
-        if(pic != null) {
-            picName = System.currentTimeMillis() + "." + getFileType(pic);
-            StorageReference storageReference = mStorage.child("ProfilePicture/" + picName);
-            storageReference.putFile(pic);
-        }
-
-        return picName;
-    }
-
-
-    public void saveData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("SharedPref",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("uid",uid);
-        editor.commit();
-    }
-
- */
 }
 

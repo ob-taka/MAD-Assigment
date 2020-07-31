@@ -84,12 +84,15 @@ public class ContactsFragment extends Fragment {
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<PatientModel>()
                 .setQuery(contactsRef, PatientModel.class)
                 .build();
-        //Custom dialog
+        //Custom dialog for confirmation
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.custom_chat_dialog);
         dialogOK = dialog.findViewById(R.id.dialogButtonOK);
         dialogNO = dialog.findViewById(R.id.dialogButtonNO);
-
+/*
+The following will set up a query and get the necessary details from firebase database, assign it a to viewholder with a custom layout
+and finally be managed by the firebase recycler adapter, displaying the this viewholder in the recycler view.
+*/
         FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<PatientModel, ContactsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull PatientModel model) {
@@ -104,6 +107,7 @@ public class ContactsFragment extends Fragment {
                         holder.userName.setText(name);
                         holder.userEmail.setText(email);
 
+                        //Retrieving the profile picture from firebase storage and assigning to the viewholder
                         storageRef = firebaseStorage.getReference().child("ProfilePicture/" + pic);
                         storageRef.getDownloadUrl()
                                 .addOnSuccessListener(
@@ -149,9 +153,9 @@ public class ContactsFragment extends Fragment {
                 });
             }
 
-
             @NonNull
             @Override
+//This onCreateViewHolder will use a custom display layout
             public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_display_layout, parent, false);
                 ContactsViewHolder viewHolder = new ContactsViewHolder(view);
@@ -162,6 +166,7 @@ public class ContactsFragment extends Fragment {
         adapter.startListening();
     }
 
+//This view holder will hold contacts data such as name, email and profilepic
     public static class ContactsViewHolder extends RecyclerView.ViewHolder{
         TextView userName, userEmail;
         CircleImageView profPic;
