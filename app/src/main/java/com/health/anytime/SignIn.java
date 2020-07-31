@@ -1,11 +1,15 @@
 package com.health.anytime;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -16,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,7 +43,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class SignIn extends AppCompatActivity {
-//Declaration of attributes
+    //Declaration of attributes
     private EditText mEmail, mPassword;
     private TextView forgetPw;
     private AppCompatButton mSignUpBtn;
@@ -46,16 +52,21 @@ public class SignIn extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private StorageReference mStorage;
-    private String email, uid, role;
+    private String email, uid, role,code;
     private GoogleSignInClient googleSignInClient;
     private int CONSTANT = 0;
     private Intent patHomeActivity;
     private Intent docHomeActivity;
+    private Intent locHomeActivity;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
 //Instantiation of attributes
+        SharedPreferences prefs = getSharedPreferences("Lock", MODE_PRIVATE);
+        code = prefs.getString("Code", "");
         mEmail = findViewById(R.id.editText_email);
         mPassword = findViewById(R.id.editText_password);
         mLoginBtn = findViewById(R.id.btn_signIn);
@@ -74,6 +85,10 @@ public class SignIn extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         patHomeActivity = new Intent(SignIn.this, User_home.class);
         docHomeActivity = new Intent(SignIn.this,DoctorHome.class);
+        locHomeActivity= new Intent(SignIn.this,HomeLock.class);
+
+
+
     }
 
     @Override
@@ -151,7 +166,7 @@ public class SignIn extends AppCompatActivity {
         });
     }
 
-//This method checks for user's role and direct them to their respective pages.
+    //This method checks for user's role and direct them to their respective pages.
 //Progressbar visibility set to "Off" so that it can start displaying message and move on to user home activity.
     private void onAuthSuccess(FirebaseUser user) {
         if (user != null) {
@@ -173,9 +188,20 @@ public class SignIn extends AppCompatActivity {
                         case ("Patient"):
                             mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(SignIn.this, "Succesfully signed in as Patient",Toast.LENGTH_LONG).show();
+                            if(code.equals("")){
                             startActivity(patHomeActivity);
                             overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+                            break;}
+							else{
+                            startActivity(locHomeActivity);
+                            overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                             break;
+                        }
+
+
+
+
+
                     }
                 }
 
@@ -198,7 +224,7 @@ public class SignIn extends AppCompatActivity {
         }
     }
 
-//This method handles the sign in by inserting details of the user's google account into firebase database
+    //This method handles the sign in by inserting details of the user's google account into firebase database
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -219,7 +245,7 @@ public class SignIn extends AppCompatActivity {
         }
     }
 
-//This method gets the details of the user from his google sign in and updates the database and storage in firebase
+    //This method gets the details of the user from his google sign in and updates the database and storage in firebase
     private void insertGSI_Details(GoogleSignInAccount account){
         String medid = "7d55d1c0-d";
         String role = "Patient";

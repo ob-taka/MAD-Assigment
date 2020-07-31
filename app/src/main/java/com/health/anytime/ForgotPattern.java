@@ -1,9 +1,11 @@
 package com.health.anytime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,15 +25,19 @@ public class ForgotPattern extends AppCompatActivity {
     TextView forgotpw;
     EditText password;
     ProgressBar progressBar;
+    Button login;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.forgotpattern);
-        password.findViewById(R.id.password);
-        progressBar.findViewById(R.id.progressBar_signIn);
+        password=findViewById(R.id.password);
+        progressBar=findViewById(R.id.progressBar_signIn);
+        final SharedPreferences.Editor editor = getSharedPreferences("Lock", MODE_PRIVATE).edit();
+
+        login=findViewById(R.id.sendlink);
         forgotpw=findViewById(R.id.textView_forgotPass);
         forgotpw.setPaintFlags(forgotpw.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
-        password.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (password.getText().toString().equals("")) {
@@ -50,7 +56,8 @@ public class ForgotPattern extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-
+                                        editor.putString("Code",null);
+                                        editor.apply();
                                         Intent intent =new Intent(ForgotPattern.this,User_home.class);
                                         startActivity(intent);
 

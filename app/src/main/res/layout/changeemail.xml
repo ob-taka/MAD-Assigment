@@ -132,10 +132,10 @@
         android:id="@+id/textView35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="After changing your email address you will be signed out and a verifcation link will be sent to your new email"
+        android:gravity="center"
+        android:text="After changing your email address you will be signed out and a verifcation link will be sent to your new email. Your profile picture will be reset"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -139,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="After changing your email address you will be signed out and a verifcation link will be sent to your new email"
+        android:text="After changing your email address you will be signed out and a verifcation link will be sent to your new email. Your profile picture will be reset"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -64,6 +64,8 @@ public class User_home extends AppCompatActivity{
     ImageView imageBtn;
     private TextView username, greating;
     private Button opt;
+    public static Activity fa;
+
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
 
     @Override
@@ -71,7 +73,7 @@ public class User_home extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE); // ensure that no title is displayed
         setContentView(R.layout.activity_user_home);
-
+        fa=this;
         imageBtn = findViewById(R.id.imageButton); // when clicked go to patient profile detail
         username = findViewById(R.id.label_Name);
         greating = findViewById(R.id.greating);
@@ -82,7 +84,7 @@ public class User_home extends AppCompatActivity{
         userReference = FirebaseDatabase.getInstance().getReference().child("User").child(receriveIntent);// get reference of the current using the uid pass in form login
         opt = findViewById(R.id.menu_btn);
         // set btn for menu
-        this.registerForContextMenu(opt);
+        registerForContextMenu(opt);
 
         initUser();
         createChannel();
