@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,10 +45,11 @@ public class MedicineDetails extends AppCompatActivity{
         setContentView(R.layout.activity_medicine_details);
 
         userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        medicinedetails = findViewById(R.id.textView16);
-        medicinetitle = findViewById(R.id.textView6);
-        medicinequantity = findViewById(R.id.textView15);
-        medicineimg = findViewById(R.id.imageView2);
+
+        medicinetitle = findViewById(R.id.medTitle);
+        medicinequantity = findViewById(R.id.medQty);
+        medicinedetails = findViewById(R.id.medDesc);
+        medicineimg = findViewById(R.id.medImage);
 
         fetchMedicinePic(getIntent().getExtras().getString("medicimg"));
         title = getIntent().getExtras().getString("medname");
