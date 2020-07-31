@@ -36,7 +36,7 @@ public class RefillMedicine extends Fragment{
 
     private Context context;
     private EditText Qty;
-    private int medqty;
+    private double medqty;
     private String text;
     private String userId;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -69,9 +69,12 @@ public class RefillMedicine extends Fragment{
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        int qty = Integer.parseInt(Qty.getText().toString()) + medqty;
+                        double qty = Double.parseDouble(Qty.getText().toString()) + medqty;
                         databaseReference.child("Pharmacy").child(userId).child(text).child("quantity").setValue(qty);
                         view.setVisibility(View.GONE);
+                        Intent intent = new Intent(context, Pharmacy.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 }, 300);
             }
@@ -91,12 +94,7 @@ public class RefillMedicine extends Fragment{
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    MedicineModel med = snapshot.getValue(MedicineModel.class);
-                    if (snapshot.getKey().equals(title)){
-                        medqty = med.getQuantity();
-                    }
-                }
+                medqty = Double.parseDouble(dataSnapshot.child(title).child("quantity").getValue().toString());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -40,6 +40,12 @@ public class MedicineDetails extends AppCompatActivity{
     FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        fetchMedicineData();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicine_details);
@@ -54,7 +60,6 @@ public class MedicineDetails extends AppCompatActivity{
         fetchMedicinePic(getIntent().getExtras().getString("medicimg"));
         title = getIntent().getExtras().getString("medname");
         medicinetitle.setText(title);
-        fetchMedicineData();
 
 
         //onclicklistener for FloatingActionButton and edit text
@@ -93,19 +98,15 @@ public class MedicineDetails extends AppCompatActivity{
     }
 
     private void fetchMedicineData(){
-        // fetch patient from firebase
+        // fetch selected medicine data  from firebase
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //get all medicine from firebase
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    MedicineModel medicineModel = snapshot.getValue(MedicineModel.class);
-                    if (medicineModel.getMedicineTitle().equals(title))
-                        medicinedetails.setText(medicineModel.getMedicineDsec());
-                        medicinequantity.setText("Quantity : " + medicineModel.getQuantity());
-                    }
-                }
+                Log.d("nigga","" + dataSnapshot.child(title).child("medicineTitle").getValue().toString());
+                medicinedetails.setText(dataSnapshot.child(title).child("medicineDsec").getValue().toString());
+                medicinequantity.setText("Quantity : " + dataSnapshot.child(title).child("quantity").getValue().toString());
 
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

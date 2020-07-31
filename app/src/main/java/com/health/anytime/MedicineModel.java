@@ -5,13 +5,13 @@ public class MedicineModel{
     private String medicineTitle;
     private String medicineDsec;
     private String medicineImg;
-    private int quantity;
+    private double quantity;
 
     public MedicineModel(){
 
     }
 
-    public MedicineModel(int id , String medicineTitle, String medicineImg , String medicineDsec , int qty) {
+    public MedicineModel(int id , String medicineTitle, String medicineImg , String medicineDsec , double qty) {
         this.medid = id;
         this.medicineTitle = medicineTitle;
         this.medicineImg = medicineImg;
@@ -47,7 +47,7 @@ public class MedicineModel{
         this.medicineImg = medicineImg;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 

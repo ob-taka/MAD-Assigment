@@ -73,7 +73,7 @@ public class AddMedicinePage extends AppCompatActivity {
     SearchAdapter searchAdapter;
     public static RecyclerView recyclerView;
     TimePickerDialog picker;
-    private int medqty;
+    private double medqty;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     String doctorid = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     String patientkey;
@@ -97,7 +97,7 @@ public class AddMedicinePage extends AppCompatActivity {
         lunch=findViewById(R.id.lunch);
         dinner=findViewById(R.id.dinner);
         submit=findViewById(R.id.submit);
-         db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         radioGroup=findViewById(R.id.radioGroup);
         before=findViewById(R.id.before);
         after=findViewById(R.id.after);
@@ -118,7 +118,7 @@ public class AddMedicinePage extends AppCompatActivity {
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
         recyclerView.addItemDecoration((new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)));
 
-        //Creating Spinner
+        //Creating Spinner , change
         Spinner spinner=findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this,R.array.medType,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -292,8 +292,16 @@ public class AddMedicinePage extends AppCompatActivity {
                 checkValid();
                 if (errors==0){
                     progressBar.setVisibility(View.VISIBLE);
+                    // fetch number of stock for selected medicine firebase
+                    getMedQty(medName);
+                    // delay to provide race condition
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            postmed();
+                        }
+                    }, 300);
 
-                   postmed();
                 }
             }
         });
@@ -302,7 +310,7 @@ public class AddMedicinePage extends AppCompatActivity {
 
     private void setAdapter(final String searchedString) {
         //Retrieving data in firebase
-        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 med_list.clear();
@@ -312,8 +320,8 @@ public class AddMedicinePage extends AppCompatActivity {
 
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     //String med_num=snapshot.getKey();
-                    String med_name=snapshot.child("title").getValue().toString();
-                    String id_num=snapshot.child("ID").getValue().toString();
+                    String med_name=snapshot.child("medicineTitle").getValue().toString();
+                    String id_num=snapshot.child("medid").getValue().toString();
                     if(med_name.toLowerCase().contains(searchedString.toLowerCase())){
                         med_list.add(med_name);
                         id_list.add(id_num);
@@ -343,12 +351,12 @@ public class AddMedicinePage extends AppCompatActivity {
         correctMed = 0;
         errors=0;
 
-        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String med_name=snapshot.child("title").getValue().toString();
+                    String med_name=snapshot.child("medicineTitle").getValue().toString();
                     Log.v("number",correctMed.toString());
                     //Validating if medicine name entered is same as medicine name in firebase
                     if (med_name.equals(medName)) {
@@ -404,6 +412,7 @@ public class AddMedicinePage extends AppCompatActivity {
     }
     public void postmed(){
         int daysno=Integer.parseInt(days.getText().toString());
+
         String food = "";
         String desc="";
         if(medName.equals("Activated Charcoal")){
@@ -426,116 +435,82 @@ public class AddMedicinePage extends AppCompatActivity {
         else if (after.isChecked()) {
             food = "After Food";
         }
-       for(int i=0;i<daysno;i++) {
-
-
-
-
-           Calendar c = Calendar.getInstance();
-           c.add(Calendar.DATE, i);
-           Date date = c.getTime();
-
-           SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-           String formattedDate = df.format(date);
-
-
-
-           Map<String, Object> med = new HashMap<>();
-           med.put("Name", medName);
-           med.put("Dosage", doseNumber);
-           med.put("Time",food);
-           med.put("DetailDes",desc);
-           med.put("Unit",medType);
-
-
-           if(breakfastValid==1) {
-               db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Breakfast").document(medName)
-                       .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
-                   @Override
-                   public void onSuccess(Void aVoid) {
-
-
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-
-                   }
-               });
-           }
-
-           if(lunchValid==1) {
-               db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Lunch").document(medName)
-                       .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
-                   @Override
-                   public void onSuccess(Void aVoid) {
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-
-                   }
-               });
-           }
-
-           if(dinnerValid==1) {
-               db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Dinner").document(medName)
-                       .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
-                   @Override
-                   public void onSuccess(Void aVoid) {
-
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
-                   @Override
-                   public void onFailure(@NonNull Exception e) {
-
-                   }
-               });
-           }
-
-       }
-        progressBar.setVisibility(View.GONE);
-        Intent intent = new Intent(getApplicationContext(), MedicineList.class);
-
-        startActivity(intent);
-
-
-
-
-
-
-
-    }
-    public void sendData(){
         //Adding data to firebase
-        getMedQty(medName);
-        DatabaseReference tempRef=databaseReference.child("med_list");
-        Modle med = new Modle();
-        String food = "";
-
-        if ( medqty > ((dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
-            medqty -= ((dinnerValid + lunchValid + breakfastValid) * doseNumber);
+        if ( medqty > (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
+            medqty -= (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber);
             databaseReference.child("Pharmacy").child(doctorid).child(medName).child("quantity").setValue(medqty);
-            if (breakfastValid==1){
-                med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
-                tempRef.child(medKey).child(medName+"1").setValue(med);
+            for(int i=0;i<daysno;i++) {
 
-            }if (lunchValid==1){
-                med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
-                tempRef.child(medKey).child(medName+"2").setValue(med);
+                Calendar c = Calendar.getInstance();
+                c.add(Calendar.DATE, i);
+                Date date = c.getTime();
 
-            }if (dinnerValid==1){
-                med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
-                tempRef.child(medKey).child(medName+"3").setValue(med);
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                String formattedDate = df.format(date);
+
+                Map<String, Object> med = new HashMap<>();
+                med.put("Name", medName);
+                med.put("Dosage", doseNumber);
+                med.put("Time",food);
+                med.put("DetailDes",desc);
+                med.put("Unit",medType);
+
+
+                if(breakfastValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Breakfast").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+
+                if(lunchValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Lunch").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+
+                if(dinnerValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Dinner").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+
             }
-            Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
-            nextActivity.putExtra("patientmlist" , medKey);
-            nextActivity.putExtra("patientKey" ,patientkey );
-            startActivity(nextActivity);
+
+            Intent intent = new Intent(getApplicationContext(), MedicineList.class);
+            intent.putExtra("patientmlist" , medKey);
+            intent.putExtra("patientKey" ,patientkey );
+            startActivity(intent);
         }else {
             buildDialog();
         }
-
+        progressBar.setVisibility(View.GONE);
 
     }
 

@@ -44,16 +44,17 @@ import java.util.Objects;
 
 public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCardListener   {
     ArrayList<MedicineModel> medicineModels = new ArrayList<>();
-    ArrayList<String> medicineRefills = new ArrayList<>();
     String doctorId;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     RecyclerView recyclerView;
+    FloatingActionButton createMedicine;
 
     @Override
     protected void onStart() {
         super.onStart();
         fetchMedicineData();
+        //init_firebase();
     }
 
     @Override
@@ -63,6 +64,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
 
         doctorId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         recyclerView = findViewById(R.id.recycler_view);
+        createMedicine = findViewById(R.id.floatingActionButton4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
         MedicineAdaptor adapter = new MedicineAdaptor(this , medicineModels , this);
@@ -72,6 +74,13 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
         recyclerView.addItemDecoration(new MedicineCardDecorator(largePadding, smallPadding));
 
+        createMedicine.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Pharmacy.this, CreateMedicine.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void fetchMedicineData(){
@@ -85,10 +94,6 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     MedicineModel medicineModel = snapshot.getValue(MedicineModel.class);
                     medicineModels.add(medicineModel);
-                    //get list of medicine below quantity 10
-                    if (medicineModel.getQuantity() < 10){
-                        medicineRefills.add(medicineModel.getMedicineTitle());
-                    }
                 }
             }
 
@@ -103,6 +108,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     public void onCardClick(int position) {
         Intent intent = new Intent(this, MedicineDetails.class);
         intent.putExtra("medicimg" , medicineModels.get(position).getMedicineImg());
+        Log.d("nigga", medicineModels.get(position).getMedicineTitle());
         intent.putExtra("medname" , medicineModels.get(position).getMedicineTitle());
         startActivity(intent);
     }
@@ -112,10 +118,19 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         String[] m = { "Antibiotics" , "Panadol" , "Benzonatate" ,  "Activiated Charcoal"};
         String[] n = { "do not overdose" , "do not overdose" , "never suck or chew on a benzonatate capsule. Swallow the pill whole. Sucking or chewing the capsule may cause your mouth and throat to feel numb or cause other serious side effects." ,  "used to treat a drug overdose or a poisoning."};
 
-        for (int i = 0; i < m.length; i++) {
-            MedicineModel med = new MedicineModel(i+1,m[i],"/Medicine/Panadol.jpg", n[i],10);
-            databaseReference.child("Pharmacy").child(doctorId).child(m[i]).setValue(med);
-        }
+
+        MedicineModel med = new MedicineModel(1,m[0],"/Medicine/Antibiotics.jpg", n[0],10.0);
+        databaseReference.child("Pharmacy").child(doctorId).child(m[0]).setValue(med);
+
+        med = new MedicineModel(2,m[1],"/Medicine/Panadol.jpg", n[1],10.0);
+        databaseReference.child("Pharmacy").child(doctorId).child(m[1]).setValue(med);
+
+        med = new MedicineModel(3,m[2],"/Medicine/Benzonatate.jpg", n[2],10.0);
+        databaseReference.child("Pharmacy").child(doctorId).child(m[2]).setValue(med);
+
+        med = new MedicineModel(4,m[3],"/Medicine/ActiviatedCharcoal.jpg", n[3],10.0);
+        databaseReference.child("Pharmacy").child(doctorId).child(m[3]).setValue(med);
+
     }
 
 }

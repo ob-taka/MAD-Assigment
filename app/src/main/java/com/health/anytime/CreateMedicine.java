@@ -42,7 +42,7 @@ public class CreateMedicine extends AppCompatActivity{
     private static final int PICK_IMAGE_REQUEST = 1;
     public Uri mImageUri;
     String title , desc;
-    int qty;
+    double qty;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -76,7 +76,7 @@ public class CreateMedicine extends AppCompatActivity{
                     upload = false;
                 }else {
                     medicineDetails.setError(null);
-                    qty = Integer.parseInt(medicineQty.getText().toString());
+                    qty = Double.parseDouble(medicineQty.getText().toString());
                 }
                 desc = medicineDetails.getText().toString().trim();
                 if (title == null) {
@@ -102,10 +102,9 @@ public class CreateMedicine extends AppCompatActivity{
                         public void run() {
                             uploadFile(mImageUri , title);
                             MedicineModel medicine = new MedicineModel(numMed+1,title,"/Medicine/"+title+".jpg", desc,qty);
-                            //Modle med = new Modle(title , desc ,"/Medicine/"+title+".jpg" , numMed+1 );
                             databaseReference.child("Pharmacy").child(userId).child(title).setValue(medicine);
-                            //databaseReference.child("user_medicien").child(title).setValue(med);
                             Intent nextActivity = new Intent(CreateMedicine.this  , Pharmacy.class );
+                            nextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(nextActivity);
                             overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
                         }
