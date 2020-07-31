@@ -248,7 +248,7 @@ public class User_home extends AppCompatActivity{
             getLocation();
         }
     }
-
+    //get location permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -277,9 +277,9 @@ public class User_home extends AppCompatActivity{
                         super.onLocationResult(locationResult);
                         LocationServices.getFusedLocationProviderClient(User_home.this).removeLocationUpdates(this);
                         if (locationResult != null && locationResult.getLocations().size() > 0) {
-                            int lastestlocation = locationResult.getLocations().size() - 1;
-                            double latitude = locationResult.getLocations().get(lastestlocation).getLatitude();
-                            double longitude = locationResult.getLocations().get(lastestlocation).getLongitude();
+                            int lastestlocationindex = locationResult.getLocations().size() - 1;
+                            double latitude = locationResult.getLocations().get(lastestlocationindex).getLatitude();
+                            double longitude = locationResult.getLocations().get(lastestlocationindex).getLongitude();
                             Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=clinic");
                             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                             mapIntent.setPackage("com.google.android.apps.maps");
