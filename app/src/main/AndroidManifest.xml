@@ -20,9 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MedicineDetails" />
+        <activity android:name=".MedicineDetails" android:screenOrientation="portrait"/>
         <activity android:name=".CreateMedicine" />
-        <activity android:name=".Pharmacy" />
+        <activity android:name=".Pharmacy" android:screenOrientation="portrait"/>
         <activity android:name=".SignUp" />
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />

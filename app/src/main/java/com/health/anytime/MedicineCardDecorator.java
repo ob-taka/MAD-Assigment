@@ -1,4 +1,5 @@
 package com.health.anytime;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.View;
 
