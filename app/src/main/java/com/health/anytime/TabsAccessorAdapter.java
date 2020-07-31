@@ -5,10 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+/*This adapter is to switch between chat and contact fragment in one activity/UI which is specified as */
 
 public class TabsAccessorAdapter extends FragmentPagerAdapter
 {
-
     public TabsAccessorAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }

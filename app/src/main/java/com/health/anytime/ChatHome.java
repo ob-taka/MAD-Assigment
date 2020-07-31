@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -33,14 +34,13 @@ public class ChatHome extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Chat");
 
-        //The following below allows the user to switch between "Chat" and "Doctors"
+        //The following below allows the user to switch between "Chat" and "Contact" tab
         mViewPager = findViewById(R.id.chat_ViewPager);
         mTAA = new TabsAccessorAdapter(getSupportFragmentManager(),TabsAccessorAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mViewPager.setAdapter(mTAA);
 
         mTabLayout = findViewById(R.id.chat_tab);
         mTabLayout.setupWithViewPager(mViewPager);
-
     }
 /*
 option menu code below only works with toolbar

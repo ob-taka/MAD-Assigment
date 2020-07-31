@@ -1,64 +1,160 @@
 package com.health.anytime;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
 public class ChatsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private View contactsView;
+    private RecyclerView mRecyclerView;
+    private DatabaseReference contactsRef, usersRef;
+    private FirebaseStorage firebaseStorage;
+    private FirebaseAuth mAuth;
+    private StorageReference storageRef;
+    private String uid;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ChatsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChatsFragment newInstance(String param1, String param2) {
-        ChatsFragment fragment = new ChatsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        mAuth = FirebaseAuth.getInstance();
+        uid = mAuth.getCurrentUser().getUid();
+        contactsRef = FirebaseDatabase.getInstance().getReference("Messages").child(uid);
+        usersRef = FirebaseDatabase.getInstance().getReference("User");
+        firebaseStorage = FirebaseStorage.getInstance("gs://quickmad-e4016.appspot.com/");
+
+        Log.d("#d",uid);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chats, container, false);
+        contactsView = inflater.inflate(R.layout.fragment_contacts, container, false);
+
+        mRecyclerView = contactsView.findViewById(R.id.RV_ContactsList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        return contactsView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+/*
+The following will set up a query and get the necessary details from firebase database, assign it a to viewholder with a custom layout
+and finally be managed by the firebase recycler adapter, displaying the this viewholder in the recycler view.
+*/
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<PatientModel>()
+                .setQuery(contactsRef, PatientModel.class)
+                .build();
+
+        FirebaseRecyclerAdapter<PatientModel, ChatViewHolder> adapter = new FirebaseRecyclerAdapter<PatientModel, ChatViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull final ChatViewHolder holder, int position, @NonNull PatientModel model) {
+                final String userIDS = getRef(position).getKey();
+                usersRef.child(userIDS).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        final String name = snapshot.child("patientName").getValue().toString();
+                        String email = snapshot.child("patientEmail").getValue().toString();
+                        final String pic = snapshot.child("patientProfilepic").getValue(String.class);
+
+                        holder.userName.setText(name);
+                        holder.userEmail.setText(email);
+
+                        //Retrieving the profile picture from firebase storage and assigning to the viewholder
+                        storageRef = firebaseStorage.getReference().child("ProfilePicture/" + pic);
+                        storageRef.getDownloadUrl()
+                                .addOnSuccessListener(
+                                        new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                Glide.with(ChatsFragment.this).load(uri).into(holder.profPic);
+                                            }
+                                        }
+                                );
+                        //Start chat activity when the viewholder is clicked
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getContext(),ChatActivity.class);
+                                intent
+                                        .putExtra("UID",userIDS)
+                                        .putExtra("Name", name)
+                                        .putExtra("Pic", pic);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getContext(),"Error encountered: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+//This onCreateViewHolder will use a custom display layout
+            public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_display_layout, parent, false);
+                ChatViewHolder viewHolder = new ChatViewHolder(view);
+                return viewHolder;
+            }
+        };
+        mRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+    }
+
+//This view holder will hold contacts data such as name, email and profilepic
+    public static class ChatViewHolder extends RecyclerView.ViewHolder{
+        TextView userName, userEmail;
+        CircleImageView profPic;
+
+        public ChatViewHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            userName = itemView.findViewById(R.id.contacts_name);
+            userEmail = itemView.findViewById(R.id.contacts_email);
+            profPic = itemView.findViewById(R.id.contacts_profilepic);
+        }
     }
 }
