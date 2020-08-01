@@ -54,7 +54,6 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     protected void onStart() {
         super.onStart();
         fetchMedicineData();
-        //init_firebase();
     }
 
     @Override
@@ -84,7 +83,7 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     }
 
     private void fetchMedicineData(){
-        // fetch patient from firebase
+        // fetch medicines from firebase
         databaseReference.child("Pharmacy").child(doctorId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,26 +109,6 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         intent.putExtra("medicimg" , medicineModels.get(position).getMedicineImg());
         intent.putExtra("medname" , medicineModels.get(position).getMedicineTitle());
         startActivity(intent);
-    }
-
-
-    public void init_firebase(){
-        String[] m = { "Antibiotics" , "Panadol" , "Benzonatate" ,  "Activiated Charcoal"};
-        String[] n = { "do not overdose" , "do not overdose" , "never suck or chew on a benzonatate capsule. Swallow the pill whole. Sucking or chewing the capsule may cause your mouth and throat to feel numb or cause other serious side effects." ,  "used to treat a drug overdose or a poisoning."};
-
-
-        MedicineModel med = new MedicineModel(1,m[0],"/Medicine/Antibiotics.jpg", n[0],10.0);
-        databaseReference.child("Pharmacy").child(doctorId).child(m[0]).setValue(med);
-
-        med = new MedicineModel(2,m[1],"/Medicine/Panadol.jpg", n[1],10.0);
-        databaseReference.child("Pharmacy").child(doctorId).child(m[1]).setValue(med);
-
-        med = new MedicineModel(3,m[2],"/Medicine/Benzonatate.jpg", n[2],10.0);
-        databaseReference.child("Pharmacy").child(doctorId).child(m[2]).setValue(med);
-
-        med = new MedicineModel(4,m[3],"/Medicine/ActiviatedCharcoal.jpg", n[3],10.0);
-        databaseReference.child("Pharmacy").child(doctorId).child(m[3]).setValue(med);
-
     }
 
 }
