@@ -69,7 +69,7 @@ public class RefillMedicine extends Fragment{
                         databaseReference.child("Pharmacy").child(userId).child(text).child("quantity").setValue(qty); //update medicine quantity
                         view.setVisibility(View.GONE);
                         Intent intent = new Intent(context, Pharmacy.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clears activities between refill med and pharmacy
                         startActivity(intent);
                     }
                 }, 300);

@@ -116,7 +116,7 @@ public class CreateMedicine extends AppCompatActivity{
         });
     }
 
-    //count the total number of
+    //calculates the latest ID
     private void countId(){
         // fetch patient from firebase
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
