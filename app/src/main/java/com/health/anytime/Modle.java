@@ -7,17 +7,11 @@ public class Modle {
     private String description;
     private String dosage;
     private String time;
+    private String unit;
     private boolean expanded; // set the state the constrain layout
 
     public Modle(){
     }
-
-//    public Modle(String title , String description , String img , int id){
-//        this.title = title;
-//        this.description = description;
-//        this.img = img;
-//        this.medid = id;
-//    }//needed for firebase
 
     public Modle(String title, String description, String dosage, String time){
         this.title = title;
@@ -33,6 +27,10 @@ public class Modle {
 
     public boolean isExpanded() {
         return expanded;
+    }
+
+    public String getUnit() {
+        return unit;
     }
 
     public String getTitle() {

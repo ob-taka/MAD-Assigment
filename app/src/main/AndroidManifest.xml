@@ -19,10 +19,14 @@
         android:roundIcon="@mipmap/ha_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".MedicineDetails" android:screenOrientation="portrait"/>
+        <activity android:name=".Alarm"></activity>
+        <activity
+            android:name=".MedicineDetails"
+            android:screenOrientation="portrait" />
         <activity android:name=".CreateMedicine" />
-        <activity android:name=".Pharmacy" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Pharmacy"
+            android:screenOrientation="portrait" />
         <activity android:name=".SignUp" />
         <activity android:name=".Profile_Patient" />
         <activity android:name=".ViewPatient" />
@@ -36,32 +40,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.health.anytime.DoctorHome" >
+        <activity android:name=".DoctorHome"></activity>
+        <activity
+            android:name=".ChatActivity"
+            android:parentActivityName=".ChatHome"></activity>
+        <activity
+            android:name=".AddMedicinePage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".Settings" />
+        <activity
+            android:name=".SetLock"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ConfirmLock"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeLock"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ForgetPassword" />
+        <activity android:name=".DeleteAccount" />
+        <activity android:name=".ChangePassword" />
+        <activity android:name=".ChangeEmail" />
+        <activity android:name=".ForgotPattern" />
+        <activity android:name=".MedicineList"></activity>
+        <activity
+            android:name=".PatientList"
+            android:windowSoftInputMode="adjustPan"></activity>
 
-        </activity>
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".ChatHome">
-        </activity>
-        <activity android:name="com.health.anytime.AddMedicinePage" android:screenOrientation="portrait"  android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name="com.health.anytime.Settings"/>
-        <activity android:name="com.health.anytime.SetLock" android:noHistory="true" android:screenOrientation="portrait" />
-        <activity android:name="com.health.anytime.ConfirmLock" android:noHistory="true" android:screenOrientation="portrait"/>
-        <activity android:name="com.health.anytime.HomeLock" android:screenOrientation="portrait"/>
-        <activity android:name="com.health.anytime.ForgetPassword" />
-        <activity android:name="com.health.anytime.DeleteAccount"/>
-        <activity android:name="com.health.anytime.ChangePassword"/>
-        <activity android:name="com.health.anytime.ChangeEmail" />
-        <activity android:name="com.health.anytime.ForgotPattern" />
-        <activity android:name="com.health.anytime.MedicineList">
-
-        </activity>
-
-        <activity android:name="com.health.anytime.PatientList"
-            android:windowSoftInputMode="adjustPan">
-
-        </activity>
-        <receiver android:name="com.health.anytime.NotificationReceiver"/>
-
+        <receiver android:name=".NotificationReceiver" />
     </application>
 
 </manifest>
