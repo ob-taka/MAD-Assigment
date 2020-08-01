@@ -293,13 +293,25 @@ public class AddMedicinePage extends AppCompatActivity {
                 checkValid();
                 if (errors==0){
                     progressBar.setVisibility(View.VISIBLE);
+                    databaseReference.child("Pharmacy").child(doctorid).child(medName).child("medicineDsec").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            // desc=snapshot.getValue().toString();
+                            desc=snapshot.getValue().toString();
+                            Log.v("Desc",snapshot.getValue().toString());
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
                     // fetch number of stock for selected medicine firebase
                     getMedQty(medName);
                     // delay to provide race condition
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            postmed();
+                            postmed(desc);
                         }
                     }, 300);
 
@@ -411,21 +423,13 @@ public class AddMedicinePage extends AppCompatActivity {
 
 
     }
-    public void postmed(){
+    public void postmed(final String description){
         int daysno=Integer.parseInt(days.getText().toString());
 
         String food = "";
 
-        databaseReference.child("Pharmacy").child(doctorid).child(medName).child("medicineDsec").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                desc=snapshot.getValue().toString();
 
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+
 
 
         if(before.isChecked())
@@ -453,7 +457,7 @@ public class AddMedicinePage extends AppCompatActivity {
                 med.put("title", medName);
                 med.put("dosage", doseNumber.toString());
                 med.put("time",food);
-                med.put("description",desc);
+                med.put("description",description);
                 med.put("unit",medType);
 
 

@@ -164,7 +164,7 @@ public class DoctorHome extends AppCompatActivity {
             greetings.setText("Good Morning");
         }else if(timeOfDay >= 12 && timeOfDay < 16){
             greetings.setText("Good Afternoon");
-        }else if(timeOfDay >= 16 && timeOfDay < 21){
+        }else if(timeOfDay >= 16 && timeOfDay < 23){
             greetings.setText("Good Evening");
         }
     }
