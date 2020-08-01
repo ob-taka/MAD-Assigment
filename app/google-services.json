@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "644403792200-lclfkah54qia3h5teelpeurmir988p22.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firestore",
+            "certificate_hash": "33c7da8cd782279dd4589422a3f04e9a9652f7ce"
+          }
+        },
+        {
           "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -28,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_id": "644403792200-f6quvkar77u50igdc8f7il8rr0pr6sq2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -43,6 +51,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "644403792200-lrlqnitilol7i9mgs1ceq7iodqm6jphj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mad_assigment",
+            "certificate_hash": "33c7da8cd782279dd4589422a3f04e9a9652f7ce"
+          }
+        },
         {
           "client_id": "644403792200-rin1umu3kdkic55jqq0pgv9761njcnmb.apps.googleusercontent.com",
           "client_type": 1,
@@ -65,7 +81,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_id": "644403792200-f6quvkar77u50igdc8f7il8rr0pr6sq2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -81,6 +97,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "644403792200-hsjrr06ms6gbnosb814078bsfdpaq2ls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.health.anytime",
+            "certificate_hash": "33baa59dfecd2cf0863dde0f25cb504bfeb31550"
+          }
+        },
+        {
+          "client_id": "644403792200-akh5mgvdmomnh1223qhn8845fstam24m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.health.anytime",
+            "certificate_hash": "33c7da8cd782279dd4589422a3f04e9a9652f7ce"
+          }
+        },
+        {
           "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -94,7 +126,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_id": "644403792200-f6quvkar77u50igdc8f7il8rr0pr6sq2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -123,7 +155,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com",
+              "client_id": "644403792200-f6quvkar77u50igdc8f7il8rr0pr6sq2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
