@@ -26,10 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.List;
 import java.util.Objects;
 
 public class RefillMedicine extends Fragment{
@@ -90,6 +86,11 @@ public class RefillMedicine extends Fragment{
         return view;
     }
 
+    /**
+     *
+     * @param title -> medicine name
+     * Fetches quantity of medicine from firebase
+     */
     private void getMed(final String title){
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

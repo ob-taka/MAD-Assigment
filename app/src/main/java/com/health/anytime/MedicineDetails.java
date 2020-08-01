@@ -102,7 +102,6 @@ public class MedicineDetails extends AppCompatActivity{
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("nigga","" + dataSnapshot.child(title).child("medicineTitle").getValue().toString());
                 medicinedetails.setText(dataSnapshot.child(title).child("medicineDsec").getValue().toString());
                 medicinequantity.setText("Quantity : " + dataSnapshot.child(title).child("quantity").getValue().toString());
 
