@@ -12,32 +12,45 @@
         android:layout_marginTop="10dp"
         />
 
-    <TextView
-        android:id="@+id/receiver_message_text"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/relativeLayoutForReceiver"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/message_profile_image"
-        android:background="@drawable/receivermessage_layout"
-        android:padding="10dp"
-        android:text="receiver"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:layout_alignParentTop="true">
+        <TextView
+            android:id="@+id/receiver_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/receivermessage_layout"
+            android:padding="10dp"
+            android:text="receiver"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/sender_messsage_text"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="@+id/receiver_message_text"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/sendermessage_layout"
-        android:padding="10dp"
-        android:text="sender "
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:layout_alignParentTop="@+id/relativeLayoutForReceiver"
+        android:layout_alignParentEnd="true">
+        <TextView
+            android:id="@+id/sender_messsage_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sendermessage_layout"
+            android:padding="10dp"
+            android:text="sender "
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 </RelativeLayout>
