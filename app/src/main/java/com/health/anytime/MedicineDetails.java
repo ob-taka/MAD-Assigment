@@ -50,8 +50,7 @@ public class MedicineDetails extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicine_details);
 
-        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-
+        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();//get doctor id from firebase
         medicinetitle = findViewById(R.id.medTitle);
         medicinequantity = findViewById(R.id.medQty);
         medicinedetails = findViewById(R.id.medDesc);
@@ -61,12 +60,12 @@ public class MedicineDetails extends AppCompatActivity{
         title = getIntent().getExtras().getString("medname");
         medicinetitle.setText(title);
 
-
-        //onclicklistener for FloatingActionButton and edit text
+        //onclicklistener for FloatingActionButton
         final FloatingActionButton addPatient = findViewById(R.id.floatingActionButton4);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // create fragment
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 RefillMedicine fragment = new RefillMedicine(getApplicationContext() , title );
                 fragmentTransaction.add(R.id.container, fragment);
@@ -98,13 +97,12 @@ public class MedicineDetails extends AppCompatActivity{
     }
 
     private void fetchMedicineData(){
-        // fetch selected medicine data  from firebase
+        // fetch selected medicine details and quantity from firebase
         databaseReference.child("Pharmacy").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 medicinedetails.setText(dataSnapshot.child(title).child("medicineDsec").getValue().toString());
                 medicinequantity.setText("Quantity : " + dataSnapshot.child(title).child("quantity").getValue().toString());
-
             }
 
             @Override

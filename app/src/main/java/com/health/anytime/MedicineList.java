@@ -136,7 +136,4 @@ public class MedicineList extends AppCompatActivity{
         return sharedPreferences.getString("uid","");
     }
 
-    //get patient key
-
-
 }

@@ -48,7 +48,7 @@ public class MedicineAdaptor extends RecyclerView.Adapter<MedicineAdaptor.Medici
         holder.medicineName.setText(MedicineData.get(position).getMedicineTitle());
         // change color of card when it is low on supplies
         if (MedicineData.get(position).getQuantity() < 10){
-            holder.cardView.setBackgroundColor(Color.RED);
+            holder.cardView.setBackgroundColor(Color.parseColor("#cc0000"));//red
             holder.medicineName.setTextColor(Color.WHITE);
         }
         // finds image and download image from firebase storage by image path and binds it to view holder

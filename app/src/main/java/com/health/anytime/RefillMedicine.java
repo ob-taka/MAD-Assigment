@@ -48,7 +48,7 @@ public class RefillMedicine extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();//get doctor id from firebase
     }
 
     @Override
@@ -65,8 +65,8 @@ public class RefillMedicine extends Fragment{
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        double qty = Double.parseDouble(Qty.getText().toString()) + medqty;
-                        databaseReference.child("Pharmacy").child(userId).child(text).child("quantity").setValue(qty);
+                        double qty = Double.parseDouble(Qty.getText().toString()) + medqty; // add total amount of medicine
+                        databaseReference.child("Pharmacy").child(userId).child(text).child("quantity").setValue(qty); //update medicine quantity
                         view.setVisibility(View.GONE);
                         Intent intent = new Intent(context, Pharmacy.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
