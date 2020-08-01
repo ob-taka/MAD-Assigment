@@ -97,6 +97,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "644403792200-l49squ0dfpikq5ud0uavl6bephl67p70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.health.anytime",
+            "certificate_hash": "c77edea50ec4d05056243a1437b6a8604be62156"
+          }
+        },
+        {
           "client_id": "644403792200-hsjrr06ms6gbnosb814078bsfdpaq2ls.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
