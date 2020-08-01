@@ -22,8 +22,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MedicineList extends AppCompatActivity{
     FloatingActionButton addMedicine;
@@ -116,8 +118,11 @@ public class MedicineList extends AppCompatActivity{
      * setup recyclerview , fetching medicine date from firestore
      */
     private void setUpRecyclerView(String ID){
-        CollectionReference userRef = db.collection("Medicines_hardcode").document("med_list_ID")
-                .collection("Day").document("1-8-2020") //string.valueof(day)
+        Calendar calendar  = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentdate = calendar.getTime();
+        CollectionReference userRef = db.collection("Medicines").document(ID)
+                .collection("Day").document(dateFormat.format(currentdate))
                 .collection(meal);
         Query query = userRef.orderBy("title", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Modle> options = new FirestoreRecyclerOptions.Builder<Modle>()
