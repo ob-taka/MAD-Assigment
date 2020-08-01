@@ -17,22 +17,26 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MedicineList extends AppCompatActivity{
     FloatingActionButton addMedicine;
     Button submit;
     String patientKey;
     String medKey;
+    String meal;
     MAdaptor adaptor;
     ArrayList<String> medicinepic;
     ArrayList<Modle> medicineList;
     FirebaseAuth auth;
     DatabaseReference databaseReference;
-    DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class MedicineList extends AppCompatActivity{
         auth = FirebaseAuth.getInstance();
         medicinepic = new ArrayList<>();
         medicineList = new ArrayList<>();
+        meal = settime();
 
         //onclicklistener for buttons
         // button inside recyclerview button : redirects user to add medicine activity
@@ -92,10 +97,31 @@ public class MedicineList extends AppCompatActivity{
     }
 
     /**
-     * setup recyclerview
+     * change the greeting base on the time of the time
+     */
+    private String  settime() {
+        Calendar calendar = Calendar.getInstance();
+        int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        if (timeOfDay >= 0 && timeOfDay < 12) {
+            return "Breakfast";
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+            return "Lunch";
+        } else if (timeOfDay >= 16 && timeOfDay < 21) {
+            return "Dinner";
+        }
+        return null;
+    }
+
+    /**
+     * setup recyclerview , fetching medicine date from firestore
      */
     private void setUpRecyclerView(String ID){
+        CollectionReference userRef = db.collection("Medicines_hardcode").document("med_list_ID")
+                .collection("Day").document("1-8-2020") //string.valueof(day)
+                .collection(meal);
+        Query query = userRef.orderBy("title", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Modle> options = new FirestoreRecyclerOptions.Builder<Modle>()
+                .setQuery(query, Modle.class)
                 .build();
 
         // passing data into adaptor

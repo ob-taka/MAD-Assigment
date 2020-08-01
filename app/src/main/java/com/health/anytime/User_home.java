@@ -196,7 +196,6 @@ public class User_home extends AppCompatActivity{
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
     private void setUpRecyclerView(CollectionReference ref) {
-
         Query query = ref.orderBy("title", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Modle> options = new  FirestoreRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
@@ -222,9 +221,6 @@ public class User_home extends AppCompatActivity{
             }
         });
     }
-
-
-
 
     /**
      * fetch image view from firebase Storage (file hosting service)
