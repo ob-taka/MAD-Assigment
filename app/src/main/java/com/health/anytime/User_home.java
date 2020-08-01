@@ -134,6 +134,9 @@ public class User_home extends AppCompatActivity{
                 auth.signOut();
                 startActivity(new Intent(User_home.this, SignIn.class));
                 break;
+            case R.id.alarm:
+                startActivity(new Intent(User_home.this, SignIn.class));
+                break;
             default:
                 break;
 

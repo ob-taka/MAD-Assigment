@@ -12,6 +12,9 @@
         android:id="@+id/find_location"
         app:showAsAction="never">
     </item>
+    <item android:title="Set Alarm"
+        android:id="@+id/alarm"
+        app:showAsAction="never"/>
     <item
         android:title="Log Out"
         android:id="@+id/logout_button"
