@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,19 +36,19 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class DeleteAccount extends AppCompatActivity {
-    private EditText pw;
-    private Button cfm;
-    private ProgressBar progressBar;
-    private FirebaseAuth mAuth;
+    EditText pw;
+    Button cfm;
+    ProgressBar progressBar;
+    FirebaseAuth mAuth;
 
-    private FirebaseUser user;
-    private DatabaseReference databaseReference;
-    private StorageReference storageReference;
-    private FirebaseStorage storage;
-    private FirebaseFirestore db;
+    FirebaseUser user;
+    DatabaseReference databaseReference;
+    FirebaseStorage storage;
+    FirebaseFirestore db;
+    String email;
 
 
-    String medid,uid;
+    String medid,uid,uid2;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deleteaccount);
@@ -55,11 +56,25 @@ public class DeleteAccount extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        storageReference = storage.getReference();
+        final Handler handler = new Handler();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        uid = getIntent().getStringExtra("UID");
+        //uid = getIntent().getStringExtra("UID");
+        email=user.getEmail();
+
+        Query query = databaseReference.child("User").orderByChild("patientEmail").equalTo(email);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    uid2 = childSnapshot.getKey();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         pw=findViewById(R.id.password);
         final SharedPreferences.Editor editor = getSharedPreferences("Lock", MODE_PRIVATE).edit();
@@ -75,28 +90,21 @@ public class DeleteAccount extends AppCompatActivity {
                 }
                 else {
                     progressBar.setVisibility(View.VISIBLE);
-
                     AuthCredential credential = EmailAuthProvider
-                            .getCredential(user.getEmail(), pw.getText().toString());
-
+                            .getCredential(email, pw.getText().toString());
                     // Prompt the user to re-provide their sign-in credentials
                     user.reauthenticate(credential)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()) {
-
                                         LayoutInflater li = LayoutInflater.from(getApplicationContext());
                                         View promptsView = li.inflate(R.layout.deletebox, null);
-
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                                 DeleteAccount.this);
-
                                         // set alert_dialog.xml to alertdialog builder
                                         alertDialogBuilder.setView(promptsView);
-
                                         final EditText userInput = promptsView.findViewById(R.id.cfmtxt);
-
                                         // set dialog message
                                         alertDialogBuilder
                                                 .setCancelable(false)
@@ -104,82 +112,49 @@ public class DeleteAccount extends AppCompatActivity {
                                                     public void onClick(DialogInterface dialog, int id) {
                                                         if (userInput.getText().toString().equals("confirm")){
                                                             User_home.fa.finish();
-                                                            mAuth.signOut();
-                                                            databaseReference.child("User").child(uid).child("medid").addValueEventListener(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot snapshot) {
-                                                                    medid=snapshot.getValue().toString();
+                                                            Settings.fa.finish();
+                                                            Profile_Patient.fa.finish();
 
-
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                }
-
-
-                                                            });
-                                                            db.collection("Medicines").document(medid)
+                                                            StorageReference storageRef = storage
+                                                                    .getReference()
+                                                                    .child("ProfilePicture/" + email);
+                                                            storageRef
                                                                     .delete()
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
+                                                                            Log.e("firebasestorage", "onSuccess: deleted file");
                                                                         }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-                                                                        }
-                                                                    });
-
-                                                            final Intent intent=new Intent(DeleteAccount.this,SignIn.class);
-                                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-
-                                                            databaseReference.child("User").child(uid).removeValue();
-
-
-                                                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        editor.putString("Code",null);
-                                                                        editor.apply();
+                                                                public void onFailure(@NonNull Exception exception) {
+                                                                    // Uh-oh, an error occurred!
+                                                                    Log.e("firebasestorage", "onFailure: did not delete file");
+                                                                }
+                                                            });
+                                                            handler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    final Intent intent=new Intent(DeleteAccount.this,SignIn.class);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                    databaseReference.child("User").child(uid2).removeValue();
+                                                                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                editor.putString("Code",null);
+                                                                                editor.apply();
+                                                                                Toast.makeText(DeleteAccount.this, "Account has been deleted", Toast.LENGTH_LONG).show();
+                                                                                startActivity(intent);
 
-
-
-
-                                                                        StorageReference storageRef = storageReference
-                                                                                .child("ProfilePicture/" + user.getEmail().toString());
-                                                                        storageRef
-                                                                                .delete()
-                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                    @Override
-                                                                                    public void onSuccess(Void aVoid) {
-                                                                                        // File deleted successfully
-                                                                                        Log.e("firebasestorage", "onSuccess: deleted file");
-                                                                                    }
-                                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception exception) {
-                                                                                // Uh-oh, an error occurred!
-                                                                                Log.e("firebasestorage", "onFailure: did not delete file");
                                                                             }
-                                                                        });
+                                                                            else {
+                                                                                progressBar.setVisibility(View.GONE);
+                                                                                Toast.makeText(DeleteAccount.this, task.getException().getMessage(), Toast.LENGTH_LONG).show(); }
+                                                                        }});
+                                                                }
+                                                            }, 1000);
 
-
-
-                                                                        startActivity(intent);
-
-                                                                        Toast.makeText(DeleteAccount.this, "Account has been deleted", Toast.LENGTH_LONG).show();
-
-
-                                                                    }
-                                                                    else {
-                                                                        progressBar.setVisibility(View.GONE);
-                                                                        Toast.makeText(DeleteAccount.this, task.getException().getMessage(), Toast.LENGTH_LONG).show(); }
-                                                                }});
                                                         }
                                                         else{
                                                             progressBar.setVisibility(View.GONE);

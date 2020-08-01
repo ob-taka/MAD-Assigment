@@ -63,6 +63,8 @@ public class Profile_Patient extends AppCompatActivity {
     // views for button
     String userChoosenTask,uid;
     FirebaseUser user;
+    public static Activity fa;
+
     // view for image view
 
     // Uri indicates, where the image will be picked from
@@ -79,6 +81,7 @@ public class Profile_Patient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_profile);
         storage = FirebaseStorage.getInstance();
+        fa=this;
         settings=findViewById(R.id.settings);
         user = FirebaseAuth.getInstance().getCurrentUser();
         final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -295,7 +298,7 @@ public class Profile_Patient extends AppCompatActivity {
                                     PICK_IMAGE_REQUEST);
                         }
                     } else {
-                        Toast.makeText(Profile_Patient.this, "Permission to access files has been denies. Please change this in settings", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Profile_Patient.this, "Permission to access files has been denied.", Toast.LENGTH_SHORT).show();
 
 
                     }

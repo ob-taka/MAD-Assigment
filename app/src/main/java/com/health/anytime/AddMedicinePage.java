@@ -65,7 +65,7 @@ public class AddMedicinePage extends AppCompatActivity {
     EditText days;
     RadioButton before,after;
     ProgressBar progressBar;
-
+    String desc;
     Integer correctMed,breakfastValid,lunchValid,dinnerValid,errors;
     DatabaseReference databaseReference;
     ArrayList<String> med_list;
@@ -79,6 +79,7 @@ public class AddMedicinePage extends AppCompatActivity {
     String patientkey;
     FirebaseFirestore db;
     RadioGroup radioGroup;
+    DatabaseReference firebaseDatabase;
 
 
     @Override
@@ -90,6 +91,7 @@ public class AddMedicinePage extends AppCompatActivity {
         minus=findViewById(R.id.minus);
         med_list = new ArrayList<>();
         id_list = new ArrayList<>();
+        firebaseDatabase=FirebaseDatabase.getInstance().getReference();
         recyclerView = findViewById(R.id.recyclerView);
         searchMed = findViewById(R.id.search_med);
         breakfast=findViewById(R.id.breakfast);
@@ -413,19 +415,18 @@ public class AddMedicinePage extends AppCompatActivity {
         int daysno=Integer.parseInt(days.getText().toString());
 
         String food = "";
-        String desc="";
-        if(medName.equals("Activated Charcoal")){
-            desc="used to help treat a drug overdose or a poisoning";
-        }
-        else if(medName.equals("Panadol")){
-            desc="Help with cought and flu";
-        }
-        else if(medName.equals("Benzonatate")){
-            desc="used to relieve cough";
-        }
-        else if(medName.equals("Antibiotics")){
-            desc="used to treat or prevent some types of bacterial infection";
-        }
+
+        databaseReference.child("Pharmacy").child(doctorid).child(medName).child("medicineDsec").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                desc=snapshot.getValue().toString();
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
 
         if(before.isChecked())
         {
@@ -449,11 +450,12 @@ public class AddMedicinePage extends AppCompatActivity {
                 String formattedDate = df.format(date);
 
                 Map<String, Object> med = new HashMap<>();
-                med.put("Name", medName);
-                med.put("Dosage", doseNumber);
-                med.put("Time",food);
-                med.put("DetailDes",desc);
-                med.put("Unit",medType);
+                med.put("title", medName);
+                med.put("dosage", doseNumber.toString());
+                med.put("time",food);
+                med.put("description",desc);
+                med.put("unit",medType);
+
 
 
                 if(breakfastValid==1) {

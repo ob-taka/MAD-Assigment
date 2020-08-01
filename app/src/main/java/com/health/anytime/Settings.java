@@ -1,5 +1,6 @@
 package com.health.anytime;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,12 +20,15 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Settings extends AppCompatActivity {
     FrameLayout pw,email,logout,delete;
     FirebaseAuth mAuth;
+    public static Activity fa;
+
     Switch lock;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         final String uid = getIntent().getStringExtra("UID");
+        fa=this;
 
         pw=findViewById(R.id.password);
         email=findViewById(R.id.email);
@@ -58,7 +62,6 @@ public class Settings extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(Settings.this,DeleteAccount.class);
 
-                intent.putExtra("UID", uid);
 
                 startActivity(intent);
             }

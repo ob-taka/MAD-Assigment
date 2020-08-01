@@ -31,7 +31,6 @@ public class ChangeEmail extends AppCompatActivity {
     ProgressBar progressBar;
     Button change;
     String uid,oldemail;
-    StorageReference storageReference;
     FirebaseStorage storage;
     DatabaseReference databaseReference;
 
@@ -46,25 +45,17 @@ public class ChangeEmail extends AppCompatActivity {
         uid = getIntent().getStringExtra("UID");
         storage = FirebaseStorage.getInstance();
         final SharedPreferences.Editor editor = getSharedPreferences("Lock", MODE_PRIVATE).edit();
-
-        storageReference = storage.getReference();
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
         change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                     if(validate()){
                         progressBar.setVisibility(View.VISIBLE);
                         final FirebaseAuth mAuth;
                         mAuth= FirebaseAuth.getInstance();
-
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         oldemail=user.getEmail();
-
-
+                        //Reauthenticate
                         AuthCredential credential = EmailAuthProvider
 
                                 .getCredential(oldemail,password.getText().toString() );
@@ -75,6 +66,7 @@ public class ChangeEmail extends AppCompatActivity {
                                         if(task.isSuccessful()) {
 
                                             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            //update email in authentication
                                             user.updateEmail(email.getText().toString())
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
 
@@ -83,8 +75,10 @@ public class ChangeEmail extends AppCompatActivity {
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
                                                                 progressBar.setVisibility(View.GONE);
+                                                                //change email in firebase
                                                                 databaseReference.child("User").child(uid).child("patientEmail").setValue(email.getText().toString());
 
+                                                                //remove profile picture
                                                                 databaseReference.child("User").child(uid).child("patientProfilepic").setValue("default.jpg");
                                                                 StorageReference storageRef = storage
                                                                         .getReference()
@@ -107,7 +101,7 @@ public class ChangeEmail extends AppCompatActivity {
 
 
 
-
+                                                                //send email verification to new account
                                                                 mAuth.getCurrentUser().sendEmailVerification();
                                                                 mAuth.signOut();
                                                                 Toast.makeText(ChangeEmail.this, "Email Address has been changed", Toast.LENGTH_LONG).show();

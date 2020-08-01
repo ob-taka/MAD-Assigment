@@ -174,11 +174,14 @@ public class SignIn extends AppCompatActivity {
         if (user != null) {
             uid = user.getUid();
             Log.d("#d",uid);
+
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("User");
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     role = dataSnapshot.child(uid).child("role").getValue().toString();
+
+
                     Log.d("#d",role);
                     switch (role){
                         case ("Doctor"):
