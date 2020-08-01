@@ -81,7 +81,7 @@ public class Alarm extends AppCompatActivity {
         );
 
         builder.setNegativeButton(
-                "Cancle", new DialogInterface.OnClickListener() {
+                "Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         cancleAlarm();

@@ -344,6 +344,11 @@ public class User_home extends AppCompatActivity{
         builder.show();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initUser(day, meal);
+    }
 
     @Override
     protected void onStop() {
