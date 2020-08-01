@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -17,22 +18,30 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MedicineList extends AppCompatActivity{
     FloatingActionButton addMedicine;
     Button submit;
     String patientKey;
     String medKey;
+    String meal;
+    String day;
     MAdaptor adaptor;
     ArrayList<String> medicinepic;
     ArrayList<Modle> medicineList;
     FirebaseAuth auth;
     DatabaseReference databaseReference;
-    DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +57,15 @@ public class MedicineList extends AppCompatActivity{
         auth = FirebaseAuth.getInstance();
         medicinepic = new ArrayList<>();
         medicineList = new ArrayList<>();
+        meal = settime();
+        Calendar calendar  = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentdate = calendar.getTime();
+        day = dateFormat.format(currentdate);
 
+        userRef = db.collection("Medicines").document(medKey)
+                .collection("Day").document(day)
+                .collection(meal);
         //onclicklistener for buttons
         // button inside recyclerview button : redirects user to add medicine activity
         addMedicine = findViewById(R.id.addmed);
@@ -82,7 +99,7 @@ public class MedicineList extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        setUpRecyclerView(medKey);
+        setUpRecyclerView(medKey , userRef);
     }
 
     @Override
@@ -92,10 +109,28 @@ public class MedicineList extends AppCompatActivity{
     }
 
     /**
-     * setup recyclerview
+     * change the greeting base on the time of the time
      */
-    private void setUpRecyclerView(String ID){
+    private String  settime() {
+        Calendar calendar = Calendar.getInstance();
+        int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        if (timeOfDay >= 0 && timeOfDay < 12) {
+            return "Breakfast";
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+            return "Lunch";
+        } else if (timeOfDay >= 16 && timeOfDay < 23) {
+            return "Dinner";
+        }
+        return null;
+    }
+
+    /**
+     * setup recyclerview , fetching medicine date from firestore
+     */
+    private void setUpRecyclerView(String ID , CollectionReference ref){
+        Query query = ref.orderBy("title", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Modle> options = new FirestoreRecyclerOptions.Builder<Modle>()
+                .setQuery(query, Modle.class)
                 .build();
 
         // passing data into adaptor
@@ -105,7 +140,7 @@ public class MedicineList extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptor);
 
-        adaptor.startListening();// listening for data in firebase
+        adaptor.startListening();// listening for data in firestore
 
         // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {

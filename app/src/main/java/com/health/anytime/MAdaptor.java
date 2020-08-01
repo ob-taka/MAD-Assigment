@@ -28,6 +28,7 @@ public class MAdaptor extends FirestoreRecyclerAdapter<Modle, MAdaptor.MHolder> 
         holder.mDes.setText(model.getDescription());
         holder.mTime.setText(model.getTime());
         holder.dosage.setText(model.getDosage());
+        holder.mUnit.setText(model.getUnit());
         boolean isExpanded  = model.isExpanded();
         holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }
@@ -44,7 +45,7 @@ public class MAdaptor extends FirestoreRecyclerAdapter<Modle, MAdaptor.MHolder> 
     class MHolder extends RecyclerView.ViewHolder {
 
 
-        TextView mTitle, mDes, mTime, dosage;
+        TextView mTitle, mDes, mTime, dosage, mUnit;
         ConstraintLayout expandableLayout;
 
         public MHolder(@NonNull View itemView) {
@@ -54,6 +55,7 @@ public class MAdaptor extends FirestoreRecyclerAdapter<Modle, MAdaptor.MHolder> 
             this.mTitle = itemView.findViewById(R.id.mTitle);
             this.mDes = itemView.findViewById(R.id.detailDes);
             this.mTime = itemView.findViewById(R.id.mTime);
+            this.mUnit = itemView.findViewById(R.id.unit);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

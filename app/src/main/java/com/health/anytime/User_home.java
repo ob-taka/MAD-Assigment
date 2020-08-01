@@ -2,14 +2,20 @@ package com.health.anytime;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,12 +96,12 @@ public class User_home extends AppCompatActivity{
         // set btn for menu
         registerForContextMenu(opt);
         Calendar calendar  = Calendar.getInstance();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date currentdate = calendar.getTime();
         day = dateFormat.format(currentdate);
-
+        Log.d("#g", day);
         meal = setmeal();
+        Log.d("#g", meal);
         initUser(day, meal);
 
 
@@ -135,7 +141,7 @@ public class User_home extends AppCompatActivity{
                 startActivity(new Intent(User_home.this, SignIn.class));
                 break;
             case R.id.alarm:
-                startActivity(new Intent(User_home.this, SignIn.class));
+                startActivity(new Intent(User_home.this, Alarm.class));
                 break;
             default:
                 break;
@@ -157,10 +163,22 @@ public class User_home extends AppCompatActivity{
                 name = dataSnapshot.child("patientName").getValue(String.class);
                 patientPic = dataSnapshot.child("patientProfilepic").getValue(String.class);
                 username.setText(name);
-                CollectionReference userRef = db.collection("Medicines_hardcode").document("med_list_ID")
-                        .collection("Day").document("1-8-2020") //string.valueof(day)
+//                CollectionReference userRef = db.collection("Medicines_hardcode").document("med_list_ID")
+//                        .collection("Day").document("1-8-2020")
+//                        .collection(meal);
+//                CollectionReference userRef = db.collection("Medicines").document("7d55d1c0-d")
+//                        .collection("Day").document(day)
+//                        .collection(meal);
+                CollectionReference userRef = db.collection("Medicines").document(scheduleID)
+                        .collection("Day").document(day)
                         .collection(meal);
-                setUpRecyclerView(userRef);
+                if (userRef != null){
+                    setUpRecyclerView(userRef);
+                }
+                else {
+                    cancleAlarm();
+                    dialog();
+                }
             }
 
             @Override
@@ -183,7 +201,7 @@ public class User_home extends AppCompatActivity{
         } else if (timeOfDay >= 12 && timeOfDay < 16) {
             greating.setText("Good Afternoon");
             return "Lunch";
-        } else if (timeOfDay >= 16 && timeOfDay < 21) {
+        } else if (timeOfDay >= 16 && timeOfDay < 23) {
             greating.setText("Good Evening");
             return "Dinner";
         }
@@ -196,7 +214,6 @@ public class User_home extends AppCompatActivity{
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
     private void setUpRecyclerView(CollectionReference ref) {
-
         Query query = ref.orderBy("title", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Modle> options = new  FirestoreRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
@@ -209,10 +226,12 @@ public class User_home extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptor);
 
+
+
         adaptor.startListening();
         fetchPatientPic();
 
-        // o`verrides the interface created in the adaptor class to customise the even of the click
+        // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener(){
             @Override
             public void onItemClick(DocumentSnapshot dataSnapshot, int position) {
@@ -222,9 +241,6 @@ public class User_home extends AppCompatActivity{
             }
         });
     }
-
-
-
 
     /**
      * fetch image view from firebase Storage (file hosting service)
@@ -301,7 +317,38 @@ public class User_home extends AppCompatActivity{
                 }, Looper.getMainLooper());
     }
 
+    private void cancleAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
+        alarmManager.cancel(pendingIntent);
+
+    }
+
+    public void dialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_assessment)
+                .setTitle("You Medicines has run out")
+                .setMessage("Please for free to contact your doctor for further enquires. Have a nice day.");
+
+        builder.setPositiveButton(
+                "OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }
+        );
+
+        builder.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initUser(day, meal);
+    }
 
     @Override
     protected void onStop() {
