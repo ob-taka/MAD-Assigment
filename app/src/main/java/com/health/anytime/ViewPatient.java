@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -63,9 +64,7 @@ public class ViewPatient extends AppCompatActivity {
    *fetching medicine data from firebase and set recyclerview
    */
   private void setUpRecyclerView() {
-    Query query = medReference.child(medKey).orderByChild("priority");
-    FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
-      .setQuery(query, Modle.class)
+    FirestoreRecyclerOptions<Modle> options = new FirestoreRecyclerOptions.Builder<Modle>()
       .build();
 
     adaptor = new MAdaptor(options);
@@ -81,7 +80,7 @@ public class ViewPatient extends AppCompatActivity {
       new MAdaptor.OnItemClickListener() {
 
         @Override
-        public void onItemClick(DataSnapshot dataSnapshot, int position) {
+        public void onItemClick(DocumentSnapshot dataSnapshot, int position) {
           Modle modle = adaptor.getItem(position);
           modle.setExpanded(!modle.isExpanded());
           adaptor.notifyItemChanged(position);

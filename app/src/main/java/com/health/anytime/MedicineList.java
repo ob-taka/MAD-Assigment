@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -95,9 +95,7 @@ public class MedicineList extends AppCompatActivity{
      * setup recyclerview
      */
     private void setUpRecyclerView(String ID){
-        Query query = medReference.child(ID).orderByChild("priority");
-        FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
-                .setQuery(query, Modle.class)
+        FirestoreRecyclerOptions<Modle> options = new FirestoreRecyclerOptions.Builder<Modle>()
                 .build();
 
         // passing data into adaptor
@@ -112,7 +110,7 @@ public class MedicineList extends AppCompatActivity{
         // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener() {
             @Override
-            public void onItemClick(DataSnapshot dataSnapshot, int position) {
+            public void onItemClick(DocumentSnapshot dataSnapshot, int position) {
                 Modle modle = adaptor.getItem(position);
                 modle.setExpanded(!modle.isExpanded());
                 adaptor.notifyItemChanged(position);

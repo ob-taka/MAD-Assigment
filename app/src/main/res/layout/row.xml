@@ -19,34 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/mImageV"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/btn_dialog" />
-
-            <TextView
-                android:id="@+id/mTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="21dp"
-                android:shadowColor="#000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="2"
-                android:text="10:00 AM"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/mTitle"
-                android:layout_width="182dp"
+                android:layout_width="201dp"
                 android:layout_height="57dp"
                 android:gravity="center_vertical"
                 android:shadowColor="#000000"
@@ -55,20 +30,21 @@
                 android:shadowRadius="2"
                 android:text="Panadol"
                 android:textColor="#000"
-                android:textSize="10sp"
+                android:textSize="20dp"
                 android:textStyle="bold"
-                app:autoSizeMaxTextSize="15dp"
+                app:autoSizeMaxTextSize="25dp"
                 app:autoSizeTextType="uniform"
-                app:layout_constraintStart_toEndOf="@+id/mImageV"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/expandableLayout"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mImageV">
+                app:layout_constraintTop_toBottomOf="@+id/mTitle">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -109,23 +85,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/mDes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="20dp"
-                    android:shadowColor="#000000"
-                    android:shadowDx="2"
-                    android:shadowDy="2"
-                    android:shadowRadius="1"
-                    android:text="Before Food"
-                    android:textColor="#000"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
                     android:id="@+id/detailDes"
                     android:layout_width="210dp"
                     android:layout_height="wrap_content"
@@ -142,6 +101,24 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/mTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1"
+                android:text="Before Food"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.578"
+                app:layout_constraintStart_toEndOf="@+id/mTitle"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>

@@ -5,10 +5,8 @@ import android.view.Display;
 public class Modle {
     private String title;
     private String description;
-    private String time;
     private String dosage;
-    private String detailDes;
-    private String img;
+    private String time;
     private boolean expanded; // set the state the constrain layout
 
     public Modle(){
@@ -21,13 +19,11 @@ public class Modle {
 //        this.medid = id;
 //    }//needed for firebase
 
-    public Modle(String title, String description, String time, String dosage, String detailDes, String img){
+    public Modle(String title, String description, String dosage, String time){
         this.title = title;
         this.description = description;
-        this.time = time;
         this.dosage = dosage;
-        this.detailDes = detailDes;
-        this.img = img;
+        this.time = time;
         this.expanded = false; // sat the initial stat of the layout to be inevitable
     }
 
@@ -39,28 +35,19 @@ public class Modle {
         return expanded;
     }
 
-    public String getTime() {
-        return time;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public String getDosage() {
-        return dosage;
-    }
-
-    public String getDetailDes() {
-        return detailDes;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getImg() {
-        return img;
+    public String getDosage() {
+        return dosage;
     }
 
+    public String getTime() {
+        return time;
+    }
 }

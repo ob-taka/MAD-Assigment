@@ -6,15 +6,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -42,13 +39,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class User_home extends AppCompatActivity{
 
@@ -65,6 +67,8 @@ public class User_home extends AppCompatActivity{
     private TextView username, greating;
     private Button opt;
     public static Activity fa;
+    private String day, meal;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
 
@@ -85,10 +89,16 @@ public class User_home extends AppCompatActivity{
         opt = findViewById(R.id.menu_btn);
         // set btn for menu
         registerForContextMenu(opt);
+        Calendar calendar  = Calendar.getInstance();
 
-        initUser();
-        createChannel();
-        setTimeOfDay();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentdate = calendar.getTime();
+        day = dateFormat.format(currentdate);
+
+        meal = setmeal();
+        initUser(day, meal);
+
+
 
         //Glide.with(this).load(auth.getCurrentUser().getPhotoUrl()).into(imageBtn);
         // set onClickListenr on the image of the user profile to got into their profile page
@@ -135,7 +145,7 @@ public class User_home extends AppCompatActivity{
      * fetch the user information form the firebase and get the specific data that was needed
      * to prepare to be display on the screen and pass as a intent to the next activity
      */
-    private void initUser() {
+    private void initUser(final String day, final String meal) {
 
         userReference.addValueEventListener(new ValueEventListener(){
             @Override
@@ -144,7 +154,10 @@ public class User_home extends AppCompatActivity{
                 name = dataSnapshot.child("patientName").getValue(String.class);
                 patientPic = dataSnapshot.child("patientProfilepic").getValue(String.class);
                 username.setText(name);
-                setUpRecyclerView(scheduleID);
+                CollectionReference userRef = db.collection("Medicines_hardcode").document("med_list_ID")
+                        .collection("Day").document("1-8-2020") //string.valueof(day)
+                        .collection(meal);
+                setUpRecyclerView(userRef);
             }
 
             @Override
@@ -158,16 +171,20 @@ public class User_home extends AppCompatActivity{
     /**
      * change the greeting base on the time of the time
      */
-    private void setTimeOfDay() {
+    private String  setmeal() {
         Calendar calendar = Calendar.getInstance();
         int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         if (timeOfDay >= 0 && timeOfDay < 12) {
             greating.setText("Good Morning");
+            return "Breakfast";
         } else if (timeOfDay >= 12 && timeOfDay < 16) {
             greating.setText("Good Afternoon");
+            return "Lunch";
         } else if (timeOfDay >= 16 && timeOfDay < 21) {
             greating.setText("Good Evening");
+            return "Dinner";
         }
+        return null;
     }
 
 
@@ -175,9 +192,10 @@ public class User_home extends AppCompatActivity{
      * Using this method to set up the recycler view using the information fetched form the database
      * adding in OnClickListener to the object to allow the user to interact with the recycler view items to expand of close to show the details of the medicament
      */
-    private void setUpRecyclerView(String ID) {
-        Query query = medicineReference.child(ID).orderByChild("priority");
-        FirebaseRecyclerOptions<Modle> options = new FirebaseRecyclerOptions.Builder<Modle>()
+    private void setUpRecyclerView(CollectionReference ref) {
+
+        Query query = ref.orderBy("title", Query.Direction.DESCENDING);
+        FirestoreRecyclerOptions<Modle> options = new  FirestoreRecyclerOptions.Builder<Modle>()
                 .setQuery(query, Modle.class)
                 .build();
 
@@ -194,7 +212,7 @@ public class User_home extends AppCompatActivity{
         // o`verrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener(){
             @Override
-            public void onItemClick(DataSnapshot dataSnapshot, int position) {
+            public void onItemClick(DocumentSnapshot dataSnapshot, int position) {
                 Modle modle = adaptor.getItem(position);
                 modle.setExpanded(!modle.isExpanded());
                 adaptor.notifyItemChanged(position);
@@ -203,18 +221,7 @@ public class User_home extends AppCompatActivity{
     }
 
 
-    /**
-     * this help create channel due to android lv 26 requires the app to create a channel inorder to send notification
-     */
-    private void createChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("channelID", "reminderChannel", NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("channel for reminder");
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     /**
      * fetch image view from firebase Storage (file hosting service)
@@ -289,5 +296,13 @@ public class User_home extends AppCompatActivity{
                         }
                     }
                 }, Looper.getMainLooper());
+    }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adaptor.stopListening();
     }
 }
