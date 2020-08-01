@@ -36,21 +36,7 @@ public class ChangePassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-
-                if(oldpw.getText().toString().equals("")){
-                    oldpw.setError("Please enter your current password");
-
-                }
-                if(newpw.getText().toString().equals("")){
-                    newpw.setError("Please enter your new password");
-                }
-                if(newpwcfm.getText().toString().equals("")){
-                    newpwcfm.setError("Please renter your new password");
-                }
-                if (!oldpw.getText().toString().equals("")&&!newpw.getText().toString().equals("")&&!newpwcfm.getText().toString().equals(""))
-                {
-
-                    if(newpwcfm.getText().toString().equals(newpw.getText().toString())){
+                    if(valid()){
 
                         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -90,16 +76,44 @@ public class ChangePassword extends AppCompatActivity {
 
                                         }
                                     }
+
                                 });
 
 
                     }
-                    else{
-                        newpwcfm.setError("Password does not match");
-                    }
-                }
+
+
             }
         });
 
+    }
+    public boolean valid(){
+        boolean valid=true;
+
+        if(oldpw.getText().toString().equals("")){
+            oldpw.setError("Please enter your current password");
+            valid=false;
+
+        }
+        if(newpw.getText().toString().equals("")){
+            newpw.setError("Please enter your new password");
+            valid=false;
+
+        }
+        if(newpwcfm.getText().toString().equals("")){
+            newpwcfm.setError("Please renter your new password");
+            valid=false;
+
+        }
+        if (oldpw.getText().toString().equals("")&&newpw.getText().toString().equals("")&&newpwcfm.getText().toString().equals("")){
+            valid=false;
+
+        }
+        if(!newpwcfm.getText().toString().equals(newpw.getText().toString())){
+            newpwcfm.setError("Password does not match");
+            valid=false;
+
+        }
+            return valid;
     }
 }

@@ -1,8 +1,10 @@
 package com.health.anytime;
 
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -21,29 +24,45 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 public class AddMedicinePage extends AppCompatActivity {
 
     public static EditText searchMed;
-    RadioButton before,after;
     TextView dose;
     String medName,medType,medKey;
     ImageButton plus,minus;
     Button breakfast,lunch,dinner,submit;
     Double doseNumber;
+    EditText days;
+    RadioButton before,after;
+    ProgressBar progressBar;
 
     Integer correctMed,breakfastValid,lunchValid,dinnerValid,errors;
 
@@ -52,17 +71,20 @@ public class AddMedicinePage extends AppCompatActivity {
     ArrayList<String> med_list;
     ArrayList<String> id_list;
     SearchAdapter searchAdapter;
-    RadioGroup radioGroup;
     public static RecyclerView recyclerView;
     TimePickerDialog picker;
+    private double medqty;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    String doctorid = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+    String patientkey;
+    FirebaseFirestore db;
+    RadioGroup radioGroup;
 
-//git
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_med);
-        radioGroup=findViewById(R.id.radioGroup);
         dose=findViewById(R.id.dose);
         plus=findViewById(R.id.plus);
         minus=findViewById(R.id.minus);
@@ -71,17 +93,20 @@ public class AddMedicinePage extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         searchMed = findViewById(R.id.search_med);
         breakfast=findViewById(R.id.breakfast);
+        days=findViewById(R.id.days);
         lunch=findViewById(R.id.lunch);
         dinner=findViewById(R.id.dinner);
         submit=findViewById(R.id.submit);
+        db = FirebaseFirestore.getInstance();
+        radioGroup=findViewById(R.id.radioGroup);
         before=findViewById(R.id.before);
         after=findViewById(R.id.after);
+        progressBar=findViewById(R.id.progressBar2);
         Intent intent = getIntent();
 
         medKey = intent.getStringExtra("medKey");
-
+        patientkey = intent.getStringExtra("patientKey");
         final DecimalFormat df = new DecimalFormat("#");
-
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         doseNumber=0.0;
@@ -93,7 +118,7 @@ public class AddMedicinePage extends AppCompatActivity {
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
         recyclerView.addItemDecoration((new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)));
 
-        //Creating Spinner
+        //Creating Spinner , change
         Spinner spinner=findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this,R.array.medType,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -106,7 +131,7 @@ public class AddMedicinePage extends AppCompatActivity {
                 if (selectedItemText.equals("ml")){
                     doseNumber=0.0;
 
-                    medType="liquid";
+                    medType="ml";
                     String doseString=doseNumber.toString();
                     dose.setText(doseString);
 
@@ -133,11 +158,11 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(breakfastValid==0){
                     breakfastValid=1;
-                    breakfast.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    breakfast.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     breakfastValid=0;
-                    breakfast.setBackground(getResources().getDrawable(R.drawable.unit));
+                    breakfast.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
 
             }
@@ -147,11 +172,11 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(lunchValid==0){
                     lunchValid=1;
-                    lunch.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    lunch.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     lunchValid=0;
-                    lunch.setBackground(getResources().getDrawable(R.drawable.unit));
+                    lunch.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
 
             }
@@ -161,13 +186,12 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(dinnerValid==0){
                     dinnerValid=1;
-                    dinner.setBackground(getResources().getDrawable(R.drawable.btn_selected));
+                    dinner.setTextColor(getApplication().getResources().getColor(R.color.green));
                 }
                 else{
                     dinnerValid=0;
-                    dinner.setBackground(getResources().getDrawable(R.drawable.unit));
+                    dinner.setTextColor(getApplication().getResources().getColor(R.color.colorPrimary));
                 }
-
             }
         });
 
@@ -180,7 +204,7 @@ public class AddMedicinePage extends AppCompatActivity {
                     String doseString= df.format(doseNumber);
                     dose.setText(doseString);
                 }
-                else if (medType.equals("liquid"))
+                else if (medType.equals("ml"))
                 {
                     doseNumber+=0.5;
                     String doseString=doseNumber.toString();
@@ -194,12 +218,13 @@ public class AddMedicinePage extends AppCompatActivity {
             public void onClick(View v) {
                 if(doseNumber!=0){
 
+
                     if(medType.equals("tablet")){
                         doseNumber--;
                         String doseString= df.format(doseNumber);
                         dose.setText(doseString);
                     }
-                    else if (medType.equals("liquid"))
+                    else if (medType.equals("ml"))
                     {
                         doseNumber-=0.5;
                         String doseString=doseNumber.toString();
@@ -264,14 +289,19 @@ public class AddMedicinePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Check if all tasks has been selected.
-                //
-
                 checkValid();
                 if (errors==0){
-                    sendData();
-                    Intent nextActivity = new Intent(  AddMedicinePage.this,MedicineList.class );
-                    nextActivity.putExtra("patientmlist" , medKey);
-                    startActivity(nextActivity);
+                    progressBar.setVisibility(View.VISIBLE);
+                    // fetch number of stock for selected medicine firebase
+                    getMedQty(medName);
+                    // delay to provide race condition
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            postmed();
+                        }
+                    }, 300);
+
                 }
             }
         });
@@ -280,7 +310,7 @@ public class AddMedicinePage extends AppCompatActivity {
 
     private void setAdapter(final String searchedString) {
         //Retrieving data in firebase
-        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 med_list.clear();
@@ -290,8 +320,8 @@ public class AddMedicinePage extends AppCompatActivity {
 
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     //String med_num=snapshot.getKey();
-                    String med_name=snapshot.child("title").getValue().toString();
-                    String id_num=snapshot.child("ID").getValue().toString();
+                    String med_name=snapshot.child("medicineTitle").getValue().toString();
+                    String id_num=snapshot.child("medid").getValue().toString();
                     if(med_name.toLowerCase().contains(searchedString.toLowerCase())){
                         med_list.add(med_name);
                         id_list.add(id_num);
@@ -321,12 +351,12 @@ public class AddMedicinePage extends AppCompatActivity {
         correctMed = 0;
         errors=0;
 
-        databaseReference.child("user_medicien").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String med_name=snapshot.child("title").getValue().toString();
+                    String med_name=snapshot.child("medicineTitle").getValue().toString();
                     Log.v("number",correctMed.toString());
                     //Validating if medicine name entered is same as medicine name in firebase
                     if (med_name.equals(medName)) {
@@ -353,71 +383,167 @@ public class AddMedicinePage extends AppCompatActivity {
         });
         String errorMsg = "";
 
-
-
-        //Validating if all other fields have been filled
         if (radioGroup.getCheckedRadioButtonId() == -1) {
             errorMsg+="Please select before or after food";
             errors=1;
         }
+
+        //Validating if all other fields have been filled
+
         if(breakfastValid==0 && lunchValid==0 && dinnerValid==0){
             errorMsg+="\n Please select the meal for medicine intake";
             errors=1;
-
         }
         if (doseNumber==0.0){
             errorMsg+="\n Please select the dosage";
             errors=1;
+        }
+        if(days.getText().toString().equals("")){
+            days.setError("Please enter the number of days");
+            errors=1;
 
         }
-
-
-
         Toast toast = Toast.makeText(getApplicationContext(),
                 errorMsg,
                 Toast.LENGTH_LONG);
-
         toast.show();
 
 
-
     }
-    public void sendData(){
-        //Adding data to firebase
-        DatabaseReference tempRef=databaseReference.child("med_list");
-        Modle med = new Modle();
+    public void postmed(){
+        int daysno=Integer.parseInt(days.getText().toString());
+
         String food = "";
+        String desc="";
+        if(medName.equals("Activated Charcoal")){
+            desc="used to help treat a drug overdose or a poisoning";
+        }
+        else if(medName.equals("Panadol")){
+            desc="Help with cought and flu";
+        }
+        else if(medName.equals("Benzonatate")){
+            desc="used to relieve cough";
+        }
+        else if(medName.equals("Antibiotics")){
+            desc="used to treat or prevent some types of bacterial infection";
+        }
+
         if(before.isChecked())
         {
             food="Before Food";
         }
-        else if (after.isChecked())
-        {
-            food="After Food";
-
+        else if (after.isChecked()) {
+            food = "After Food";
         }
-        if (breakfastValid==1){
-            tempRef.child("Breakfast").setValue("True");
-            med = new Modle(medName,"Breakfast","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"1").setValue(med);
+        //Adding data to firebase
+        if ( medqty > (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
+            medqty -= (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber);
+            databaseReference.child("Pharmacy").child(doctorid).child(medName).child("quantity").setValue(medqty);
+            for(int i=0;i<daysno;i++) {
+
+                Calendar c = Calendar.getInstance();
+                c.add(Calendar.DATE, i);
+                Date date = c.getTime();
+
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                String formattedDate = df.format(date);
+
+                Map<String, Object> med = new HashMap<>();
+                med.put("Name", medName);
+                med.put("Dosage", doseNumber);
+                med.put("Time",food);
+                med.put("DetailDes",desc);
+                med.put("Unit",medType);
 
 
-        }if (dinnerValid==1){
-            med = new Modle(medName,"Lunch","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"2").setValue(med);
+                if(breakfastValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Breakfast").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 
 
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-        }if (dinnerValid==1){
-            med = new Modle(medName,"Dinner","",doseNumber.toString(),food,"");
-            tempRef.child(medKey).child(medName+"3").setValue(med);
+                        }
+                    });
+                }
 
+                if(lunchValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Lunch").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
+                        }
+                    });
+                }
 
+                if(dinnerValid==1) {
+                    db.collection("Medicines").document(medKey).collection("Day").document(formattedDate).collection("Dinner").document(medName)
+                            .set(med).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+
+            }
+
+            Intent intent = new Intent(getApplicationContext(), MedicineList.class);
+            intent.putExtra("patientmlist" , medKey);
+            intent.putExtra("patientKey" ,patientkey );
+            startActivity(intent);
+        }else {
+            buildDialog();
         }
+        progressBar.setVisibility(View.GONE);
 
+    }
 
+    private void getMedQty(final String title){
+        databaseReference.child("Pharmacy").child(doctorid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    MedicineModel med = snapshot.getValue(MedicineModel.class);
+                    if (snapshot.getKey().equals(title)){
+                        medqty = med.getQuantity();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
 
+    /**
+     * Used to alert user that patient email entered does not exist
+     */
+    private void buildDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddMedicinePage.this);
+        builder.setTitle("this medicine does not have enough stock")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 }

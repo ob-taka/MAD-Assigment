@@ -25,57 +25,55 @@ public class HomeLock extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("Lock", MODE_PRIVATE);
         final String code = prefs.getString("Code", "");
-        if (code.equals("")) {
-            Intent intent = new Intent(HomeLock.this, User_home.class);
-            startActivity(intent);
-        } else {
-            setContentView(R.layout.homelock);
-            forgotpat=findViewById(R.id.forgotpat);
-            forgotpat.setPaintFlags(forgotpat.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
-            forgotpat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+
+        setContentView(R.layout.homelock);
+        forgotpat=findViewById(R.id.forgotpat);
+        forgotpat.setPaintFlags(forgotpat.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+        forgotpat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(HomeLock.this, ForgotPattern.class);
+                startActivity(intent1);
+            }
+        });
+
+        final PatternLockView patternLockView = findViewById(R.id.patternView);
+        patternLockView.addPatternLockListener(new PatternLockViewListener() {
+            @Override
+            public void onStarted() {
+
+            }
+
+            @Override
+            public void onProgress(List progressPattern) {
+
+            }
+
+            @Override
+            public void onComplete(List pattern) {
+
+                if (PatternLockUtils.patternToString(patternLockView, pattern).equalsIgnoreCase(code)) {
+
+
+                    Intent intent1 = new Intent(HomeLock.this, User_home.class);
+                    startActivity(intent1);
+
+                } else {
+
+                    patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
+
+                    Toast.makeText(HomeLock.this, "Pattern is incorrect", Toast.LENGTH_SHORT).show();
 
                 }
-            });
+            }
 
-            final PatternLockView patternLockView = findViewById(R.id.patternView);
-            patternLockView.addPatternLockListener(new PatternLockViewListener() {
-                @Override
-                public void onStarted() {
-
-                }
-
-                @Override
-                public void onProgress(List progressPattern) {
-
-                }
-
-                @Override
-                public void onComplete(List pattern) {
-
-                    if (PatternLockUtils.patternToString(patternLockView, pattern).equalsIgnoreCase(code)) {
+            @Override
+            public void onCleared() {
 
 
-                        Intent intent1 = new Intent(HomeLock.this, User_home.class);
-                        startActivity(intent1);
+            }
+        });
 
-                    } else {
-
-                        patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
-
-                        Toast.makeText(HomeLock.this, "Pattern is incorrect", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                @Override
-                public void onCleared() {
-
-
-                }
-            });
-        }
     }
     public void onBackPressed() {
         super.onBackPressed();

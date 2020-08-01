@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,13 +25,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.andrognito.patternlockview.utils.PatternLockUtils;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -51,7 +61,8 @@ public class Profile_Patient extends AppCompatActivity {
     DatabaseReference databaseReference;
     String patientProfilepic;
     // views for button
-    String userChoosenTask,picLocation;
+    String userChoosenTask,uid;
+    FirebaseUser user;
     // view for image view
 
     // Uri indicates, where the image will be picked from
@@ -69,32 +80,50 @@ public class Profile_Patient extends AppCompatActivity {
         setContentView(R.layout.patient_profile);
         storage = FirebaseStorage.getInstance();
         settings=findViewById(R.id.settings);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         storageReference = storage.getReference();
         Name = findViewById(R.id.patient_Name);
         Email = findViewById(R.id.patient_Email);
         ProfPic = findViewById(R.id.patient_Pp);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("644403792200-g475m0097k2o5mrjq0tau3rlau2fftdq.apps.googleusercontent.com")
+                .requestEmail()
+                .build();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        String uid = getIntent().getStringExtra("UID");
+
+        uid = getIntent().getStringExtra("UID");
         getDetails(uid);
         ProfPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SelectImage();
 
 
-            }
-        });
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Settings.class);
-                startActivity(intent);
 
             }
-
-
-
         });
+
+
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(account==null) {
+                    Intent intent = new Intent(getApplicationContext(), Settings.class);
+                    intent.putExtra("UID", uid);
+
+                    startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), SettingsGoogleSignIn.class);
+
+                        startActivity(intent);                    }
+                }
+
+
+            });
+
     }
 
 
@@ -109,7 +138,6 @@ public class Profile_Patient extends AppCompatActivity {
                         String patientEmail = dataSnapshot.child("patientEmail").getValue().toString();
                         Email.setText(patientEmail);
                         patientProfilepic = dataSnapshot.child("patientProfilepic").getValue().toString();
-                        picLocation = patientProfilepic;
                         fetchPatientPic();
                     }
 
@@ -125,6 +153,7 @@ public class Profile_Patient extends AppCompatActivity {
              * References FirebaseStorage profile pic folder and uses glide to load the image into profpic imageview.
              */
             private void fetchPatientPic() {
+                picLocation();
                 // finds image and download image from firebase storage by image path and binds it to view holder
                 FirebaseStorage storage = FirebaseStorage.getInstance(
                         "gs://quickmad-e4016.appspot.com/"
@@ -144,11 +173,36 @@ public class Profile_Patient extends AppCompatActivity {
                                 }
                         );
             }
+            private void picLocation(){
+                databaseReference.child("User").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        patientProfilepic = dataSnapshot.child("patientProfilepic").getValue().toString();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(Profile_Patient.this, "error: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
 
             // Select Image method
             private void SelectImage() {
-                final CharSequence[] items = {"Take Photo", "Choose from Library",
-                        "Cancel"};
+
+                final CharSequence[] items;
+                Log.v("Pic name:",patientProfilepic);
+                if(patientProfilepic.equals("default.jpg")){
+                 items= new CharSequence[]{"Take Photo", "Choose from Library",
+                         "Cancel"};
+                }
+                else {
+                    items= new CharSequence[]{"Take Photo", "Choose from Library","Remove Profile Picture",
+                            "Cancel"};
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(Profile_Patient.this);
                 builder.setTitle("Add Photo!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -172,42 +226,79 @@ public class Profile_Patient extends AppCompatActivity {
                                                 "Select Image from here..."),
                                         PICK_IMAGE_REQUEST);
                             }
+
+
                         } else if (items[item].equals("Cancel")) {
+
                             dialog.dismiss();
+                        }
+                        else if(items[item].equals("Remove Profile Picture")){
+                            removeprofpic();
+                            picLocation();
+                            fetchPatientPic();
+
                         }
                     }
                 });
                 builder.show();
 
             }
+            public void removeprofpic(){
+                databaseReference.child("User").child(uid).child("patientProfilepic").setValue("default.jpg");
+                Toast.makeText(Profile_Patient.this,"Profile picture removed",Toast.LENGTH_LONG).show();
 
-            private void cameraIntent() {
+
+
+                FirebaseStorage storage = FirebaseStorage.getInstance(
+                        "gs://quickmad-e4016.appspot.com/"
+                );
+                StorageReference storageRef = storage
+                        .getReference()
+                        .child("ProfilePicture/" + user.getEmail().toString());
+                storageRef
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        fetchPatientPic();
+                        Log.e("firebasestorage", "onSuccess: deleted file");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Uh-oh, an error occurred! 
+                        Log.e("firebasestorage", "onFailure: did not delete file");
+                    }
+                });
+            }
+
+            public void cameraIntent() {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
             }
 
             @Override
             public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-                switch (requestCode) {
-                    case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                            if (userChoosenTask.equals("Take Photo"))
-                                cameraIntent();
-                            else if (userChoosenTask.equals("Choose from Library")) {
-                                // Defining Implicit Intent to mobile gallery
-                                Intent intent = new Intent();
-                                intent.setType("image/*");
-                                intent.setAction(Intent.ACTION_GET_CONTENT);
-                                startActivityForResult(
-                                        Intent.createChooser(
-                                                intent,
-                                                "Select Image from here..."),
-                                        PICK_IMAGE_REQUEST);
-                            }
-                        } else {
-                            //code for deny
+                if (requestCode == Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        if (userChoosenTask.equals("Take Photo"))
+                            cameraIntent();
+                        else if (userChoosenTask.equals("Choose from Library")) {
+                            // Defining Implicit Intent to mobile gallery
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(
+                                    Intent.createChooser(
+                                            intent,
+                                            "Select Image from here..."),
+                                    PICK_IMAGE_REQUEST);
                         }
-                        break;
+                    } else {
+                        Toast.makeText(Profile_Patient.this, "Permission to access files has been denies. Please change this in settings", Toast.LENGTH_SHORT).show();
+
+
+                    }
                 }
             }
 
@@ -250,7 +341,10 @@ public class Profile_Patient extends AppCompatActivity {
                                 // The dialog is automatically dismissed when a dialog button is clicked.
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
+                                        databaseReference.child("User").child(uid).child("patientProfilepic").setValue(user.getEmail().toString());
+
                                         uploadImage();
+
                                     }
                                 })
 
@@ -299,6 +393,8 @@ public class Profile_Patient extends AppCompatActivity {
                         // The dialog is automatically dismissed when a dialog button is clicked.
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                databaseReference.child("User").child(uid).child("patientProfilepic").setValue(user.getEmail().toString());
+
                                 uploadCameraImage(thumbnail);
                             }
                         })
@@ -312,7 +408,6 @@ public class Profile_Patient extends AppCompatActivity {
                         })
                         .setIcon(android.R.drawable.ic_menu_save)
                         .show();
-                fetchPatientPic();
 
             }
 
@@ -320,7 +415,7 @@ public class Profile_Patient extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
-                StorageReference imagesRef = storageReference.child("ProfilePicture/" + picLocation);
+                StorageReference imagesRef = storageReference.child("ProfilePicture/" + user.getEmail().toString());
                 // Code for showing progressDialog while uploading
                 final ProgressDialog progressDialog
                         = new ProgressDialog(Profile_Patient.this);
@@ -332,6 +427,8 @@ public class Profile_Patient extends AppCompatActivity {
 
                         // Image uploaded successfully
                         // Dismiss dialog
+                        picLocation();
+
                         progressDialog.dismiss();
                         Toast.makeText(Profile_Patient.this, "Image Saved!!", Toast.LENGTH_SHORT).show();
                     }
@@ -367,7 +464,7 @@ public class Profile_Patient extends AppCompatActivity {
                     progressDialog.show();
 
                     // Defining the child of storageReference
-                    StorageReference ref = storageReference.child("ProfilePicture/" + picLocation);
+                    StorageReference ref = storageReference.child("ProfilePicture/" + user.getEmail().toString());
 
                     // adding listeners on upload
                     // or failure of image
@@ -378,6 +475,8 @@ public class Profile_Patient extends AppCompatActivity {
                             // Image uploaded successfully
                             // Dismiss dialog
                             progressDialog.dismiss();
+                            picLocation();
+
                             Toast.makeText(Profile_Patient.this, "Image Saved!!", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -402,6 +501,7 @@ public class Profile_Patient extends AppCompatActivity {
 
                 }
             }
+
 
 
 

@@ -48,10 +48,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="100dp"
                 android:background="@drawable/emailpass_box"
+
                 android:ems="10"
 
                 android:hint="Password"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:padding="10dp" />
 
             <TextView

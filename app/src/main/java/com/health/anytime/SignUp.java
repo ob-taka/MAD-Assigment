@@ -22,18 +22,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
-    EditText rName, rEmail, rPass, rCfmPass;
-    Button rRegisterBtn;
-    TextView rLoginBtn;
-    ProgressBar rProgressBar;
-    FirebaseAuth rAuth;
-    FirebaseDatabase firebaseDatabase;
+//Declaration of attributes
+    private EditText rName, rEmail, rPass, rCfmPass;
+    private Button rRegisterBtn;
+    private TextView rLoginBtn;
+    private ProgressBar rProgressBar;
+    private FirebaseAuth rAuth;
+    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
-
+//Instantiation of attributes
         rName = findViewById(R.id.editText_regName);
         rEmail = findViewById(R.id.editText_regEmail);
         rPass = findViewById(R.id.editText_regPass);
@@ -43,9 +44,9 @@ public class SignUp extends AppCompatActivity {
         rProgressBar = findViewById(R.id.progressBar_signUp);
         rAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
-
         final Intent intent = new Intent(SignUp.this, SignIn.class);
 
+//The following gets the details from the necessary fields and validates it
         rRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +56,7 @@ public class SignUp extends AppCompatActivity {
                 final String cfmPass = rCfmPass.getText().toString().trim();
                 boolean validate = true;
 
-                //the following checks whether fields are empty, if so, display an error warning
+//The following checks whether fields are empty, if so, display an error warning
                 if(TextUtils.isEmpty(name)){
                     rName.setError("Please enter your name as in IC.");
                     validate = false;
@@ -73,7 +74,7 @@ public class SignUp extends AppCompatActivity {
                     validate = false;
                 }
 
-                //the following checks for matching passwords and length
+//The following checks for matching passwords and length
                 if(pass.length()<6 || cfmPass.length()<6){
                     rPass.setError("Please enter a password of at least 6 characters.");
                     rCfmPass.setError("Please enter matching passwords.");
@@ -88,7 +89,7 @@ public class SignUp extends AppCompatActivity {
                 }
 
                 rProgressBar.setVisibility(View.VISIBLE);
-                //the following code registers the user using the entered email and password
+//The following code registers the user using the entered email and password
                 if(validate){
                     rAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -98,7 +99,7 @@ public class SignUp extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
-                                            Toast.makeText(SignUp.this,"User has been created successfully! Verification email has been sent. Please verify before loggin in. Email might be in junk mail.",Toast.LENGTH_LONG).show();
+                                            Toast.makeText(SignUp.this,"User has been created successfully! Verification email has been sent. Please verify before logging in. Email might be in junk mail.",Toast.LENGTH_LONG).show();
                                         }
                                         else {
                                             task.isCanceled();
@@ -132,26 +133,16 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    //this method generates and inserts the database details into firebase database
+//This method generates and inserts the database details into firebase database
     private void insertDetails(String name, String email){
         String Role = "Patient";
         String Pic = "default.jpg";
         String Med = "7d55d1c0-d";
-        boolean Status = false;
-
-        //this creates a unique generated key in "User" and store the patient's details
+        //Create a unique generated key in "User" and store the patient's details
         DatabaseReference du = firebaseDatabase.getReference("User");
         String ukey = rAuth.getCurrentUser().getUid();
-        PatientModel user = new PatientModel(Pic, name, email, Status, Role, Med);
+        PatientModel user = new PatientModel(Pic, name, email, false, Role, Med);
         du.child(ukey).setValue(user);
-
     }
-/*
-    //this method accesses the firebase authentication to check if an email already exists
-    private Boolean isEmailExist(String email){
-        boolean results = rAuth.fetchSignInMethodsForEmail(email).isSuccessful();
-        return results;
-    }
- */
 
 }

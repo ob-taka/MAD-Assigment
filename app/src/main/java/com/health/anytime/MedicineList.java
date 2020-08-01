@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,6 @@ public class MedicineList extends AppCompatActivity{
     FirebaseAuth auth;
     DatabaseReference databaseReference;
     DatabaseReference medReference = FirebaseDatabase.getInstance().getReference().child("med_list");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,22 +50,20 @@ public class MedicineList extends AppCompatActivity{
         medicineList = new ArrayList<>();
 
         //onclicklistener for buttons
-
         // button inside recyclerview button : redirects user to add medicine activity
         addMedicine = findViewById(R.id.addmed);
-
         addMedicine.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent nextActivity = new Intent(MedicineList.this  , AddMedicinePage.class );
                 nextActivity.putExtra("medKey" , medKey);
+                nextActivity.putExtra("patientKey" , patientKey);
                 startActivity(nextActivity);
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
             }
         });
 
         submit = findViewById(R.id.submit);
-
         submit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -92,8 +90,6 @@ public class MedicineList extends AppCompatActivity{
         super.finish();
         overridePendingTransition(R.anim.slide_in_left , R.anim.slide_out_right); //animation
     }
-
-
 
     /**
      * setup recyclerview
@@ -139,5 +135,8 @@ public class MedicineList extends AppCompatActivity{
         SharedPreferences sharedPreferences = MedicineList.this.getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
         return sharedPreferences.getString("uid","");
     }
+
+    //get patient key
+
 
 }

@@ -8,6 +8,11 @@
         app:showAsAction="never">
     </item>
     <item
+        android:title="Nearest Clinic"
+        android:id="@+id/find_location"
+        app:showAsAction="never">
+    </item>
+    <item
         android:title="Log Out"
         android:id="@+id/logout_button"
         app:showAsAction="never">

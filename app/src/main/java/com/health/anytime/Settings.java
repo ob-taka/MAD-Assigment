@@ -24,6 +24,8 @@ public class Settings extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        final String uid = getIntent().getStringExtra("UID");
+
         pw=findViewById(R.id.password);
         email=findViewById(R.id.email);
         lock=findViewById(R.id.lock);
@@ -43,7 +45,30 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
+                editor.putString("Code",null);
+                editor.apply();
                 Intent intent=new Intent(Settings.this,SignIn.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(intent);
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Settings.this,DeleteAccount.class);
+
+                intent.putExtra("UID", uid);
+
+                startActivity(intent);
+            }
+        });
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Settings.this,ChangeEmail.class);
+                intent.putExtra("UID", uid);
+
                 startActivity(intent);
             }
         });
@@ -64,8 +89,13 @@ public class Settings extends AppCompatActivity {
         lock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+
                     Intent intent=new Intent(Settings.this,SetLock.class);
                     startActivity(intent);
+                    if (code.equals("")) {
+                        lock.setChecked(false);
+
+                    }
                 } else {
                     new AlertDialog.Builder(Settings.this)
                             .setTitle("Remove pattern lock")
@@ -90,4 +120,6 @@ public class Settings extends AppCompatActivity {
         });
 
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.health.anytime;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 public class DoctorHome extends AppCompatActivity {
 
     Button viewpatient;
+    Button medstock;
     Button addpatient, opt;
     ImageView doctorpic;
     TextView greetings, docname;
@@ -49,6 +51,7 @@ public class DoctorHome extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("User");
         viewpatient = findViewById(R.id.button4);
         addpatient = findViewById(R.id.button5);
+        medstock = findViewById(R.id.button6);
         greetings = findViewById(R.id.greating);
         docname = findViewById(R.id.label_Name);
         doctorpic = findViewById(R.id.doctorpic);
@@ -60,6 +63,7 @@ public class DoctorHome extends AppCompatActivity {
         String uid = auth.getCurrentUser().getUid();
         Log.d("#d",uid);
         databaseReference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 docname.setText("Doctor " + dataSnapshot.child("patientName").getValue().toString().trim());
@@ -130,6 +134,14 @@ public class DoctorHome extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
             }
         });
+        medstock.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Pharmacy.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left); // animation
+            }
+        });
     }
 
     @Override
@@ -160,7 +172,7 @@ public class DoctorHome extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.options_menu,menu);
+        getMenuInflater().inflate(R.menu.options_menu_doctor,menu);
 
     }
     @Override

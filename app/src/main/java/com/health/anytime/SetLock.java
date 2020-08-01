@@ -33,7 +33,7 @@ public class SetLock extends AppCompatActivity {
             @Override
             public void onComplete(List pattern) {
                 if(PatternLockUtils.patternToString(patternLockView, pattern).length()<3){
-                    Toast.makeText(SetLock.this, "Please have at least 3 lines in your pattern", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SetLock.this, "Please have at least 3 lines in your pattern", Toast.LENGTH_SHORT).show();
                     patternLockView.setViewMode(PatternLockView.PatternViewMode.WRONG);
 
 
