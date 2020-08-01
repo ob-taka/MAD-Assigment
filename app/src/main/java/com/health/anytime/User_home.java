@@ -96,7 +96,6 @@ public class User_home extends AppCompatActivity{
         // set btn for menu
         registerForContextMenu(opt);
         Calendar calendar  = Calendar.getInstance();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date currentdate = calendar.getTime();
         day = dateFormat.format(currentdate);
@@ -202,7 +201,7 @@ public class User_home extends AppCompatActivity{
         } else if (timeOfDay >= 12 && timeOfDay < 16) {
             greating.setText("Good Afternoon");
             return "Lunch";
-        } else if (timeOfDay >= 16 && timeOfDay < 21) {
+        } else if (timeOfDay >= 16 && timeOfDay < 23) {
             greating.setText("Good Evening");
             return "Dinner";
         }
@@ -232,7 +231,7 @@ public class User_home extends AppCompatActivity{
         adaptor.startListening();
         fetchPatientPic();
 
-        // o`verrides the interface created in the adaptor class to customise the even of the click
+        // overrides the interface created in the adaptor class to customise the even of the click
         adaptor.setOnItemClickListener(new MAdaptor.OnItemClickListener(){
             @Override
             public void onItemClick(DocumentSnapshot dataSnapshot, int position) {
