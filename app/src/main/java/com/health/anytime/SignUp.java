@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.UUID;
+
 public class SignUp extends AppCompatActivity {
 //Declaration of attributes
     private EditText rName, rEmail, rPass, rCfmPass;
@@ -136,12 +138,11 @@ public class SignUp extends AppCompatActivity {
 //This method generates and inserts the database details into firebase database
     private void insertDetails(String name, String email){
         String Role = "Patient";
-        String Pic = "default.jpg";
-        String Med = "7d55d1c0-d";
+        String Med = UUID.randomUUID().toString().substring(0,10);
         //Create a unique generated key in "User" and store the patient's details
         DatabaseReference du = firebaseDatabase.getReference("User");
         String ukey = rAuth.getCurrentUser().getUid();
-        PatientModel user = new PatientModel(Pic, name, email, false, Role, Med);
+        PatientModel user = new PatientModel("default.jpg", name, email, false, Role, Med);
         du.child(ukey).setValue(user);
     }
 

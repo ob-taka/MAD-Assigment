@@ -35,6 +35,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -138,6 +142,12 @@ public class User_home extends AppCompatActivity{
                 break;
             case R.id.logout_button:
                 auth.signOut();
+                GoogleSignInOptions gso = new GoogleSignInOptions.
+                        Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                        build();
+
+                GoogleSignInClient googleSignInClient= GoogleSignIn.getClient(getApplicationContext(),gso);
+                googleSignInClient.signOut();
                 startActivity(new Intent(User_home.this, SignIn.class));
                 break;
             case R.id.alarm:

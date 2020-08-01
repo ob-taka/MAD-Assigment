@@ -42,6 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.UUID;
+
 public class SignIn extends AppCompatActivity {
     //Declaration of attributes
     private EditText mEmail, mPassword;
@@ -197,11 +199,6 @@ public class SignIn extends AppCompatActivity {
                             overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                             break;
                         }
-
-
-
-
-
                     }
                 }
 
@@ -247,7 +244,7 @@ public class SignIn extends AppCompatActivity {
 
     //This method gets the details of the user from his google sign in and updates the database and storage in firebase
     private void insertGSI_Details(GoogleSignInAccount account){
-        String medid = "7d55d1c0-d";
+        String medid = UUID.randomUUID().toString().substring(0,10);
         String role = "Patient";
         email = account.getEmail();
         //Sets information of the user which in this case is default to Patient as this log in is for patients only
