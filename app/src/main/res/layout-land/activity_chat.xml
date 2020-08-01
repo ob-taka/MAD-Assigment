@@ -30,7 +30,7 @@
 
         <EditText
             android:id="@+id/editText_inputChatMSG"
-            android:layout_width="340dp"
+            android:layout_width="635dp"
             android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
