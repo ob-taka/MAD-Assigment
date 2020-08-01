@@ -20,6 +20,7 @@
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
     <color name="cardcolor">#e5e5e5</color>
+    <color name="cardlow">#ff0033</color>
     <color name="productGridBackgroundColor">#FFFFFF</color>
 
 </resources>

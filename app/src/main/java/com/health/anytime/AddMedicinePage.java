@@ -26,6 +26,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,8 +67,6 @@ public class AddMedicinePage extends AppCompatActivity {
     ProgressBar progressBar;
 
     Integer correctMed,breakfastValid,lunchValid,dinnerValid,errors;
-
-
     DatabaseReference databaseReference;
     ArrayList<String> med_list;
     ArrayList<String> id_list;
@@ -103,7 +103,6 @@ public class AddMedicinePage extends AppCompatActivity {
         after=findViewById(R.id.after);
         progressBar=findViewById(R.id.progressBar2);
         Intent intent = getIntent();
-
         medKey = intent.getStringExtra("medKey");
         patientkey = intent.getStringExtra("patientKey");
         final DecimalFormat df = new DecimalFormat("#");
@@ -435,9 +434,10 @@ public class AddMedicinePage extends AppCompatActivity {
         else if (after.isChecked()) {
             food = "After Food";
         }
-        //Adding data to firebase
+        // checking if there is enough stock
         if ( medqty > (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber)) {
             medqty -= (daysno * (dinnerValid + lunchValid + breakfastValid) * doseNumber);
+            //Deduct quantity of medicine from firebase
             databaseReference.child("Pharmacy").child(doctorid).child(medName).child("quantity").setValue(medqty);
             for(int i=0;i<daysno;i++) {
 
@@ -506,6 +506,7 @@ public class AddMedicinePage extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), MedicineList.class);
             intent.putExtra("patientmlist" , medKey);
             intent.putExtra("patientKey" ,patientkey );
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }else {
             buildDialog();
@@ -538,11 +539,20 @@ public class AddMedicinePage extends AppCompatActivity {
     private void buildDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMedicinePage.this);
         builder.setTitle("this medicine does not have enough stock")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Refill", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(getApplicationContext(), Pharmacy.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
                     }
-                });
+                })
+        ;
         builder.create();
         builder.show();
     }

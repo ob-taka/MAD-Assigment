@@ -42,7 +42,7 @@ public class AddPatient extends AppCompatActivity{
 
         //init list and database
         Intent intent = getIntent();
-        // needs fix (unchecked operatoration)
+
         patientList = (HashMap<String, PatientModel>) intent.getSerializableExtra("keys"); //serialized hashmap
 
         // submit button to push patient medicine list to firebase
@@ -56,22 +56,22 @@ public class AddPatient extends AppCompatActivity{
                 // add patient to doctor list
                 // checks if patient email match with the user input from edittext
                 if (checkPatient()){
-                    final Intent nextActivity = new Intent(AddPatient.this  , MedicineList.class );
-                    nextActivity.putExtra("pname",name.getText().toString().trim());
-                    nextActivity.putExtra("pemail",email.getText().toString().trim());
-                    nextActivity.putExtra("patientKey" , key);
                     updatePatient();
-                    nextActivity.putExtra("patientmlist" ,medkey);
-
                     success.check();// check animation
 
                     // delay moving to medicineList , wait for check animation to finish
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
-                            clearText();
+                            Intent nextActivity = new Intent(AddPatient.this  , MedicineList.class );
+                            nextActivity.putExtra("pname",name.getText().toString().trim());
+                            nextActivity.putExtra("pemail",email.getText().toString().trim());
+                            nextActivity.putExtra("patientKey" , key);
+                            nextActivity.putExtra("patientmlist" ,medkey);
                             startActivity(nextActivity);
                             overridePendingTransition(R.anim.slide_in_right , R.anim.slide_out_left);
+                            finish();
+                            clearText();
                         }
                     }, 1000);
 

@@ -108,7 +108,6 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
     public void onCardClick(int position) {
         Intent intent = new Intent(this, MedicineDetails.class);
         intent.putExtra("medicimg" , medicineModels.get(position).getMedicineImg());
-        Log.d("nigga", medicineModels.get(position).getMedicineTitle());
         intent.putExtra("medname" , medicineModels.get(position).getMedicineTitle());
         startActivity(intent);
     }
