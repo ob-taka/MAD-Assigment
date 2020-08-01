@@ -88,9 +88,7 @@ public class SignIn extends AppCompatActivity {
         patHomeActivity = new Intent(SignIn.this, User_home.class);
         docHomeActivity = new Intent(SignIn.this,DoctorHome.class);
         locHomeActivity= new Intent(SignIn.this,HomeLock.class);
-
-
-
+        mAuth.signOut();
     }
 
     @Override
@@ -126,8 +124,15 @@ public class SignIn extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                //Calls function to redirect user to necessary activities
-                                onAuthSuccess(task.getResult().getUser());
+                                if(mAuth.getCurrentUser().isEmailVerified()){
+                                    //Calls function to redirect user to necessary activities
+                                    onAuthSuccess(task.getResult().getUser());
+                                }
+                                else {
+                                    mAuth.signOut();
+                                    Toast.makeText(SignIn.this, "Please verify your email address", Toast.LENGTH_LONG).show();
+                                }
+
                             } else {
                                 Toast.makeText(SignIn.this, "Login Unsuccessful, " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 mProgressBar.setVisibility(View.GONE);

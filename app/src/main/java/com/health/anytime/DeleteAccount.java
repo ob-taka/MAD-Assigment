@@ -17,6 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -114,6 +117,8 @@ public class DeleteAccount extends AppCompatActivity {
                                                             User_home.fa.finish();
                                                             Settings.fa.finish();
                                                             Profile_Patient.fa.finish();
+                                                            //delete the contact
+                                                            deleteContact();
 
                                                             StorageReference storageRef = storage
                                                                     .getReference()
@@ -196,6 +201,28 @@ public class DeleteAccount extends AppCompatActivity {
             }
         });
 
+    }
+
+    //This will delete the contact from database
+    public void deleteContact(){
+        databaseReference.child("Contacts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(user.getUid()).exists()){
+                    snapshot.getRef().child(user.getUid()).removeValue();
+                }
+                for(DataSnapshot sc: snapshot.getChildren()){
+                    if(sc.getValue().toString()==user.getUid()){
+                        sc.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

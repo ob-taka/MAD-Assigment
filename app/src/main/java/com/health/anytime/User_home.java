@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -145,6 +146,9 @@ public class User_home extends AppCompatActivity{
                 GoogleSignInOptions gso = new GoogleSignInOptions.
                         Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
                         build();
+                final SharedPreferences.Editor editor = getSharedPreferences("Lock", MODE_PRIVATE).edit();
+                editor.putString("Code",null);
+                editor.apply();
 
                 GoogleSignInClient googleSignInClient= GoogleSignIn.getClient(getApplicationContext(),gso);
                 googleSignInClient.signOut();
