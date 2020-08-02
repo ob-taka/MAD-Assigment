@@ -82,12 +82,14 @@ Now you will never forget about taking your medicines or be confused by the doct
 
 ## Contributors
 
-|             <a href="http://fvcproductions.com" target="_blank">**Kester**</a>              |             <a href="http://fvcproductions.com" target="_blank">**RunLin**</a>              |                 <a href="http://fvcproductions.com" target="_blank">**Shrey**</a>                 |               <a href="http://fvcproductions.com" target="_blank">**Zachary**</a>               |
+|             <a href="https://github.com/EchoKes" target="_blank">**Kester**</a>              |             <a href="https://github.com/ob-taka" target="_blank">**RunLin**</a>              |                 <a href="https://github.com/ShreyChauhan1" target="_blank">**Shrey**</a>                 |               <a href="https://github.com/PrimaryHeap" target="_blank">**Zachary**</a>               |
 | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
-| <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/EchoKes`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ob-taka`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="http://github.com/fvcproductions" target="_blank">`https://github.com/PrimaryHeap`</a> |
+| `https://github.com/EchoKes`| <a href="https://github.com/ob-taka" target="_blank">`https://github.com/ob-taka`</a> | <a href="https://github.com/ShreyChauhan1" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="https://github.com/PrimaryHeap" target="_blank">`https://github.com/PrimaryHeap`</a> |
 
-- You can just grab their GitHub profile image URL
-- You should probably resize their picture using `?s=200` at the end of the image URL.
+| :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
+| <a href="https://github.com/EchoKes" target="_blank">`https://github.com/EchoKes`</a> | <a href="https://github.com/ob-taka" target="_blank">`https://github.com/ob-taka`</a> | <a href="https://github.com/ShreyChauhan1" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="https://github.com/PrimaryHeap" target="_blank">`https://github.com/PrimaryHeap`</a> |
+
+
 
 ---
 
@@ -100,7 +102,12 @@ Now you will never forget about taking your medicines or be confused by the doct
 5. Medicine alarm to remind patients it’s time their medicine
 6. Allow doctors to prescribe medicine for their patients
 7. A database to store Users and Medicine information
-8. Storage place for resources like images
+8. Track medicine supplies 
+9. Find nearest clinics around you
+10. Chat with your doctor
+11. Secure login with google sign in
+12. Set password for your account
+13. Get reminded to take your medicine
 
 ---
 
