@@ -84,10 +84,8 @@ Now you will never forget about taking your medicines or be confused by the doct
 
 |             <a href="https://github.com/EchoKes" target="_blank">**Kester**</a>              |             <a href="https://github.com/ob-taka" target="_blank">**RunLin**</a>              |                 <a href="https://github.com/ShreyChauhan1" target="_blank">**Shrey**</a>                 |               <a href="https://github.com/PrimaryHeap" target="_blank">**Zachary**</a>               |
 | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
-|Done : Feature 10 and 11| Done : Feature 13| Done : Feature 12 | Done : Feature 8 and 9|
 | <a href="https://github.com/EchoKes" target="_blank">`https://github.com/EchoKes`</a> | <a href="https://github.com/ob-taka" target="_blank">`https://github.com/ob-taka`</a> | <a href="https://github.com/ShreyChauhan1" target="_blank">`https://github.com/ShreyChauhan1`</a> | <a href="https://github.com/PrimaryHeap" target="_blank">`https://github.com/PrimaryHeap`</a> |
-
-
+|Done : Feature 10 and 11| Done : Feature 13| Done : Feature 12 | Done : Feature 8 and 9|
 
 ---
 
