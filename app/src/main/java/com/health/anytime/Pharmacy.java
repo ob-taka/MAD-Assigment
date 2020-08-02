@@ -61,10 +61,11 @@ public class Pharmacy extends AppCompatActivity implements MedicineAdaptor.OnCar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pharmacy);
 
-        doctorId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        doctorId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();//get unique id for user
         recyclerView = findViewById(R.id.recycler_view);
         createMedicine = findViewById(R.id.floatingActionButton4);
         recyclerView.setHasFixedSize(true);
+        // creating grid layout for rv
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
         MedicineAdaptor adapter = new MedicineAdaptor(this , medicineModels , this);
         recyclerView.setAdapter(adapter);

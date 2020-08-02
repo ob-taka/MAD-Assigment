@@ -290,7 +290,7 @@ public class User_home extends AppCompatActivity{
             getLocation();
         }
     }
-    //get location permission
+    // overriding request callback function
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -63,6 +63,7 @@ public class CreateMedicine extends AppCompatActivity{
                 openFileChooser();
             }
         });
+
         //setup onclicklistener on add button
         addButton = findViewById(R.id. add_button);
         addButton.setOnClickListener(new View.OnClickListener(){
@@ -71,6 +72,7 @@ public class CreateMedicine extends AppCompatActivity{
                 countId();
                 boolean upload = true;
                 title = medicineTitle.getText().toString().trim();
+                //check if fields are empty
                 if (medicineQty.getText().toString().equals("")){
                     medicineQty.setError(getString(R.string.input_empty));
                     upload = false;
@@ -132,6 +134,7 @@ public class CreateMedicine extends AppCompatActivity{
         });
     }
 
+    //moves to allow user to upload picture from device
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -139,6 +142,7 @@ public class CreateMedicine extends AppCompatActivity{
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    //get image from device
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -148,7 +152,7 @@ public class CreateMedicine extends AppCompatActivity{
             fileName.setText(mImageUri.toString());
         }
     }
-
+    //get upload file to firestore
     private void uploadFile(Uri file , String medname ){
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("Medicine/").child(medname+".jpg");
         mStorageRef.putFile(file)
