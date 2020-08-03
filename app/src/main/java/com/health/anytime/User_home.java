@@ -331,6 +331,7 @@ public class User_home extends AppCompatActivity{
                 }, Looper.getMainLooper());
     }
 
+    // cancel alarm in the system if there is no more schedule to be loaded
     private void cancleAlarm(){
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, NotificationReceiver.class);
@@ -339,7 +340,7 @@ public class User_home extends AppCompatActivity{
         alarmManager.cancel(pendingIntent);
 
     }
-
+    // Show dialog for the user to let them know they have run out of medicines
     public void dialog(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_assessment)

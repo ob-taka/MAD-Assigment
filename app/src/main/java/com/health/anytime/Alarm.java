@@ -32,6 +32,9 @@ public class Alarm extends AppCompatActivity {
         final NumberPicker d_hour = findViewById(R.id.d_hour);
         final NumberPicker d_min = findViewById(R.id.d_min);
 
+        /**
+         * restrain the user for using the 12 hour format and set the limit to prevent any errors
+         */
         b_hour.setMaxValue(23);
         b_hour.setMinValue(00);
         b_hour.setValue(9);
@@ -50,6 +53,10 @@ public class Alarm extends AppCompatActivity {
         d_min.setMaxValue(59);
         d_min.setMinValue(00);
 
+        /**
+         * init alarm when the button is clicked
+         */
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +71,11 @@ public class Alarm extends AppCompatActivity {
         });
     }
 
+    /**
+     * dialog box to let user confirm the alarm set, if canceled the alarm is then removed
+     * @param title
+     * @param message
+     */
     public void dialog(String title, String message){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_time)
@@ -92,6 +104,11 @@ public class Alarm extends AppCompatActivity {
         builder.show();
     }
 
+    /**
+     * set up alarm manager
+     * @param hour
+     * @param min
+     */
     private void breakfast_alarm(int hour, int min){
         int id = 1;
         Calendar c = Calendar.getInstance();

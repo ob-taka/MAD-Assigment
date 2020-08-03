@@ -8,6 +8,11 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+/**
+ * class to recieve the intents like title of the notification, broadcast id and other fields that
+ * need to be modified
+ */
+
 public class NotificationReceiver extends BroadcastReceiver {
 
     private String title, des;
